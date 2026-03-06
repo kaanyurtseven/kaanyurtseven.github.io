@@ -366,3 +366,37 @@ h3 {
     width: min(var(--max-width), calc(100% - 28px));
   }
 }
+
+/* Research cards */
+
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 28px;
+  margin-top: 28px;
+  margin-bottom: 30px;
+}
+
+.research-card {
+  background: #ffffff;
+  border: 1px solid rgba(219,227,236,0.9);
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 12px 28px rgba(15,23,42,0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.research-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(15,23,42,0.08);
+}
+
+.research-card h3 {
+  margin-top: 0;
+  font-size: 1.15rem;
+}
+
+.research-card p {
+  margin-bottom: 0;
+  color: #475569;
+}
