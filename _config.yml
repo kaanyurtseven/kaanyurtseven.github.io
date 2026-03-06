@@ -1,1 +1,12 @@
+title: Kaan Yurtseven
+description: Personal website of Kaan Yurtseven
+theme: minima
 
+header_pages:
+  - research.md
+  - publications.md
+  - projects.md
+  - talks-awards.md
+  - news.md
+  - cv.md
+  - contact.md
