@@ -4,8 +4,6 @@ title: Research
 permalink: /research/
 ---
 
-# Research
-
 Electricity grids are becoming harder to operate as renewable energy grows and uncertainty becomes part of everyday decision making.
 
 I work on optimization tools that turn that uncertainty into something decision makers can actually use. The goal is not only to model complexity, but to make better choices possible in systems where reliability, economics, and risk all matter at the same time.
