@@ -328,3 +328,36 @@ h3 {
     width: min(var(--max-width), calc(100% - 28px));
   }
 }
+
+.profile-placeholder {
+  width: 100%;
+  max-width: 360px;
+  min-height: 360px;
+  border-radius: 28px;
+  border: 1px solid rgba(219, 227, 236, 0.9);
+  background: linear-gradient(180deg, #ffffff, #f5f8fb);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.profile-placeholder h3 {
+  margin: 8px 0 14px 0;
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+.profile-placeholder p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.placeholder-label {
+  color: #34506d !important;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
