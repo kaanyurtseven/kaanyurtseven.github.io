@@ -2,6 +2,9 @@ title: Kaan Yurtseven
 description: Personal website of Kaan Yurtseven
 theme: minima
 
+minima:
+  skin: classic
+
 header_pages:
   - research.md
   - publications.md
