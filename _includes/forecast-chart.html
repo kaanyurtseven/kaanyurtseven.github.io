@@ -1,0 +1,171 @@
+<!-- ============================================================
+     FORECAST ERROR UNCERTAINTY EXPLORER — homepage interactive section
+     Plotly.js-powered. Data from Elia Open Data (static JSON refreshed daily).
+
+     Top panel:    conditioned empirical distribution in power space.
+                   X = generation (MW), Y = probability density.
+                   Gaussian and Beta overlays.
+     Bottom panel: recent 7-day generation trajectory at 15-min resolution.
+                   Hover to update top panel with adaptive conditioning.
+     ============================================================ -->
+<section class="forecast-section" id="forecast-explorer" aria-labelledby="forecast-heading">
+  <div class="forecast-section__inner">
+
+    <!-- Header -->
+    <div class="forecast-section__header">
+      <p class="forecast-section__eyebrow"><span class="live-dot" aria-hidden="true"></span>Live Data · <a href="https://opendata.elia.be/" target="_blank" rel="noopener noreferrer" class="fc-elia-link">Elia Open Data Platform</a></p>
+      <h2 class="forecast-section__title" id="forecast-heading">Forecast Error Uncertainty Explorer</h2>
+      <p class="forecast-section__subtitle">
+        Belgian wind and solar forecast errors, reconstructed from three years of Elia open data.
+        Hover over the 7-day trajectory to see the conditioned error distribution at that operating point.
+      </p>
+    </div>
+
+    <!-- Controls bar -->
+    <div class="forecast-controls">
+
+      <!-- Technology tabs -->
+      <div class="fc-group" role="group" aria-label="Energy source">
+        <button class="fc-tab fc-tab--active" data-tech="wind">Wind</button>
+        <button class="fc-tab" data-tech="solar">Solar</button>
+      </div>
+
+      <!-- Forecast type — DA 11AM, DA 6PM, Most Recent -->
+      <div class="fc-group fc-group--forecast" role="group" aria-label="Forecast type">
+        <button class="fc-tab fc-tab--sm fc-tab--active" data-forecast="dayahead11h">Day Ahead 11AM</button>
+        <button class="fc-tab fc-tab--sm" data-forecast="dayahead6pm">Day Ahead 6PM</button>
+        <button class="fc-tab fc-tab--sm" data-forecast="mostrecent">Most Recent</button>
+      </div>
+
+    </div>
+
+    <!-- Filters row -->
+    <div class="forecast-filters" id="forecast-filters">
+
+      <!-- Wind filters -->
+      <div id="wind-filters" class="fc-filter-group">
+        <div class="fc-filter">
+          <label class="fc-filter__label" for="filter-offon">Type</label>
+          <select class="fc-filter__select" id="filter-offon">
+            <option value="Offshore" selected>Offshore</option>
+            <option value="Onshore">Onshore</option>
+          </select>
+        </div>
+        <div class="fc-filter">
+          <label class="fc-filter__label" for="filter-region">Region</label>
+          <select class="fc-filter__select" id="filter-region">
+            <option value="Flanders">Flanders</option>
+            <option value="Wallonia">Wallonia</option>
+          </select>
+        </div>
+        <div class="fc-filter">
+          <label class="fc-filter__label" for="filter-grid">Grid</label>
+          <select class="fc-filter__select" id="filter-grid">
+            <option value="Elia">Elia</option>
+            <option value="Dso">DSO</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Solar filters -->
+      <div id="solar-filters" class="fc-filter-group" style="display:none;">
+        <div class="fc-filter">
+          <label class="fc-filter__label" for="filter-solar-region">Region</label>
+          <select class="fc-filter__select" id="filter-solar-region">
+            <option value="Belgium">Belgium (total)</option>
+            <option value="Flanders">Flanders</option>
+            <option value="Wallonia">Wallonia</option>
+            <option value="Brussels">Brussels</option>
+            <option value="Antwerp">Antwerp</option>
+            <option value="East-Flanders">East-Flanders</option>
+            <option value="West-Flanders">West-Flanders</option>
+            <option value="Flemish-Brabant">Flemish-Brabant</option>
+            <option value="Limburg">Limburg</option>
+            <option value="Hainaut">Hainaut</option>
+            <option value="Liège">Liège</option>
+            <option value="Luxembourg">Luxembourg</option>
+            <option value="Namur">Namur</option>
+            <option value="Walloon-Brabant">Walloon-Brabant</option>
+          </select>
+        </div>
+        <div class="fc-filter fc-filter--note">
+          <span class="fc-filter__label">Note</span>
+          <span class="fc-filter__note-text">Night hours excluded from historical conditioning</span>
+        </div>
+      </div>
+
+      <!-- Approximation overlay toggle -->
+      <div class="fc-gauss-wrap">
+        <label class="fc-gauss-toggle" for="show-gaussian">
+          <input type="checkbox" id="show-gaussian" class="fc-gauss-toggle__check" checked>
+          <span class="fc-gauss-toggle__label">Show approximation overlays</span>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Chart layout: panels + metrics rail -->
+    <div class="forecast-layout">
+
+      <!-- Chart panels -->
+      <div class="forecast-panels">
+
+        <!-- Top: conditioned distribution (primary view) -->
+        <div class="forecast-panel forecast-panel--dist">
+          <p class="forecast-panel__label" id="dist-point-label">Distribution at selected point</p>
+          <div id="forecast-distribution" class="forecast-chart-area"
+               role="img" aria-label="Conditioned generation distribution"></div>
+        </div>
+
+        <!-- Bottom: recent trajectory (hover to update distribution) -->
+        <div class="forecast-panel forecast-panel--traj">
+          <div class="forecast-panel__label-row">
+            <span class="forecast-panel__label">Recent 7-day generation — hover to update distribution</span>
+            <div class="fc-tz-group" role="group" aria-label="Time zone display">
+              <button class="fc-tz-btn fc-tz-btn--active" id="tz-brussels" title="Belgian local time (CET in winter · CEST in summer)">Belgian Time</button>
+              <button class="fc-tz-btn" id="tz-utc" title="Coordinated Universal Time — as stored in the Elia API">UTC</button>
+            </div>
+          </div>
+          <div id="forecast-trajectory" class="forecast-chart-area"
+               role="img" aria-label="Recent generation trajectory"></div>
+        </div>
+
+        <div id="forecast-loading" class="forecast-loading" aria-live="polite">Loading data…</div>
+        <div id="forecast-error" class="forecast-error-overlay" role="alert"></div>
+
+      </div>
+
+      <!-- Metrics rail -->
+      <div class="forecast-metrics" id="forecast-metrics">
+        <div class="fm-section">
+          <div class="fm-row"><span class="fm-label">Time</span><span class="fm-value fm-value--time" id="fm-time">—</span></div>
+          <div class="fm-row"><span class="fm-label">Forecast</span><span class="fm-value" id="fm-forecast">—</span></div>
+          <div class="fm-row"><span class="fm-label">Measured</span><span class="fm-value" id="fm-measured">—</span></div>
+          <div class="fm-row"><span class="fm-label">Capacity</span><span class="fm-value" id="fm-capacity">—</span></div>
+        </div>
+        <div class="fm-section">
+          <div class="fm-row fm-row--header">CVaR<sub>5%</sub> <span class="fm-info" tabindex="0" aria-label="What is CVaR?" data-tooltip="The Conditional Value-at-Risk at 5% represents the expected outcome within the lowest 5% of cases. It captures the magnitude of extreme low-end outcomes by averaging all realizations below the 5% VaR threshold.">i</span></div>
+          <div class="fm-row"><span class="fm-label fm-c-emp">Empirical</span><span class="fm-value" id="fm-cvar-emp-lo">—</span><span class="fm-unit">MW</span></div>
+          <div class="fm-row"><span class="fm-label fm-c-gauss">Gaussian</span><span class="fm-value" id="fm-cvar-gauss-lo">—</span></div>
+          <div class="fm-row"><span class="fm-label fm-c-beta">Beta</span><span class="fm-value" id="fm-cvar-beta-lo">—</span></div>
+        </div>
+        <div class="fm-section">
+          <div class="fm-row fm-row--header">CVaR<sub>95%</sub> <span class="fm-info" tabindex="0" aria-label="What is CVaR?" data-tooltip="The Conditional Value-at-Risk at 95% represents the expected outcome within the highest 5% of cases. It captures the magnitude of extreme high-end outcomes by averaging all realizations above the 95% VaR threshold.">i</span></div>
+          <div class="fm-row"><span class="fm-label fm-c-emp">Empirical</span><span class="fm-value" id="fm-cvar-emp-hi">—</span><span class="fm-unit">MW</span></div>
+          <div class="fm-row"><span class="fm-label fm-c-gauss">Gaussian</span><span class="fm-value" id="fm-cvar-gauss-hi">—</span></div>
+          <div class="fm-row"><span class="fm-label fm-c-beta">Beta</span><span class="fm-value" id="fm-cvar-beta-hi">—</span></div>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- Provenance strip: source + historical interval only -->
+    <div class="forecast-stats" id="forecast-stats" aria-label="Data provenance" style="display:none;">
+      <div class="forecast-stat forecast-stat--source">
+        <span class="forecast-stat__source" id="stat-source">—</span>
+      </div>
+    </div>
+
+  </div>
+</section>

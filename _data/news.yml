@@ -1,0 +1,180 @@
+# ============================================================
+# News entries — chronological professional log
+# ============================================================
+# Fields:
+#   date      YYYY-MM  (used for sorting and display)
+#   category  award | conference | publication | visit | media
+#   title     Short, specific headline
+#   body      One or two sentences. First person. No buzzwords.
+#   link      Optional URL
+#   image     Optional path to photo, e.g. /assets/images/news/powertech-2025.jpg
+#   banner    true — show this entry in the homepage banner (choose 1-2 max)
+#
+# Example with photo:
+#
+# - date: "2025-06"
+#   category: conference
+#   title: "Presented at IEEE PowerTech 2025 — Kiel, Germany"
+#   body: >
+#     Presented my paper on security-constrained stochastic optimal power flow
+#     for hybrid AC/DC grids considering non-Gaussian uncertainty.
+#   link: "https://..."
+#   image: "/assets/images/news/powertech-2025.jpg"
+#   banner: true
+#
+# ============================================================
+
+- date: "2026-03"
+  category: training
+  title: "N-SIDE Energy Training on Power Market Optimization — Brussels"
+  body: >
+    Attended a three-day intensive training by N-SIDE Energy covering day-ahead and intraday market
+    coupling mechanics, cross-border balancing cooperation, and cross-zonal capacity sharing between
+    balancing and wholesale markets.
+  link: "https://www.linkedin.com/posts/what-a-week-in-brussels-n-side-energy-wrapped-ugcPost-7442216772503580672-KwTe?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB9LQGkBc2x3CmwNyxgFtEG_jcZP-N6obFQ"
+  image: "/assets/images/n-side-training-2026.jpg"
+
+- date: "2026-03"
+  category: conference
+  title: "Poster Presentation at Risk and Resilience Day 2026 — Birmingham, UK"
+  body: >
+    Presented my poster on "Risk-based Balancing-aware Congestion Management in Hybrid AC/DC Grids
+    Under Continuous Non-Gaussian Uncertainty" at the EPSRC Supergen Energy Networks Hub event.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7441811445157122049/"
+  image: "/assets/images/risk-day-2026.jpg"
+
+- date: "2025-06"
+  category: conference
+  title: "Presented at IEEE PowerTech 2025 — Kiel, Germany"
+  body: >
+    Presented my paper on security-constrained stochastic optimal power flow for hybrid AC/DC grids
+    considering non-Gaussian uncertainty.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7346531047041380355/"
+  image: "/assets/images/ieee-kiel-powertech-2025.jpg"
+
+- date: "2025-03"
+  category: conference
+  title: "Talk at Risk and Resilience Day 2025 — Birmingham, UK"
+  body: >
+    Presented "Balancing-aware Redispatch Actions Under Uncertainty" at the EPSRC Supergen
+    Energy Networks Hub event, focusing on risk-aware operational planning under renewable uncertainty.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7307370857327149057/"
+  image: "/assets/images/risk-day-2025.jpg"
+
+- date: "2026-03"
+  category: award
+  title: "Gold Award — EERA Joint Programme on Smart Grids"
+  body: >
+    Received the Gold Award from the European Energy Research Alliance Joint Programme on Smart Grids
+    for exceptional doctoral research in stochastic optimization for power systems.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7435269663875293185/"
+  banner: true
+  image: "/assets/images/eera-gold-award.jpg"
+
+- date: "2025-12"
+  category: publication
+  title: "Paper published — Stochastic Optimal Transmission Switching in Hybrid AC/DC Grids"
+  body: >
+    Our paper on congestion management through stochastic optimal transmission switching, using
+    polynomial chaos expansion to handle continuous non-Gaussian uncertainty, was published in
+    IEEE Transactions on Power Systems.
+  link: "https://doi.org/10.1109/TPWRS.2025.3648549"
+  banner: true
+
+- date: "2025-01"
+  category: training
+  title: "LANL Grid Science Winter School and Conference 2025 — New Mexico, USA"
+  body: >
+    Presented a poster on non-Gaussian uncertainty quantification in hybrid AC/DC grids at
+    Los Alamos National Laboratory's Grid Science Winter School and Conference.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_hvdc-renewable-stochastic-activity-7283722306034536448-YF8N/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB9LQGkBc2x3CmwNyxgFtEG_jcZP-N6obFQ"
+  image: "/assets/images/lanl-winter-school-2025.jpg"
+
+- date: "2025-09"
+  category: publication
+  title: "Paper published — Stochastic Optimal Power Flow for Hybrid AC/DC Grids"
+  body: >
+    Our paper introducing a chance-constrained stochastic optimal power flow framework for
+    hybrid AC/DC grids under continuous non-Gaussian uncertainty was published in the
+    International Journal of Electrical Power & Energy Systems.
+  link: "https://doi.org/10.1016/j.ijepes.2025.110828"
+
+- date: "2024-10"
+  category: conference
+  title: "Oral presentation at IEEE ISGT Europe 2024 — Croatia"
+  body: >
+    Delivered an oral presentation on risk-based stochastic optimal power flow for AC/DC grids
+    using polynomial chaos expansion, covering CVaR-based risk measures and HVDC flexibility benefits.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_isgt2024-renewableenergy-hvdc-activity-7252622917727850496-gFve/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB9LQGkBc2x3CmwNyxgFtEG_jcZP-N6obFQ"
+  image: "/assets/images/isgt-europe-2024.jpg"
+
+- date: "2024-06"
+  category: conference
+  title: "Presented at PMAPS 2024 — New Zealand"
+  body: >
+    Contributed to two papers at the 18th International Conference on Probabilistic Methods Applied
+    to Power Systems: one on robust HVDC converter droop gain optimization, and one on bi-objective
+    power system restoration with renewable participation.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_pmaps2024-powersystemoptimization-renewableenergy-activity-7213418096617795585-5IGJ/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB9LQGkBc2x3CmwNyxgFtEG_jcZP-N6obFQ"
+  image: "/assets/images/pmaps-2024.jpg"
+
+- date: "2024-04"
+  category: visit
+  title: "Field visit — Thorntonbank Offshore Wind Farm, Belgian North Sea"
+  body: >
+    Visited the Thorntonbank offshore wind installation, located 30 km off the Belgian coast,
+    as part of the PhairywinD research project.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_offshorewind-renewableenergy-stochasticoptimization-activity-7199746406046121984-RBTZ/?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB9LQGkBc2x3CmwNyxgFtEG_jcZP-N6obFQ"
+  image: "/assets/images/wind-farm-visit.jpg"
+
+- date: "2024-03"
+  category: conference
+  title: "Invited talk at HVDC Colloquium — CITCEA-UPC, Barcelona"
+  body: >
+    Presented stochastic optimization tools for hybrid AC/DC grids and the role of HVDC
+    controllability in managing uncertainty from high renewable penetration.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_big-thanks-to-oriol-gomis-bellmunt-nicolaos-activity-7175470075569696769-zRfo?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB9LQGkBc2x3CmwNyxgFtEG_jcZP-N6obFQ"
+  image: "/assets/images/hvdc-colloquium-2024.jpg"
+
+- date: "2021-09"
+  category: award
+  title: "Outstanding student paper — EU PVSEC 2021"
+  body: >
+    My paper on a data-driven soiling loss assessment method for PV plants was selected as
+    outstanding student research work at the 38th European Photovoltaic Solar Energy Conference.
+  image: "/assets/images/student-award-finalists.jpg"
+
+- date: "2021-09"
+  category: conference
+  title: "Oral presentation at EU PVSEC 2021"
+  body: >
+    Presented our data-driven soiling detection method for PV plants, which uses only already available
+    inverter data — no environmental sensors required — to determine optimal cleaning schedules.
+  link: "https://twitter.com/EUPVSEC/status/1418479959048400896"
+
+- date: "2021-08"
+  category: publication
+  title: "Paper published — Stochastic Dynamic Substation Expansion Planning"
+  body: >
+    Our paper on risk-based stochastic dynamic substation expansion planning under MILP framework,
+    incorporating the inherent characteristics of PV plants, is now available online in
+    IEEE Transactions on Power Systems.
+  link: "https://doi.org/10.1109/TPWRS.2021.3095266"
+
+- date: "2021-02"
+  category: publication
+  title: "Paper published — Sensorless Fault Detection for PV Systems"
+  body: >
+    Our paper presenting a sensorless fault detection method for photovoltaic systems — using only
+    available inverter data to distinguish faulty from natural outputs — is now available online in Solar Energy.
+  link: "https://www.sciencedirect.com/science/article/abs/pii/S0038092X21000207"
+
+- date: "2021-02"
+  category: media
+  title: "Featured in PV Magazine — Sensorless fault detection for PV systems"
+  body: >
+    PV Magazine published a feature on our sensorless fault detection method, which identifies
+    performance faults in photovoltaic systems using only already available inverter data — no
+    environmental sensors required.
+  link: "https://www.pv-magazine.com/2021/02/26/sensorless-fault-detection-method-for-rooftop-large-scale-solar/"
+  image: "/assets/images/pv-magazine-article.jpg"

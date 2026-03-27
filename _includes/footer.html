@@ -1,0 +1,18 @@
+<footer class="site-footer" role="contentinfo">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a>
+      <a href="https://linkedin.com/in/kaanyurtseven" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://scholar.google.com/citations?user=M4bo2DMAAAAJ" target="_blank" rel="noopener noreferrer">Scholar</a>
+      <a href="{{ '/contact/' | relative_url }}">Contact</a>
+    </div>
+    <p class="site-footer__meta">
+      {{ site.author.name }}
+      <span class="site-footer__sep">·</span>
+      KU Leuven &amp; EnergyVille
+      <span class="site-footer__sep">·</span>
+      &copy; {{ 'now' | date: "%Y" }}
+    </p>
+  </div>
+</footer>

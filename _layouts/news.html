@@ -1,0 +1,51 @@
+---
+layout: default
+---
+
+<main class="site-main" id="main-content">
+  <div class="container container--narrow">
+
+    <header class="page-header">
+      <h1 class="page-header__title">{{ page.title }}</h1>
+      {% if page.subtitle %}
+      <p class="page-header__subtitle">{{ page.subtitle }}</p>
+      {% endif %}
+    </header>
+
+    {% assign sorted_news = site.data.news | sort: "date" | reverse %}
+    {% assign current_year = "" %}
+
+    {% for item in sorted_news %}
+      {% assign item_year = item.date | slice: 0, 4 %}
+
+      {% if item_year != current_year %}
+        {% unless forloop.first %}</ul>{% endunless %}
+        {% assign current_year = item_year %}
+        <h2 class="pub-year-header">
+          <span class="pub-year-label">{{ current_year }}</span>
+        </h2>
+        <ul class="news-list" role="list">
+      {% endif %}
+
+      <li class="news-item">
+        <div class="news-item__aside">
+          <span class="news-cat news-cat--{{ item.category }}">{{ item.category }}</span>
+        </div>
+        <div class="news-item__body">
+          {% if item.link %}
+          <p class="news-item__title"><a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a></p>
+          {% else %}
+          <p class="news-item__title">{{ item.title }}</p>
+          {% endif %}
+          <p class="news-item__text">{{ item.body }}</p>
+          {% if item.image %}
+          <img class="news-item__photo" src="{{ item.image | relative_url }}" alt="{{ item.title }}" loading="lazy">
+          {% endif %}
+        </div>
+      </li>
+
+    {% endfor %}
+    </ul>
+
+  </div>
+</main>

@@ -1,0 +1,18 @@
+# ============================================================
+# Open-source projects and tools
+# ============================================================
+# Fields:
+#   name:        Repository/project name
+#   description: Short description (1-2 sentences)
+#   language:    Primary language (Python, Julia, MATLAB, etc.)
+#   url:         GitHub URL
+#   status:      active | maintained | archived
+#   featured:    true/false
+# ============================================================
+
+- name: "StochasticPowerModels.jl"
+  description: "An extension of PowerModels.jl for stochastic power system optimization, developed as part of my research at KU Leuven. Implements stochastic optimal power flow for AC and hybrid AC/DC networks using Polynomial Chaos Expansion for continuous uncertainty propagation, with support for risk-based formulations and transmission switching optimization."
+  language: "Julia"
+  url: "https://github.com/Electa-Git/StochasticPowerModels.jl"
+  status: "active"
+  featured: true

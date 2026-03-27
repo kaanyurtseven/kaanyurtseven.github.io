@@ -1,0 +1,70 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<title>{% if page.title and page.title != site.title %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+<meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+<meta name="author" content="{{ site.author.name }}">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="{% if page.title %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}">
+<meta property="og:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+<meta property="og:site_name" content="{{ site.title }}">
+<meta property="og:image" content="{{ site.url }}/assets/images/kaan-yurtseven.jpg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{% if page.title %}{{ page.title }} — {{ site.title }}{% else %}{{ site.title }}{% endif %}">
+<meta name="twitter:description" content="{% if page.description %}{{ page.description }}{% else %}{{ site.description }}{% endif %}">
+<meta name="twitter:image" content="{{ site.url }}/assets/images/kaan-yurtseven.jpg">
+
+<!-- Canonical -->
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+
+<!-- Feed discovery -->
+<link rel="alternate" type="application/atom+xml" title="{{ site.title }}" href="{{ '/feed.xml' | relative_url }}">
+
+<!-- Google Fonts: IBM Plex family -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- Stylesheet -->
+<link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="{{ '/assets/images/favicon.svg' | relative_url }}">
+
+{% seo %}
+
+{% if page.url == "/" %}
+<!-- Person schema — improves academic and professional profile discoverability -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Kaan Yurtseven",
+  "jobTitle": "Ph.D. Researcher",
+  "affiliation": {
+    "@type": "Organization",
+    "name": "KU Leuven"
+  },
+  "email": "kaan.yurtseven@kuleuven.be",
+  "url": "{{ site.url }}",
+  "sameAs": [
+    "https://scholar.google.com/citations?user=M4bo2DMAAAAJ",
+    "https://github.com/{{ site.author.github }}",
+    "https://linkedin.com/in/{{ site.author.linkedin }}"
+  ],
+  "description": "{{ site.description | strip_newlines | strip }}"
+}
+</script>
+{% endif %}
+
+{% if page.load_plotly %}
+<!-- Plotly.js — loaded only on pages with interactive charts -->
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" crossorigin="anonymous"></script>
+<script>window.SITE_BASEURL = "{{ site.baseurl }}";</script>
+{% endif %}

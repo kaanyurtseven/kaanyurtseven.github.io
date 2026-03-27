@@ -1,0 +1,11 @@
+_site/
+_debug/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+vendor/
+Gemfile.lock
+.bundle/
+.claude/
+CLAUDE.md
+*.bak

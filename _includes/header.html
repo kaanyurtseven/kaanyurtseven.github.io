@@ -1,0 +1,21 @@
+<nav class="site-nav" role="navigation" aria-label="Main navigation">
+  <div class="site-nav__inner">
+    <a href="{{ '/' | relative_url }}" class="site-nav__logo">{{ site.author.name }}</a>
+
+    <button class="nav-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Toggle navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <ul class="site-nav__links" id="nav-links" role="list">
+      {% for item in site.nav %}
+      <li>
+        <a href="{{ item.url | relative_url }}"{% if page.url == item.url %} class="active" aria-current="page"{% endif %}>
+          {{ item.label }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</nav>

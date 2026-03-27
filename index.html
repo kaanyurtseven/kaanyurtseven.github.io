@@ -1,0 +1,198 @@
+---
+layout: home
+title: Kaan Yurtseven
+load_plotly: true
+description: >
+  Ph.D. researcher at KU Leuven and EnergyVille — stochastic optimization and
+  risk-aware decision support for power system congestion management and balancing.
+---
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" aria-labelledby="hero-headline">
+  <div class="hero__inner">
+    <div class="hero__content">
+      <p class="hero__eyebrow">
+        Kaan Yurtseven
+        <span aria-hidden="true">·</span>
+        Ph.D. Researcher
+        <span aria-hidden="true">·</span>
+        KU Leuven &amp; EnergyVille
+      </p>
+
+      <h1 class="hero__headline" id="hero-headline">
+        Risk-aware decision support for the future electricity grid.
+      </h1>
+
+      <p class="hero__intro">
+        I develop optimization frameworks that quantify and manage uncertainty in power system operation, enabling informed decisions for congestion management and balancing in hybrid AC/DC grids.
+      </p>
+
+      <div class="hero__ctas">
+        <a href="{{ '/research/' | relative_url }}" class="btn btn--primary">Explore research</a>
+        <a href="#forecast-explorer" class="btn btn--secondary">Understand uncertainty</a>
+        <a href="{{ '/publications/' | relative_url }}" class="btn btn--ghost">Publications</a>
+      </div>
+    </div>
+
+    <div class="hero__photo" aria-hidden="true">
+      <img src="{{ '/assets/images/kaan-yurtseven.jpg' | relative_url }}" alt="Kaan Yurtseven" width="200" height="200">
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LATEST NEWS BANNER
+     ============================================================ -->
+{% assign banner_news = site.data.news | where: "banner", true %}
+<div class="news-banner">
+  <div class="news-banner__inner">
+    <span class="news-banner__label">News</span>
+    <div class="news-banner__items">
+      {% for item in banner_news %}
+      <div class="news-banner__item">
+        <span class="news-cat news-cat--{{ item.category }}">{{ item.category }}</span>
+        <span class="news-banner__title">
+          {% if item.link %}<a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+          {% else %}{{ item.title }}{% endif %}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    <a href="{{ '/news/' | relative_url }}" class="news-banner__more">All news →</a>
+  </div>
+</div>
+
+<!-- ============================================================
+     FORECAST ERROR EXPLORER
+     ============================================================ -->
+{% include forecast-chart.html %}
+
+<div style="background: var(--surface); border-bottom: 1px solid var(--border); padding: var(--space-4) 0 var(--space-8);">
+  <div style="max-width: var(--full-width); margin: 0 auto; padding: 0 var(--space-6);">
+    <p style="font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-2);">
+      This tool is part of a broader effort to develop decision-support methods for power system operation under uncertainty.
+    </p>
+    <a href="{{ '/innovation/' | relative_url }}" class="link-arrow">Learn more about the innovation direction</a>
+  </div>
+</div>
+
+<!-- ============================================================
+     RESEARCH THEMES
+     ============================================================ -->
+<section class="section" aria-labelledby="themes-heading">
+  <div class="section__inner">
+    <div class="section__header">
+      <h2 class="section__title" id="themes-heading">Research focus</h2>
+      <a href="{{ '/research/' | relative_url }}" class="section__link link-arrow">Full research overview</a>
+    </div>
+
+    <ul class="themes-grid" role="list">
+      <li class="theme-card">
+        <p class="theme-card__label">01</p>
+        <h3 class="theme-card__title">Congestion management and balancing under uncertainty</h3>
+        <p class="theme-card__desc">
+          Coordinated optimization of congestion management and balancing decisions, explicitly
+          accounting for their coupling to reduce operational costs and risk.
+        </p>
+      </li>
+      <li class="theme-card">
+        <p class="theme-card__label">02</p>
+        <h3 class="theme-card__title">Quantifying the impact of uncertainty on decisions</h3>
+        <p class="theme-card__desc">
+          Analysis of how probabilistic forecasts influence operational decisions and system costs,
+          providing transparency on how uncertainty shapes outcomes.
+        </p>
+      </li>
+      <li class="theme-card">
+        <p class="theme-card__label">03</p>
+        <h3 class="theme-card__title">Risk-aware optimization under non-Gaussian uncertainty</h3>
+        <p class="theme-card__desc">
+          Development of stochastic optimization frameworks that capture realistic uncertainty
+          distributions, enabling informed and economically efficient system operation.
+        </p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     SELECTED PUBLICATIONS
+     ============================================================ -->
+<section class="section" aria-labelledby="pubs-heading">
+  <div class="section__inner">
+    <div class="section__header">
+      <h2 class="section__title" id="pubs-heading">Selected publications</h2>
+      <a href="{{ '/publications/' | relative_url }}" class="section__link link-arrow">All publications</a>
+    </div>
+
+    <ul class="pub-list" role="list">
+      {% assign featured = site.data.publications | where: "featured", true | sort: "year" | reverse %}
+      {% if featured.size > 0 %}
+        {% for pub in featured limit:3 %}
+        <li class="pub-entry">
+          <span class="pub-entry__year">{{ pub.year }}</span>
+          <div class="pub-entry__body">
+            <p class="pub-entry__title">
+              {% if pub.url %}<a href="{{ pub.url }}" target="_blank" rel="noopener noreferrer">{{ pub.title }}</a>
+              {% elsif pub.doi %}<a href="https://doi.org/{{ pub.doi }}" target="_blank" rel="noopener noreferrer">{{ pub.title }}</a>
+              {% else %}{{ pub.title }}{% endif %}
+            </p>
+            <p class="pub-entry__meta">
+              {{ pub.venue }}
+              <span class="pub-type-chip pub-type-chip--{{ pub.type }}" style="margin-left:0.5rem;">{% if pub.type == "journal" %}Journal{% elsif pub.type == "conference" %}Conference{% else %}{{ pub.type }}{% endif %}</span>
+            </p>
+            {% if pub.tags and pub.tags.size > 0 %}
+            <div class="pub-row__tags" style="margin-bottom:0.5rem;">
+              {% for tag in pub.tags limit:3 %}
+              <span class="pub-tag">{{ tag }}</span>
+              {% endfor %}
+            </div>
+            {% endif %}
+            <div class="pub-entry__links">
+              {% if pub.pdf %}<a href="{{ pub.pdf }}" target="_blank" rel="noopener noreferrer">PDF</a>{% endif %}
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      {% else %}
+        <li class="pub-entry">
+          <span class="pub-entry__year">—</span>
+          <div class="pub-entry__body">
+            <p class="pub-entry__title">Add publications to <code>_data/publications.yml</code> with <code>featured: true</code></p>
+            <p class="pub-entry__meta">See the <a href="{{ '/publications/' | relative_url }}">Publications page</a> for the full list.</p>
+          </div>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     COLLABORATION NUDGE
+     ============================================================ -->
+<div style="border-top: 1px solid var(--border); padding: var(--space-10) 0;">
+  <div style="max-width: var(--content-width); margin: 0 auto; padding: 0 var(--space-6); display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: var(--space-4);">
+    <p style="font-size: var(--text-sm); color: var(--text-muted); margin: 0;">
+      Open to collaboration with TSOs, industry partners, and researchers working on congestion management and operational planning under uncertainty.
+    </p>
+    <a href="{{ '/contact/' | relative_url }}" class="link-arrow" style="white-space: nowrap;">Get in touch</a>
+  </div>
+</div>
+
+<!-- ============================================================
+     AFFILIATIONS
+     ============================================================ -->
+<div class="affiliations">
+  <div class="affiliations__inner">
+    <span class="affiliations__label">Affiliated with</span>
+    <div class="affiliations__items">
+      <a href="https://www.kuleuven.be" target="_blank" rel="noopener noreferrer" class="affiliations__item">KU Leuven</a>
+      <span class="affiliations__sep" aria-hidden="true">·</span>
+      <a href="https://www.energyville.be" target="_blank" rel="noopener noreferrer" class="affiliations__item">EnergyVille</a>
+      <span class="affiliations__sep" aria-hidden="true">·</span>
+      <a href="https://energyville.be/en/project/etch-energy-transmission-competence-hub/" target="_blank" rel="noopener noreferrer" class="affiliations__item">Etch — Energy Transmission Competence Hub</a>
+    </div>
+  </div>
+</div>

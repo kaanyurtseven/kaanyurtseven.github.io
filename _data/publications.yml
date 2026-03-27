@@ -1,0 +1,151 @@
+# ============================================================
+# Publications
+# ============================================================
+# Required fields:
+#   title     Full paper title
+#   authors   Author list as a string (bold your name if desired)
+#   year      Publication year (integer)
+#   type      journal | conference | preprint
+#   venue     Journal name or conference name/acronym
+#
+# Optional fields:
+#   doi       DOI string without "https://doi.org/" prefix
+#   url       Direct URL (used if no DOI)
+#   pdf       Path to local PDF or direct URL to PDF
+#   code      GitHub or repository URL
+#   slides    URL to slides
+#   volume    Journal volume number
+#   issue     Journal issue number
+#   pages     Page range, e.g. "1234-1245"
+#   abstract  Short abstract text (shown in expandable detail)
+#   tags      List of topic tags, e.g. [PCE, congestion management, uncertainty]
+#   featured  true — marks entry for homepage "Selected publications"
+#   note      Short note, e.g. "Under review" or "Best paper award"
+#
+
+
+
+# --- Journal Articles ---
+
+- title: "Hybrid offshore solar-wind farms: the potential of integrating floating photovoltaics with offshore wind"
+  authors: "O. Delbeke, G. Bastianel, K. Yurtseven, H. Ergun, J. Moschner, J. Driesen"
+  year: 2026
+  type: journal
+  venue: "Applied Energy"
+  doi: "10.1016/j.apenergy.2026.127486"
+  tags: [Floating PV, Hybrid Power Plant, Offshore Floating PV, Offshore Wind, Stochastic Generation Expansion Planning, Wake Effect]
+  featured: false
+  abstract: "Floating photovoltaics (PV) are rapidly scaling up solar power beyond on-land PV. Whilst offshore floating PV (OFPV) is still in pilot phase, its combination with offshore wind could enable an efficient common use of costly transmission infrastructure. This work presents a detailed, quantitative case study assessing the integration of offshore floating PV with offshore wind. Through stochastic generation expansion planning, the optimal distribution of OFPV within a representative Dutch offshore wind farm is determined. In the power collection network, OFPV is best connected to the substation, or to the wind turbines electrically nearest to it. To evaluate the economic performance of the hybrid solar-wind system, its electrical integration with the Central Western European grid is simulated. The study reveals that a considerable amount of OFPV can be integrated in a modern offshore wind farm without hindering the transmission of wind power, with the export cables being the main bottleneck in power transfer, followed by the substation transformers and the array cables. However, this is accompanied by a significant amount of OFPV curtailment. As the capacity factors of offshore wind turbines increase, the remaining transmission gap in their connections, which OFPV can utilise without any transmission expansion, narrows. Finally, cost targets are derived for which the integrated offshore solar system would break even in the analysed case, revealing challenging economic prospects. The work identifies opportunities for hybrid offshore solar-wind farms and highlights key technical and economic challenges to be addressed."
+
+- title: "Congestion Management Through Stochastic Optimal Transmission Switching in Hybrid AC/DC Grids Considering Continuous Non-Gaussian Uncertainty"
+  authors: "K. Yurtseven, A. Koirala, H. Ergun, D. Van Hertem"
+  year: 2025
+  type: journal
+  venue: "IEEE Transactions on Power Systems"
+  doi: "10.1109/TPWRS.2025.3648549"
+  tags: [Stochastic Optimal Transmission Switching, Chance-Constrained Optimization, Polynomial Chaos Expansion, HVDC, Stochastic Programming]
+  featured: true
+  abstract: "The integration of renewable energy sources (RES) in power systems introduces significant uncertainty. As this uncertainty increases, transmission system operators maintain higher operational margins to ensure reliable operation. This limits the available transmission capacity and contributes to grid congestion. As a result, the system operator relies more on costly remedial actions such as generation redispatch and RES curtailment. This paper presents a chance-constrained congestion management model to minimize expected RES curtailment and generation cost in hybrid AC/DC grids. The model is based on a tractable Stochastic Optimal Transmission Switching (SOTS) formulation that optimizes the switching state of AC and DC transmission lines, RES curtailment, HVDC converter set-points, and generator dispatch. It captures continuous non-Gaussian uncertainty in RES forecast errors using Polynomial Chaos Expansion. The tractability of the model is further improved using relaxation of binary variables. Three case studies are conducted. First, the proposed model is compared against a stochastic optimal power flow and a MINLP SOTS model using a 5-bus AC/DC test system. Second, the impact of binary relaxation parameter and solver tolerance on the output probability distributions is analyzed using a 67-bus AC/DC test system. Third, scalability is demonstrated on a 588-bus AC/DC test system under different RES penetration levels and switching configurations. The results show that the model substantially reduces RES curtailment and operational costs. Moreover, it is at least an order of magnitude faster than the MINLP formulation while maintaining accuracy in the output distributions, and it remains tractable for large systems."
+
+- title: "Stochastic optimal power flow for hybrid AC/DC grids considering continuous non-Gaussian uncertainty"
+  authors: "K. Yurtseven, A. Koirala, H. Ergun, D. Van Hertem"
+  year: 2025
+  type: journal
+  venue: "International Journal of Electrical Power & Energy Systems"
+  doi: "10.1016/j.ijepes.2025.110828"
+  tags: [Stochastic Optimal Power Flow, HVDC, Polynomial Chaos Expansion, Continuous Non-Gaussian Uncertainty, RES Curtailment]
+  featured: true
+  abstract: "The integration of renewable energy sources (RES) and the increasing adoption of High Voltage Direct Current (HVDC) transmission are reshaping modern power systems. Whereas RES introduce complex uncertainties in power system operation, often contributing to grid congestion, HVDC technology provides flexibility for effective congestion management. Accurately leveraging this flexibility through optimal scheduling of HVDC converters and minimizing expected RES curtailment requires optimization frameworks that simultaneously account for (i) continuous non-Gaussian uncertainty, (ii) hybrid AC/DC grid compatibility, and (iii) RES curtailment. However, existing Stochastic Optimal Power Flow (SOPF) models do not combine all three dimensions because their interaction significantly increases the nonlinearity. To bridge this gap, this paper introduces a Polynomial Chaos Expansion based chance-constrained SOPF framework that integrates these three dimensions within a single model, paving the way for reliable and cost-efficient hybrid AC/DC grid operation under high RES penetration. The effectiveness of the proposed framework is demonstrated through four case studies on 5-bus, 67-bus, 118-bus, and 588-bus hybrid AC/DC test systems. Results show that by accurately capturing interactions between input uncertainty, HVDC converter set-points, and RES curtailment, the proposed framework minimizes expected RES curtailment and operational costs, leading to significant financial savings under high RES penetration. In addition, the framework is shown to maintain computational scalability on large-scale systems while preserving modeling accuracy under continuous non-Gaussian uncertainty."
+
+- title: "Influence of Inherent Characteristic of PV Plants in Risk-Based Stochastic Dynamic Substation Expansion Planning Under MILP Framework"
+  authors: "K. Yurtseven, E. Karatepe"
+  year: 2022
+  type: journal
+  venue: "IEEE Transactions on Power Systems"
+  doi: "10.1109/TPWRS.2021.3095266"
+  tags: [Correlation, Dynamic Planning, Mixed-Integer Linear Programming, Photovoltaic, Stochastic Programming, Substation Expansion Planning]
+  featured: true
+  abstract: "A suitable probabilistic scenario set of load demand and natural characteristics of renewable energy is becoming a crucial issue in power system planning studies. Properly addressing the impact of potentially thousands of residential PV plants on the resilience and reliability needs of substations necessitates the representation of inherent relations between photovoltaics and the load throughout the long-term planning period. The optimal planning of substation expansions is achievable through proper modeling of input parameters which describes the characteristics of the service areas. In this paper, the co-existence of PV plants and the load in a service area under three different states such as daytime with clear-sky and no-fault, daytime with abnormal events, and nighttime are incorporated into the stochastic dynamic optimization problem by using scenario-based approach. The scenario tree of the problem is branched from three different bases simultaneously instead of only one as in conventional approach. This paper also combines the risk-constrained stochastic dynamic SEP problem and Mixed Integer Linear Programming (MILP) framework under one roof. The comparison between integrating inherent characteristics of PV plants with and without considering abnormal events into the optimization is performed to show the impact of suitable probabilistic model on dynamic nature of investment decisions."
+
+- title: "Sensorless fault detection method for photovoltaic systems through mapping the inherent characteristics of PV plant site: Simple and practical"
+  authors: "K. Yurtseven, E. Karatepe, E. Deniz"
+  year: 2021
+  type: journal
+  venue: "Solar Energy"
+  doi: "10.1016/j.solener.2021.01.011"
+  tags: [Photovoltaic (PV) Systems, Fault Detection, Sensorless, Cloudy-sky, Operation and Maintenance (O&M), Practical Implementation]
+  featured: false
+  abstract: "Research on monitoring and fault detection systems for photovoltaic plants is significantly increasing with the continual development in technologies and the availability of qualified data. Nevertheless, many gaps still exist that need to be addressed. The electrical output of PV plants in various weather conditions is very close to those obtained under fault conditions. For a large scale PV plant, it is very crucial to utilize the data in the decision-making process without using external sensors or performing simulation studies that require detailed parameters of the plant. The main challenge here is to automatically rationalize the collected data in order to make a decision on distinguishing between faulty and natural outputs. This paper proposes a method for distinguishing faults and inherent changes in the PV plant’s output to help O&M crews identify and fix system issues. The proposed method has the ability to map the inherent characteristics of the PV plant by using only the data received from inverters without using additional equipment or detailed models. It has been developed by analyzing the working mechanisms of several large scale PV plants installed in Turkey. The proposed method can easily be implemented in a newly installed or existing PV plant. The novelty of this study is detecting abnormal operations in a PV plant even under low irradiance and cloudy-sky conditions without using any irradiance and temperature sensors. The effectiveness of the proposed method is shown in rooftop and ground-mounted PV plants."
+
+# --- Conference Papers ---
+
+- title: "Security-Constrained Stochastic Optimal Power Flow For Hybrid AC/DC Grids Considering Non-Gaussian Uncertainty"
+  authors: "K. Yurtseven, H. Ergun, D. Van Hertem"
+  year: 2025
+  type: conference
+  venue: "IEEE Kiel PowerTech 2025"
+  doi: "10.1109/PowerTech59965.2025.11180443"
+  tags: [Security-Constrained Optimal Power Flow, Chance-Constrained Optimization, Preventive-Corrective Actions, HVDC Flexibility, Continuous Non-Gaussian Uncertainty]
+  featured: false
+  abstract: "The integration of renewable energy sources (RES) introduces uncertainty into power systems, which contributes to grid congestion by necessitating higher operational margins. System operators manage congestion in real-time through costly remedial actions, such as generation redispatch and RES curtailment, or alternatively, by leveraging non-costly transmission grid flexibility. Even though effective use of this flexibility can minimize the dependence on costly actions, it requires congestion management strategies supported by models that accurately represent uncertainty while ensuring the system remains N-1 secure. To overcome this challenge, this paper proposes a Security-Constrained Stochastic Optimal Power Flow model based on Polynomial Chaos Expansion. This chance-constrained model minimizes the expected redispatch costs and RES curtailment by utilizing HVDC transmission flexibility in hybrid AC/DC grids. The model enables system operators to optimize the HVDC converter set-points, RES curtailment, and generator redispatch while accounting for continuous non-Gaussian uncertainty in RES forecast errors to ensure a realistic representation of uncertainty. Two case studies are presented on a 5-bus AC/DC test system. The first case investigates the impact of HVDC flexibility on redispatch costs and RES curtailment, analyzing preventive and corrective actions for topological uncertainties, as well as here-and-now and wait-and-see decisions for operational uncertainties. The second case highlights the limitations of assuming Gaussian input uncertainty by benchmarking it against the proposed model."
+
+- title: "Risk-based Stochastic Optimal Power Flow for AC/DC Grids Using Polynomial Chaos Expansion"
+  authors: "K. Yurtseven, H. Ergun, D. Van Hertem"
+  year: 2024
+  type: conference
+  venue: "IEEE ISGT EUROPE 2024"
+  doi: "10.1109/ISGTEUROPE62998.2024.10863605"
+  tags: [Stochastic Optimal Power Flow, Chance-Constrained Optimization, Risk-Averse Optimization, Polynomial Chaos Expansion, HVDC]
+  featured: false
+  abstract: "Renewable energy sources (RES) are increasingly integrated into power systems, introducing operational uncertainties that challenge the way we manage the grid. These uncertainties necessitate strategies to address the risks in grid reliability and economic performance. This paper introduces a framework to simultaneously manage the risk associated with economic performance and grid reliability under non-Gaussian uncertainty. The framework utilizes Polynomial Chaos Expansion to solve the risk-based and chance-constrained Stochastic Optimal Power Flow for hybrid AC/DC grids. The risk associated with the costs is addressed by introducing the Value-at-Risk parameter, derived through moment-based calculations, to facilitate risk-averse decision-making. Numerical studies illustrate the impact of risk-neutral versus risk-averse decision-making on the probability distribution functions of RES curtailment and operational costs. Additionally, analyzing efficient frontiers for various confidence levels showcases the framework’s capability to construct a portfolio of strategies that effectively balance risk and operational costs under varying confidence levels of non-Gaussian uncertainty."
+
+- title: "Robust and Security-Constrained Optimisation of Converter Droop Gains in Meshed HVDC Grids"
+  authors: "H. Ergun, K. Yurtseven, G. Mohy-ud-din, R. Heidari"
+  year: 2024
+  type: conference
+  venue: "18th International Conference on Probabilistic Methods Applied to Power Systems (PMAPS)"
+  doi: "10.1109/PMAPS61648.2024.10667176"
+  tags: [HVDC Grids, Droop Control, Security-Constrained Optimal Power Flow]
+  featured: false
+  abstract: "In this paper we are presenting a preventive security constrained optimal power flow model for AC/DC grids using a robust optimisation of converter active power-voltage droop coefficients and generators and HVDC converters active and reactive power set points. The converters’ optimal droop control actions maintain system feasibility after DC grid contingencies. The model takes into account wind power and load demand uncertainties and uses a scenario based approach to robustly determine the HVDC converters’ voltage-power droop coefficients. The developed optimisation model is applied to a variety of AC/DC grid test cases for the analysis of its computational performance, convergence and AC feasibility of the obtained solution. Finally, we propose a number of future extensions and modelling improvements for real-life applicability of the developed model in the day-ahead operational time frame."
+
+- title: "A bi-objective approach to power system restoration with renewable participation"
+  authors: "H. Çalık, H. Ergun, K. Yurtseven, D. Van Hertem"
+  year: 2024
+  type: conference
+  venue: "18th International Conference on Probabilistic Methods Applied to Power Systems (PMAPS)"
+  doi: "10.1109/PMAPS61648.2024.10667142"
+  tags: [Renewable Energy Sources, Uncertainty, Decision Making, Power System Restoration]
+  featured: false
+  abstract: "Unprecedented events may cause power system failures and blackouts whose impact may be highly destructive. It is therefore of extreme importance to design and operate power systems that ensure high resilience and efficient restoration plans in case of blackouts. While renewable energy sources (RES) are invaluable assets for a sustainable future, the uncertainty present in RES-dominated systems poses a challenge in developing optimal restoration strategies. We address this challenge in determining optimal generator start-up sequences through a novel mathematical formulation and solution methodology that incorporate the uncertainty in renewable participation by means of chance constraints. The novel formulation outperforms the state-of-the-art formulation for solving the deterministic problem for medium- and large-scale instances as well as provides the optimal restoration time in a matter of seconds on a medium-scale network for the stochastic problem. We further provide insightful observations with respect to renewable contribution under different confidence levels and optimization objectives."
+
+- title: "Data-Driven Assessment of Soiling Loss in Photovoltaic Plants"
+  authors: "K. Yurtseven, E. Karatepe, E. Deniz"
+  year: 2021
+  type: conference
+  venue: "EU PVSEC 2021 38th European Photovoltaic Solar Energy Conference and Exhibiton"
+  doi: "10.4229/EUPVSEC20212021-5DO.4.3"
+  tags: [PV System, Shading, System Performance, Soiling Losses, Operation and Maintenance]
+  featured: false
+  abstract: "Utilizing reliable monitoring and available data in order to ensure that the PV plants become best-return-on investments is possible thanks to ever going developments in data-driven algorithms. One of the major challenges in PV power generation is the soiling events caused by the dusty environments and climatic conditions resulting in the reduction of the performance of the PV plants. Since the soiling is a complex event whose characteristics are forged by a number of external stochastic phenomena, a number of studies are conducted by researchers. Soiling in PV plants is a continuous subject that emerges over time as an important drawback in the performance of the PV plants. In that point, it is crucial to automatically determine appropriate cleaning schedules in order to achieve a high-profit PV plant operation. In this study, a method is presented which only uses the DC current inputs of the inverters to determine the soiling loss without using any environmental sensors. The proposed method is tested by conducting experimental works on three different PV plants which are connected to the power grid in Turkey. The results show that the proposed method is effective for analyzing the performance reductions due to soiling in the PV plants without using any environmental sensors"
+
+- title: "Distribution Substation Expansion Planning Considering Different Geographical Configurations"
+  authors: "K. Yurtseven, E. Karatepe"
+  year: 2021
+  type: conference
+  venue: "12th International Symposium on Advanced Topics in Electrical Engineering (ATEE)"
+  doi: "10.1109/ATEE52255.2021.9425221"
+  tags: [Substation Expansion Planning, Mixed-Integer Linear Programming, Geographical Configuration, Approximate Lumped Model, Voltage Profile, Power Loss]
+  featured: false
+  abstract: "Making decisions on expansions of the power system as a result of the growth in electricity demand is essential in order to maintain a reliable network. Since substations take on the role of the intermediate link between electricity supply and demand, substation expansion planning (SEP) is one of the most important planning studies. In this study, the SEP problem is merged with the different geographical configurations of the zones within a mixed integer linear programming framework. The voltage profile and power losses are integrated into the SEP problem by using approximate lumped model of the zones. The effect of voltage constraints and the cost of feeder loss on the SEP problem is investigated and the comparison between the SEP problem with rectangular zones and with triangular zones is performed to show the impact of different geographical configurations on the investment decisions."
+
+# --- Preprints & Working Papers ---
+
+# - title: "Working paper title"
+#   authors: "Yurtseven, K."
+#   year: 2024
+#   type: preprint
+#   venue: "arXiv / under review"
+#   url: ""
+#   tags: [...]
+#   note: "Under review at IEEE Transactions on Power Systems"

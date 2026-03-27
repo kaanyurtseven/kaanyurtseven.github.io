@@ -1,0 +1,121 @@
+---
+layout: default
+---
+
+<main class="site-main" id="main-content">
+  <div class="container container--narrow">
+
+    <header class="page-header">
+      <h1 class="page-header__title">{{ page.title }}</h1>
+      {% if page.subtitle %}
+      <p class="page-header__subtitle">{{ page.subtitle }}</p>
+      {% endif %}
+    </header>
+
+    {% assign sorted_pubs = site.data.publications | sort: "year" | reverse %}
+    {% assign total_count = sorted_pubs | size %}
+
+    {% if total_count == 0 %}
+    <p class="text-muted">No publications listed yet.</p>
+    {% else %}
+
+    <p class="pub-total">{{ total_count }} publication{% if total_count != 1 %}s{% endif %}</p>
+
+    {% assign journal_pubs = site.data.publications | where: "type", "journal" %}
+    {% assign venue_groups = journal_pubs | group_by: "venue" %}
+    {% if venue_groups.size > 0 %}
+    <div class="pub-venue-bar" aria-label="Journal venues">
+      <span class="pub-venue-bar__label">Journals</span>
+      {% for group in venue_groups %}
+      <div class="pub-venue-chip">
+        <span class="pub-venue-chip__name">{{ group.name }}</span>
+        <span class="pub-venue-chip__count">{{ group.items | size }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% assign current_year = 0 %}
+    {% assign year_count = 0 %}
+
+    {% for pub in sorted_pubs %}
+      {% if pub.year != current_year %}
+        {% if current_year != 0 %}</ul>{% endif %}
+        {% assign current_year = pub.year %}
+        {% assign year_pubs = sorted_pubs | where: "year", current_year %}
+        {% assign year_count = year_pubs | size %}
+        <div class="pub-year-header">
+          <span class="pub-year-label">{{ current_year }}</span>
+          <span class="pub-year-count">{{ year_count }}</span>
+        </div>
+        <ul class="pub-list-v2" role="list">
+      {% endif %}
+
+      <li class="pub-row{% if pub.featured %} pub-row--featured{% endif %}">
+        <div class="pub-row__main">
+          <div class="pub-row__header">
+            <p class="pub-row__title">
+              {% if pub.url %}<a href="{{ pub.url }}" target="_blank" rel="noopener noreferrer">{{ pub.title }}</a>
+              {% elsif pub.doi %}<a href="https://doi.org/{{ pub.doi }}" target="_blank" rel="noopener noreferrer">{{ pub.title }}</a>
+              {% else %}{{ pub.title }}{% endif %}
+            </p>
+            <span class="pub-type-chip pub-type-chip--{{ pub.type }}">
+              {% if pub.type == "journal" %}Journal
+              {% elsif pub.type == "conference" %}Conference
+              {% elsif pub.type == "preprint" %}Preprint
+              {% else %}{{ pub.type }}{% endif %}
+            </span>
+          </div>
+
+          <p class="pub-row__authors">{{ pub.authors | replace: "Kaan Yurtseven", "<strong>Kaan Yurtseven</strong>" | replace: "K. Yurtseven", "<strong>K. Yurtseven</strong>" | replace: "Yurtseven, K.", "<strong>Yurtseven, K.</strong>" }}</p>
+
+          <p class="pub-row__venue">
+            <span class="pub-row__venue-name">{{ pub.venue }}</span>
+            {% if pub.volume %}<span class="pub-row__venue-detail">&thinsp;·&thinsp;vol.&thinsp;{{ pub.volume }}</span>{% endif %}
+            {% if pub.issue %}<span class="pub-row__venue-detail">&thinsp;({{ pub.issue }})</span>{% endif %}
+            {% if pub.pages %}<span class="pub-row__venue-detail">&thinsp;·&thinsp;pp.&thinsp;{{ pub.pages }}</span>{% endif %}
+            {% if pub.note %}<span class="pub-row__note">&thinsp;·&thinsp;{{ pub.note }}</span>{% endif %}
+          </p>
+
+          {% if pub.tags and pub.tags.size > 0 %}
+          <div class="pub-row__tags" aria-label="Topics">
+            {% for tag in pub.tags %}
+            <span class="pub-tag">{{ tag }}</span>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if pub.abstract %}
+          <details class="pub-abstract">
+            <summary class="pub-abstract__header">
+              <div class="pub-row__links">
+                {% if pub.pdf %}<a href="{{ pub.pdf }}" target="_blank" rel="noopener noreferrer" class="pub-link">PDF</a>{% endif %}
+                {% if pub.url and pub.doi == nil %}<a href="{{ pub.url }}" target="_blank" rel="noopener noreferrer" class="pub-link">Link</a>{% endif %}
+                {% if pub.code %}<a href="{{ pub.code }}" target="_blank" rel="noopener noreferrer" class="pub-link">Code</a>{% endif %}
+                {% if pub.slides %}<a href="{{ pub.slides }}" target="_blank" rel="noopener noreferrer" class="pub-link">Slides</a>{% endif %}
+              </div>
+              <span class="pub-abstract__toggle">Abstract</span>
+            </summary>
+            <p class="pub-abstract__text">{{ pub.abstract }}</p>
+          </details>
+          {% else %}
+          <div class="pub-row__footer">
+            <div class="pub-row__links">
+              {% if pub.pdf %}<a href="{{ pub.pdf }}" target="_blank" rel="noopener noreferrer" class="pub-link">PDF</a>{% endif %}
+              {% if pub.url and pub.doi == nil %}<a href="{{ pub.url }}" target="_blank" rel="noopener noreferrer" class="pub-link">Link</a>{% endif %}
+              {% if pub.code %}<a href="{{ pub.code }}" target="_blank" rel="noopener noreferrer" class="pub-link">Code</a>{% endif %}
+              {% if pub.slides %}<a href="{{ pub.slides }}" target="_blank" rel="noopener noreferrer" class="pub-link">Slides</a>{% endif %}
+            </div>
+          </div>
+          {% endif %}
+
+        </div>
+      </li>
+
+    {% endfor %}
+    </ul>
+
+    {% endif %}
+
+  </div>
+</main>

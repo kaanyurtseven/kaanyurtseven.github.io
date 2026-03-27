@@ -2268,14 +2268,6 @@ details[open] .pub-abstract__toggle::before {
   color: var(--accent);
 }
 
-.news-banner__date {
-  font-size: var(--text-xs);
-  font-family: var(--font-mono);
-  color: var(--text-light);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
 .news-banner__more {
   font-size: var(--text-xs);
   font-family: var(--font-mono);
