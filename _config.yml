@@ -1,0 +1,76 @@
+title: Kaan Yurtseven
+tagline: Risk-aware decision tools for the future electricity grid.
+description: >
+  Ph.D. researcher at KU Leuven and EnergyVille developing stochastic optimization
+  methods for power system operators and planners.
+author:
+  name: Kaan Yurtseven
+  email: kaan.yurtseven@kuleuven.be
+  affiliation: KU Leuven · EnergyVille
+  github: kaanyurtseven
+  linkedin: kaanyurtseven
+  scholar: "https://scholar.google.com.tr/citations?user=M4bo2DMAAAAJ&hl=en"
+
+url: "https://kaanyurtseven.github.io"
+baseurl: ""
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: null
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Collections
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+# Navigation
+nav:
+  - label: About
+    url: /about/
+  - label: News
+    url: /news/
+  - label: Research
+    url: /research/
+  - label: Publications
+    url: /publications/
+  - label: Tools
+    url: /tools/
+  - label: Innovation
+    url: /innovation/
+  - label: CV
+    url: /cv/
+  - label: Contact
+    url: /contact/
+
+# Include _debug/ so it is served locally (validate.html, conditioning-audit.html)
+include:
+  - _debug
+
+# Exclude from build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - .git
+  - vendor
