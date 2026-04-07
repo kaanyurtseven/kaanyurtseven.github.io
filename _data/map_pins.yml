@@ -188,6 +188,18 @@
   # tags: [Substation planning, MILP]
 
 - type: visit
+  label: Grand Canyon Remote Work
+  city: Grand Canyon
+  country: United States
+  lat: 36.057
+  lng: -112.143
+  year: "2025"
+  description: >
+    Remote working session at the Grand Canyon: a reminder that
+    good ideas are not limited to the office.
+  image: "/assets/images/grand-canyon-office.jpg"
+
+- type: visit
   label: Thorntonbank Offshore Wind Farm
   city: Belgian North Sea
   country: Belgium

@@ -51,6 +51,11 @@ description: >
           operational decision-making.
         </p>
 
+        <figure class="about-photo">
+          <img src="{{ '/assets/images/grand-canyon-office.jpg' | relative_url }}" alt="Kaan Yurtseven working remotely at the Grand Canyon" loading="lazy">
+          <figcaption>Beyond research, I enjoy working in unconventional environments. This photo was taken while working remotely at the Grand Canyon, as a reminder that good ideas are not limited to the office.</figcaption>
+        </figure>
+
         <h2>Research</h2>
 
         <p>
