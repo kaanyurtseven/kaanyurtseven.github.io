@@ -9,3 +9,13 @@ Gemfile.lock
 .claude/
 CLAUDE.md
 *.bak
+
+# Local data exports (thesis work — not for public repo)
+_export/
+
+# Archived game implementations (paused)
+_archive/
+
+# Python cache
+__pycache__/
+*.pyc

@@ -2,6 +2,7 @@
 layout: default
 title: About
 permalink: /about/
+load_map: true
 description: >
   Kaan Yurtseven — Ph.D. researcher at KU Leuven and EnergyVille,
   working on stochastic optimization and risk-aware decision support for power systems.
@@ -137,5 +138,8 @@ description: >
 
       </div>
     </div>
+
+    {% include map.html %}
+
   </div>
 </main>

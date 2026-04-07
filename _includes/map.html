@@ -1,0 +1,61 @@
+<section class="map-section" id="research-footprint" aria-labelledby="map-heading">
+  <div class="map-section__header">
+    <p class="map-section__eyebrow">Research Impact</p>
+    <h2 class="map-section__title" id="map-heading">Global Footprint of My Research</h2>
+    <p class="map-section__subtitle">
+      Education, conference papers, talks, field visits, training, and awards connected to this research.
+    </p>
+  </div>
+
+  <div class="map-wrap">
+    <div class="map-container" id="research-map"
+         role="application" aria-label="Interactive map of research contributions">
+    </div>
+
+    <!-- Hover preview (desktop only, positioned by JS) -->
+    <div class="map-preview" id="map-preview" hidden aria-hidden="true">
+      <span class="map-preview__type" id="mp-type"></span>
+      <p class="map-preview__label" id="mp-label"></p>
+      <p class="map-preview__summary" id="mp-summary"></p>
+      <span class="map-preview__photo" id="mp-photo" hidden>photo</span>
+    </div>
+
+    <!-- Detail panel (slides in from right on desktop, bottom sheet on mobile) -->
+    <div class="map-detail" id="map-detail" hidden>
+      <button class="map-detail__close" id="map-detail-close" aria-label="Close detail panel">&times;</button>
+      <div class="map-detail__inner">
+        <div class="map-detail__head">
+          <span class="map-detail__badge" id="md-type"></span>
+          <span class="map-detail__year" id="md-year"></span>
+        </div>
+        <h3 class="map-detail__label" id="md-label"></h3>
+        <p class="map-detail__location" id="md-location"></p>
+        <p class="map-detail__venue" id="md-venue"></p>
+        <p class="map-detail__paper" id="md-paper"></p>
+        <p class="map-detail__desc" id="md-desc"></p>
+        <img class="map-detail__image" id="md-image" src="" alt="" hidden>
+        <div class="map-detail__tags" id="md-tags"></div>
+        <div class="map-detail__actions" id="md-actions"></div>
+      </div>
+    </div>
+
+    <!-- Scroll interaction hint -->
+    <div class="map-hint" id="map-hint">
+      <span>Click the map to interact</span>
+    </div>
+
+    <div class="map-legend" aria-label="Pin category legend">
+      <span class="map-legend__item map-legend__item--award">Award</span>
+      <span class="map-legend__item map-legend__item--publication">Conference</span>
+      <span class="map-legend__item map-legend__item--training">Training</span>
+      <span class="map-legend__item map-legend__item--talk">Talk / Poster</span>
+      <span class="map-legend__item map-legend__item--education">Education</span>
+      <span class="map-legend__item map-legend__item--home">Research Base</span>
+      <span class="map-legend__hint">— click any pin for details</span>
+    </div>
+  </div>
+</section>
+
+<script>
+window.MAP_PINS = {{ site.data.map_pins | jsonify }};
+</script>

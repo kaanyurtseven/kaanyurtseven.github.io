@@ -63,6 +63,14 @@
 </script>
 {% endif %}
 
+{% if page.load_map %}
+<!-- Leaflet.js — loaded only on pages with interactive map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin="">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" crossorigin="">
+{% endif %}
+
 {% if page.load_plotly %}
 <!-- Plotly.js — loaded only on pages with interactive charts -->
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" crossorigin="anonymous"></script>

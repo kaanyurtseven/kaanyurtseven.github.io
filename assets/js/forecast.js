@@ -837,22 +837,18 @@
     var fmt = function (v) {
       return v !== null && v !== undefined && isFinite(v) ? v.toFixed(1) : '—';
     };
-    // Show parametric CVaR as "X.X MW (+Y%)" — both absolute value and relative
-    // error vs empirical. When empirical ≈ 0 (e.g. near-0 pu forecast), % vs
-    // empirical is undefined; fall back to % of capacity so Gaussian (possibly
-    // negative) and Beta (bounded near 0) can still be meaningfully compared.
+    // Show parametric CVaR as "X.X MW" with difference vs empirical expressed
+    // as percentage of capacity, so Gaussian and Beta deviations are always
+    // comparable on the same scale regardless of operating point.
     var fmtModel = function (model, emp, capacity) {
       if (model === null || !isFinite(model)) return '—';
       var mwStr = model.toFixed(1) + '\u00a0MW';
       var deltaStr = null;
-      if (emp !== null && isFinite(emp) && Math.abs(emp) >= 0.1) {
+      if (emp !== null && isFinite(emp) && capacity && capacity > 0) {
         var diff = model - emp;
-        var pct  = (diff / Math.abs(emp)) * 100;
+        var pct  = (diff / capacity) * 100;
         var sign = diff >= 0 ? '+' : '';
-        deltaStr = sign + diff.toFixed(1) + '\u00a0MW\u00a0\u00b7\u00a0' + sign + pct.toFixed(0) + '%';
-      } else if (capacity && capacity > 0) {
-        var capPct = (model / capacity) * 100;
-        deltaStr = (capPct >= 0 ? '+' : '') + capPct.toFixed(1) + '%\u00a0cap';
+        deltaStr = sign + diff.toFixed(1) + '\u00a0MW\u00a0\u00b7\u00a0' + sign + pct.toFixed(1) + '%\u00a0cap';
       }
       if (deltaStr) {
         return '<span class="fm-val-mw">' + mwStr + '</span>' +
@@ -1010,6 +1006,16 @@
     });
   }
 
+  // ── Guide callout dismiss ──────────────────────────────────────────────────
+  function initGuide() {
+    var guide = document.getElementById('fc-guide');
+    var close = document.getElementById('fc-guide-close');
+    if (!guide) return;
+    close.addEventListener('click', function () {
+      guide.hidden = true;
+    });
+  }
+
   // ── Init ───────────────────────────────────────────────────────────────────
   function init() {
     if (!document.getElementById('forecast-distribution')) return;
@@ -1018,6 +1024,7 @@
     syncWindFilters();
     bindEvents();
     initTooltips();
+    initGuide();
     render();
   }
 

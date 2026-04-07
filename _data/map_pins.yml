@@ -1,0 +1,242 @@
+# ============================================================
+# Research Footprint Map — pin data
+# ============================================================
+# type:          home | education | publication | talk | training | visit | data | award
+# lat/lng:       decimal degrees (positive = North / East)
+# label:         event or institution name
+# city:          city name
+# country:       country name
+# year:          string
+# description:   1-2 sentence impact summary
+# paper_title:   associated paper title (optional)
+# paper_doi:     DOI without prefix (optional — makes "View paper" link)
+# venue:         conference or journal name (optional)
+# tags:          research theme tags (optional)
+# news_date:     YYYY-MM matching news.yml entry (optional — makes "See news" link)
+# link:          external URL (optional)
+# image:         path to image shown in detail panel (optional, e.g. /assets/images/map/kiel-2025.jpg)
+# image_position: CSS object-position value (optional, default: top — e.g. "center", "50% 30%")
+
+- type: home
+  label: KU Leuven / Etch by EnergyVille
+  city: Leuven & Genk
+  country: Belgium
+  lat: 50.882
+  lng: 4.700
+  year: "2022–present"
+  description: >
+    Ph.D. research base. Developing stochastic optimization frameworks for
+    risk-aware congestion management and balancing in hybrid AC/DC grids.
+  # tags: [PCE, Stochastic OPF, HVDC, CVaR]
+  link: "https://www.linkedin.com/in/kaanyurtseven/"
+
+- type: education
+  label: Dokuz Eylül University
+  city: İzmir
+  country: Turkey
+  lat: 38.377
+  lng: 27.044
+  year: "2014–2021"
+  description: |
+    B.Sc. in Electrical and Electronics Engineering (2014–2019, Honors).
+    M.Sc. in Electrical and Electronics Engineering (2019–2021, High Honors).
+    Research on substation expansion planning.
+  # tags: [PV Systems, Fault Detection, Substation Planning, Stochastic Programming]
+
+- type: education
+  label: Kyungpook National University
+  city: Daegu
+  country: South Korea
+  lat: 35.889
+  lng: 128.610
+  year: "2017"
+  description: >
+    Exchange student in Electrical Engineering during undergraduate studies.
+  # tags: [International Exchange]
+  image: "/assets/images/south-korea.jpg"
+
+- type: publication
+  label: IEEE Kiel PowerTech 2025
+  city: Kiel
+  country: Germany
+  lat: 54.323
+  lng: 10.123
+  year: "2025"
+  description: >
+    Presented security-constrained stochastic OPF for hybrid AC/DC grids,
+    extending the PCE framework to N-1 contingency analysis.
+  paper_title: "Security-Constrained Stochastic Optimal Power Flow For Hybrid AC/DC Grids Considering Non-Gaussian Uncertainty"
+  paper_doi: "10.1109/PowerTech59965.2025.11180443"
+  venue: IEEE Kiel PowerTech 2025
+  # tags: [SC-SOPF, HVDC, N-1 security]
+  news_date: "2025-06"
+  image: "/assets/images/ieee-kiel-powertech-2025.jpg"
+
+- type: talk
+  label: Risk & Resilience Day 2025
+  city: Birmingham
+  country: United Kingdom
+  lat: 52.480
+  lng: -1.898
+  year: "2025"
+  description: >
+    Presented "Balancing-aware Redispatch Actions Under Uncertainty" at the
+    EPSRC Supergen Energy Networks Hub event.
+  news_date: "2025-03"
+  image: "/assets/images/risk-day-2025.jpg"
+
+- type: talk
+  label: Risk & Resilience Day 2026
+  city: Edinburgh
+  country: United Kingdom
+  lat: 55.953
+  lng: -3.189
+  year: "2026"
+  description: >
+    Presented poster on risk-based balancing-aware congestion management in
+    hybrid AC/DC grids at the EPSRC Supergen Energy Networks Hub event.
+  news_date: "2026-03"
+  image: "/assets/images/risk-day-2026.jpg"
+
+- type: training
+  label: LANL Grid Science 2025
+  city: Santa Fe
+  country: United States
+  lat: 35.888
+  lng: -106.306
+  year: "2025"
+  description: >
+    Presented a poster on non-Gaussian uncertainty quantification in hybrid AC/DC grids
+    at Los Alamos National Laboratory's Grid Science Winter School.
+  # tags: [Non-Gaussian uncertainty, HVDC]
+  news_date: "2025-01"
+  image: "/assets/images/lanl-winter-school-2025.jpg"
+
+- type: publication
+  label: IEEE ISGT Europe 2024
+  city: Dubrovnik
+  country: Croatia
+  lat: 42.650
+  lng: 18.094
+  year: "2024"
+  description: >
+    Oral presentation on risk-based stochastic OPF using CVaR objectives,
+    demonstrating risk-averse decision-making under non-Gaussian uncertainty.
+  paper_title: "Risk-based Stochastic Optimal Power Flow for AC/DC Grids Using Polynomial Chaos Expansion"
+  paper_doi: "10.1109/ISGTEUROPE62998.2024.10863605"
+  venue: IEEE ISGT Europe 2024
+  # tags: [Risk-averse OPF, CVaR, PCE]
+  news_date: "2024-10"
+  image: "/assets/images/isgt-europe-2024.jpg"
+
+- type: publication
+  label: PMAPS 2026
+  city: Salt Lake City
+  country: United States
+  lat: 40.761
+  lng: -111.891
+  year: "2026"
+  description: >
+    Paper submitted to the International Conference on Probabilistic Methods
+    Applied to Power Systems (PMAPS) 2026.
+  venue: PMAPS 2026
+
+- type: publication
+  label: PMAPS 2024
+  city: Auckland
+  country: New Zealand
+  lat: -36.852
+  lng: 174.763
+  year: "2024"
+  description: >
+    Two papers: robust HVDC droop gain optimization and bi-objective power
+    system restoration with renewable participation.
+  paper_doi: "10.1109/PMAPS61648.2024.10667176"
+  venue: PMAPS 2024
+  # tags: [HVDC droop, Restoration, Robust optimization]
+  news_date: "2024-06"
+  image: "/assets/images/pmaps-2024.jpg"
+
+- type: talk
+  label: HVDC Colloquium
+  city: Barcelona
+  country: Spain
+  lat: 41.389
+  lng: 2.159
+  year: "2024"
+  description: >
+    Presentation at CITCEA-UPC on stochastic optimization tools for hybrid
+    AC/DC grids and HVDC controllability under high renewable penetration.
+  venue: HVDC Colloquium, CITCEA-UPC
+  # tags: [HVDC, Stochastic optimization]
+  news_date: "2024-03"
+  image: "/assets/images/hvdc-colloquium-2024.jpg"
+
+- type: publication
+  label: ATEE 2021
+  city: Bucharest
+  country: Romania
+  lat: 44.426
+  lng: 26.102
+  year: "2021"
+  description: >
+    Presented substation expansion planning under different geographical
+    configurations within a mixed-integer linear programming framework.
+  paper_title: "Distribution Substation Expansion Planning Considering Different Geographical Configurations"
+  paper_doi: "10.1109/ATEE52255.2021.9425221"
+  venue: 12th International Symposium on Advanced Topics in Electrical Engineering
+  # tags: [Substation planning, MILP]
+
+- type: visit
+  label: Thorntonbank Offshore Wind Farm
+  city: Belgian North Sea
+  country: Belgium
+  lat: 51.54106
+  lng: 2.95514
+  year: "2024"
+  description: >
+    Field visit to the Thorntonbank offshore wind installation, 30 km off the Belgian coast,
+    as part of the PhairywinD research project.
+  # tags: [Offshore Wind, PhairywinD, Field Visit]
+  image: "/assets/images/wind-farm-visit.jpg"
+
+- type: talk
+  label: Presentation at Elia
+  city: Brussels
+  country: Belgium
+  lat: 50.846
+  lng: 4.352
+  year: "2026"
+  description: >
+    Presented the Risk Management tool for balancing-aware congestion management
+    to the Belgian TSO Elia on 18 February 2026.
+
+- type: award
+  label: Gold Award Winner
+  city: Milan
+  country: Italy
+  lat: 45.464
+  lng: 9.190
+  year: "2026"
+  description: >
+    Gold Award from the European Energy Research Alliance Joint Programme
+    on Smart Grids for doctoral research in stochastic optimization.
+  news_date: "2026-03"
+  # tags: [Recognition]
+  image: "/assets/images/eera-gold-award.jpg"
+
+- type: award
+  label: EU PVSEC 2021
+  city: Lisbon
+  country: Portugal
+  lat: 38.722
+  lng: -9.139
+  year: "2021"
+  description: >
+    Outstanding student paper award for a data-driven soiling loss assessment
+    method for photovoltaic plants at the 38th European PV Conference.
+  paper_doi: "10.4229/EUPVSEC20212021-5DO.4.3"
+  venue: EU PVSEC 2021
+  # tags: [PV, Fault detection, Data-driven]
+  news_date: "2021-09"
+  image: "/assets/images/student-award-finalists.jpg"

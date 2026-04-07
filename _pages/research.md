@@ -2,13 +2,20 @@
 layout: default
 title: Research
 permalink: /research/
+load_map: true
 description: >
   Research on stochastic optimization, congestion management under uncertainty,
   hybrid AC/DC grids, and risk-aware decision support for power system operation and planning.
 ---
 
+<style>
+  .research-wide p,
+  .research-wide .page-header__subtitle,
+  .research-wide .map-section__subtitle { max-width: none; }
+</style>
+
 <main class="site-main" id="main-content">
-  <div class="container container--narrow">
+  <div class="container research-wide">
 
     <header class="page-header">
       <h1 class="page-header__title">Research</h1>
@@ -17,11 +24,21 @@ description: >
       </p>
     </header>
 
+    <div class="prose" style="margin-bottom: var(--space-4);">
+      <p>
+        My research focuses on how uncertainty shapes power system operation and how optimization
+        can support better decisions under these conditions. Although this work is technical in
+        nature, it has also been shaped by people, places, and conversations across different
+        settings. The map below offers a more personal way to explore that side of the journey.
+      </p>
+    </div>
+
+    {% include map.html %}
+
     <div class="prose">
 
       <p>
-        My research focuses on how uncertainty shapes operational decisions in modern power
-        systems. As renewable generation increases, uncertainty propagates into both congestion
+        As renewable generation increases, uncertainty propagates into both congestion
         management and real-time balancing, coupling decisions across time horizons that are
         often treated independently in practice.
       </p>
