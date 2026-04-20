@@ -13,13 +13,13 @@
 #
 # Accumulator JSON schema:
 #   {
-#     "version": 2,
+#     "version": 3,
 #     "days": [
 #       {
 #         "date": "2026-03-24",
 #         "groups": {
 #           "Onshore|Flanders|Elia": {
-#             "dayahead11h": [[bin0_err1, ...], [bin1_err1, ...], ...20 bins],
+#             "dayahead11h": [[bin0_err1, ...], [bin1_err1, ...], ...50 bins],
 #             ...
 #           }
 #         }
@@ -46,11 +46,11 @@ RECENT_DAYS       = 7       # days of recent trajectory shown in chart
 MAX_GAP_DAYS      = 14      # maximum days to fetch in a single catch-up run
 BASE_URL          = 'https://opendata.elia.be/api/explore/v2.1/catalog/datasets'
 OUT_DIR           = File.join(__dir__, '..', 'assets', 'data')
-ACC_VERSION       = 2
+ACC_VERSION       = 3
 RECENT_ACC_VERSION = 1      # version for the recent-trajectory accumulator
 
-# Per-unit bins (forecast level): 20 fine bins of width 0.05 pu.
-BINS = (0...20).map { |i| [i * 0.05, (i + 1) * 0.05].map { |v| v.round(3) } }
+# Per-unit bins (forecast level): 50 fine bins of width 0.02 pu.
+BINS = (0...50).map { |i| [i * 0.02, (i + 1) * 0.02].map { |v| v.round(3) } }
                .tap { |b| b[-1][1] = 1.01 }.freeze
 
 # Histogram bins for the error_pu distribution shipped to the browser.
