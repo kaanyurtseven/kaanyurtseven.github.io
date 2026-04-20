@@ -53,8 +53,11 @@ RECENT_ACC_VERSION = 1      # version for the recent-trajectory accumulator
 BINS = (0...20).map { |i| [i * 0.05, (i + 1) * 0.05].map { |v| v.round(3) } }
                .tap { |b| b[-1][1] = 1.01 }.freeze
 
-# Quantile probability levels stored in output JSON
-Q_PROBS = [0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95].freeze
+# Histogram bins for the error_pu distribution shipped to the browser.
+# error_pu = (measured - forecast) / capacity, centred at 0 in [-0.5, +0.5].
+HIST_MIN    = -1.0
+HIST_MAX    =  1.0
+HIST_N_BINS = 100     # 100 bins × 0.02 pu, covers full physical range
 
 # Forecast type label → API field name
 FORECAST_TYPES = {
@@ -135,14 +138,27 @@ def find_bin(pu)
   nil
 end
 
-def percentile(sorted, p)
-  n = sorted.length
-  return nil if n.zero?
-  return sorted[0]  if p <= 0.0
-  return sorted[-1] if p >= 1.0
-  idx = p * (n - 1)
-  lo, hi = idx.floor, idx.ceil
-  lo == hi ? sorted[lo] : sorted[lo] + (idx - lo) * (sorted[hi] - sorted[lo])
+def compute_histograms_from_acc(acc)
+  hist_width = (HIST_MAX - HIST_MIN).to_f / HIST_N_BINS
+
+  acc.transform_values do |by_type|
+    by_type.transform_values do |bins_array|
+      bins_array.each_with_index.map do |sorted, i|
+        counts = Array.new(HIST_N_BINS, 0)
+        sorted.each do |err|
+          idx = ((err - HIST_MIN) / hist_width).floor
+          next if idx < 0 || idx >= HIST_N_BINS   # exclude out-of-range; no boundary clamping
+          counts[idx] += 1
+        end
+        {
+          'lo'          => BINS[i][0],
+          'hi'          => BINS[i][1].round(2),
+          'n'           => sorted.length,
+          'hist_counts' => counts
+        }
+      end
+    end
+  end
 end
 
 # Accumulate historical API rows into a per-day, per-group, per-bin structure.
@@ -205,7 +221,7 @@ def merge_days(day_list)
     end
   end
 
-  # Sort each bin's error array for percentile computation
+  # Sort each bin's error array
   acc.each_value do |by_type|
     by_type.each_value do |bins_array|
       bins_array.each { |errs| errs.sort! }
@@ -215,20 +231,6 @@ def merge_days(day_list)
   acc
 end
 
-def compute_quantiles_from_acc(acc)
-  acc.transform_values do |by_type|
-    by_type.transform_values do |bins_array|
-      bins_array.each_with_index.map do |sorted, i|
-        {
-          'lo' => BINS[i][0],
-          'hi' => BINS[i][1].round(2),
-          'n'  => sorted.length,
-          'q'  => Q_PROBS.map { |p| sorted.empty? ? nil : percentile(sorted, p).round(5) }
-        }
-      end
-    end
-  end
-end
 
 # Median capacity across all days for each group
 def median_capacity_from_rows(rows, group_key_fn)
@@ -443,10 +445,10 @@ def process_tech(tech_name, dataset, hist_select, recent_select, group_key_fn,
   acc_days = prune_days(acc_days, cutoff)
   puts "  Accumulator: #{acc_days.length} day-buckets (cutoff: #{cutoff})"
 
-  # ── Step 3: compute quantiles from accumulator ─────────────────────────────
+  # ── Step 3: compute histograms from accumulator ────────────────────────────
 
   merged    = merge_days(acc_days)
-  quantiles = compute_quantiles_from_acc(merged)
+  quantiles = compute_histograms_from_acc(merged)
   puts "  Groups in quantiles: #{quantiles.keys.sort.join(', ')}"
 
   # ── Step 4: capacity — use latest available from accumulator ───────────────
@@ -555,7 +557,9 @@ def process_tech(tech_name, dataset, hist_select, recent_select, group_key_fn,
       'recent_start'   => recent_start.to_s,
       'recent_end'     => recent_end.to_s,
       'bins'           => BINS,
-      'quantile_probs' => Q_PROBS,
+      'hist_min'    => HIST_MIN,
+      'hist_max'    => HIST_MAX,
+      'hist_n_bins' => HIST_N_BINS,
       'source'         => source_label,
       'unit'           => 'MW'
     },

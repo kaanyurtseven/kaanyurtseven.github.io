@@ -27,10 +27,12 @@
     tz:         'brussels',   // 'brussels' | 'utc'
     wind:  { offon: 'Offshore', region: 'Federal', grid: 'Elia' },
     solar: { region: 'Belgium' },
-    hoveredIdx: -1
+    hoveredIdx: -1,
+    lockedIdx:  -1
   };
 
-  var cache   = { wind: null, solar: null };
+  var cache       = { wind: null, solar: null };
+  var sampleCache = {};
   var baseUrl = (typeof window !== 'undefined' && window.SITE_BASEURL) ? window.SITE_BASEURL : '';
 
   // ── DOM refs ───────────────────────────────────────────────────────────────
@@ -207,11 +209,11 @@
 
   // ── Hard rectangular conditioning ──────────────────────────────────────────
   // For hovered forecast f_pu, select bins whose center falls within ±bw.
-  // Start bw=0.20, widen by 0.05 until totalN ≥ COND_MIN_N or bw reaches 1.0.
+  // Start bw=0.06, widen by 0.02 until totalN ≥ COND_MIN_N or bw reaches 1.0.
   // Each selected bin contributes proportional to its sample count (no kernel weight).
 
-  var COND_BW_START = 0.20;
-  var COND_BW_STEP  = 0.05;
+  var COND_BW_START = 0.06;
+  var COND_BW_STEP  = 0.02;
   var COND_BW_MAX   = 1.00;
   var COND_MIN_N    = 1000;
 
@@ -219,7 +221,7 @@
   function getBinsInWindow(bins, lo, hi) {
     return bins.filter(function (bin) {
       var center = (bin.lo + bin.hi) / 2;
-      return center >= lo && center <= hi && bin.n > 0 && bin.q;
+      return center >= lo && center <= hi && bin.n > 0 && bin.hist_counts;
     });
   }
 
@@ -250,7 +252,7 @@
     var samples = [];
     selected.forEach(function (bin) {
       var count = Math.max(1, Math.round(n * bin.n / totalN));
-      var s = buildEmpiricalSamples(bin, fMW, capacity, count);
+      var s = buildHistSamples(bin, fMW, capacity, count);
       for (var i = 0; i < s.length; i++) samples.push(s[i]);
     });
 
@@ -267,38 +269,36 @@
     };
   }
 
-  // ── Sample generation from quantile bins ───────────────────────────────────
+  // ── Sample generation from histogram bins ─────────────────────────────────
+  //
+  // Each conditioning bin stores hist_counts: a 50-element array of error_pu
+  // histogram counts over [-0.5, +0.5].  Shift each bin center by f_pu to get
+  // the measured-space position, clip to [0, capacity], and draw proportional
+  // samples with uniform within-bin jitter for smooth rendering.
 
-  function interpLinear(x, xArr, yArr) {
-    if (x <= xArr[0]) return yArr[0];
-    if (x >= xArr[xArr.length - 1]) return yArr[yArr.length - 1];
-    for (var i = 0; i < xArr.length - 1; i++) {
-      if (x >= xArr[i] && x <= xArr[i + 1]) {
-        var dx = xArr[i + 1] - xArr[i];
-        if (dx === 0) return yArr[i + 1];
-        return yArr[i] + (x - xArr[i]) / dx * (yArr[i + 1] - yArr[i]);
-      }
-    }
-    return yArr[yArr.length - 1];
-  }
+  function buildHistSamples(histBin, fMW, capacity, n) {
+    var counts    = histBin.hist_counts;
+    var meta      = cache[state.tech].meta;
+    var histMin   = meta.hist_min;        // -0.5
+    var histMax   = meta.hist_max;        // +0.5
+    var nBins     = meta.hist_n_bins;     // 50
+    var histWidth = (histMax - histMin) / nBins;
+    var f_pu      = fMW / capacity;
 
-  function buildEmpiricalSamples(qBin, fMW, capacity, n) {
-    var f_pu    = fMW / capacity;
-    var q_probs = [0.05, 0.10, 0.25, 0.50, 0.75, 0.90, 0.95];
-    // Map pu-space error quantiles to MW, clipped at physical bounds [0, capacity]
-    var q_mw    = qBin.q.map(function (e_pu) {
-      return Math.max(0, Math.min(capacity, (f_pu + e_pu) * capacity));
-    });
-    // Extrapolate p0 and p1 from the boundary slopes rather than forcing [0, capacity].
-    // Forcing [0, capacity] creates large artificial flat tails that shift the
-    // fitted mean away from the histogram's visual center.
-    var p0_val = Math.max(0,        2 * q_mw[0] - q_mw[1]);
-    var p1_val = Math.min(capacity, 2 * q_mw[6] - q_mw[5]);
-    var all_probs = [0.0].concat(q_probs).concat([1.0]);
-    var all_vals  = [p0_val].concat(q_mw).concat([p1_val]);
+    var total = 0;
+    for (var j = 0; j < counts.length; j++) total += counts[j];
+    if (total === 0) return [];
+
     var samples = [];
-    for (var i = 0; i < n; i++) {
-      samples.push(interpLinear((i + 0.5) / n, all_probs, all_vals));
+    for (var j = 0; j < counts.length; j++) {
+      if (counts[j] === 0) continue;
+      var errCenter_pu  = histMin + (j + 0.5) * histWidth;
+      var measCenter_mw = (f_pu + errCenter_pu) * capacity;
+      var count = Math.max(0, Math.round(n * counts[j] / total));
+      for (var k = 0; k < count; k++) {
+        var jitter = (Math.random() - 0.5) * histWidth * capacity;
+        samples.push(Math.max(0, Math.min(capacity, measCenter_mw + jitter)));
+      }
     }
     return samples;
   }
@@ -534,8 +534,28 @@
   var PLOTLY_CONFIG = {
     responsive:  true,
     displaylogo: false,
+    showTips:    false,
     modeBarButtonsToRemove: ['select2d', 'lasso2d', 'autoScale2d', 'toggleSpikelines',
                              'hoverCompareCartesian', 'hoverClosestCartesian']
+  };
+
+  function distResetButton() {
+    return {
+      name: 'resetView', title: 'Reset axes', icon: Plotly.Icons.home,
+      click: function () {
+        var activeIdx = state.lockedIdx >= 0 ? state.lockedIdx : state.hoveredIdx;
+        if (activeIdx >= 0) updateDistribution(activeIdx);
+      }
+    };
+  }
+  var PLOTLY_CONFIG_DIST = {
+    responsive:  true,
+    displaylogo: false,
+    showTips:    false,
+    doubleClick: false,
+    modeBarButtonsToRemove: ['select2d', 'lasso2d', 'autoScale2d', 'resetScale2d',
+                             'toggleSpikelines', 'hoverCompareCartesian', 'hoverClosestCartesian'],
+    modeBarButtonsToAdd: [distResetButton()]
   };
 
   function baseLayout(overrides) {
@@ -589,43 +609,58 @@
     }
     if (fMW === null || fMW === undefined) return;
 
-    var N_SAMPLES = 800;
-    var N_CURVE   = 300;
+    var N_SAMPLES  = 2000;
+    var N_CURVE    = 300;
+    var CVAR_ALPHA = 0.05;
+    var N_CVAR     = 10000;
 
-    var condResult = getConditionedSamples(group, fMW, N_SAMPLES);
-    if (!condResult) {
-      if (el.distLabel) el.distLabel.textContent = 'Distribution — no historical data available';
-      // Still show the metrics panel with the point's known values (CVaR shows '—')
-      updateMetrics({
-        time: ts[idx] ? formatTimeDisplay(ts[idx]) : null,
-        fMW: fMW, mMW: measured[idx], capacity: capacity,
-        cvarLo: { emp: null, gauss: null, beta: null },
-        cvarHi: { emp: null, gauss: null, beta: null }
-      });
-      return;
+    var cacheKey = groupKey() + '|' + state.forecast + '|' + idx + '|' + (state.showApprox ? '1' : '0');
+    var cached   = sampleCache[cacheKey];
+    if (!cached) {
+      var condResult = getConditionedSamples(group, fMW, N_SAMPLES);
+      if (!condResult) {
+        if (el.distLabel) el.distLabel.textContent = 'Distribution — no historical data available';
+        updateMetrics({
+          time: ts[idx] ? formatTimeDisplay(ts[idx]) : null,
+          fMW: fMW, mMW: measured[idx], capacity: capacity,
+          cvarLo: { emp: null, gauss: null, beta: null },
+          cvarHi: { emp: null, gauss: null, beta: null }
+        });
+        return;
+      }
+      var _samples    = condResult.samples;
+      var _gaussCurve = state.showApprox ? buildGaussianCurve(_samples, N_CURVE) : null;
+      var _betaCurve  = state.showApprox ? buildBetaCurve(_samples, capacity, N_CURVE) : null;
+      var _gSamples   = _gaussCurve ? sampleGaussian(_gaussCurve.mu, _gaussCurve.sigma, N_CVAR) : null;
+      var _bSamples   = _betaCurve  ? sampleFromCurve(_betaCurve.x, _betaCurve.y, N_CVAR)       : null;
+      cached = {
+        samples:     _samples,
+        gaussCurve:  _gaussCurve,
+        betaCurve:   _betaCurve,
+        cvarEmpLo:   computeEmpiricalCVaR(_samples, CVAR_ALPHA),
+        cvarEmpHi:   computeEmpiricalCVaRUpper(_samples, CVAR_ALPHA),
+        cvarGaussLo: _gSamples ? computeEmpiricalCVaR(_gSamples, CVAR_ALPHA)      : null,
+        cvarGaussHi: _gSamples ? computeEmpiricalCVaRUpper(_gSamples, CVAR_ALPHA) : null,
+        cvarBetaLo:  _bSamples ? computeEmpiricalCVaR(_bSamples, CVAR_ALPHA)      : null,
+        cvarBetaHi:  _bSamples ? computeEmpiricalCVaRUpper(_bSamples, CVAR_ALPHA) : null
+      };
+      sampleCache[cacheKey] = cached;
     }
-    var samples = condResult.samples;
+
+    var samples     = cached.samples;
+    var gaussCurve  = cached.gaussCurve;
+    var betaCurve   = cached.betaCurve;
+    var cvarEmpLo   = cached.cvarEmpLo;
+    var cvarEmpHi   = cached.cvarEmpHi;
+    var cvarGaussLo = cached.cvarGaussLo;
+    var cvarGaussHi = cached.cvarGaussHi;
+    var cvarBetaLo  = cached.cvarBetaLo;
+    var cvarBetaHi  = cached.cvarBetaHi;
 
     // Save legend visibility before re-rendering
     var savedVis = getTraceVisibility();
 
-    var color      = state.tech === 'wind' ? THEME.wind : THEME.solar;
-    var gaussCurve = state.showApprox ? buildGaussianCurve(samples, N_CURVE) : null;
-    var betaCurve  = state.showApprox ? buildBetaCurve(samples, capacity, N_CURVE) : null;
-
-    // CVaR — both tails at 5%.
-    // Parametric CVaR uses 10 000 samples from each fitted distribution so that
-    // the same sort-and-average logic is used for all three models.
-    var CVAR_ALPHA = 0.05;
-    var N_CVAR     = 10000;
-    var cvarEmpLo   = computeEmpiricalCVaR(samples, CVAR_ALPHA);
-    var cvarEmpHi   = computeEmpiricalCVaRUpper(samples, CVAR_ALPHA);
-    var gaussSamples = gaussCurve ? sampleGaussian(gaussCurve.mu, gaussCurve.sigma, N_CVAR) : null;
-    var betaSamples  = betaCurve  ? sampleFromCurve(betaCurve.x, betaCurve.y, N_CVAR)       : null;
-    var cvarGaussLo = gaussSamples ? computeEmpiricalCVaR(gaussSamples, CVAR_ALPHA)      : null;
-    var cvarGaussHi = gaussSamples ? computeEmpiricalCVaRUpper(gaussSamples, CVAR_ALPHA) : null;
-    var cvarBetaLo  = betaSamples  ? computeEmpiricalCVaR(betaSamples, CVAR_ALPHA)       : null;
-    var cvarBetaHi  = betaSamples  ? computeEmpiricalCVaRUpper(betaSamples, CVAR_ALPHA)  : null;
+    var color = state.tech === 'wind' ? THEME.wind : THEME.solar;
 
     // X-axis range
     var xMin = -0.08 * capacity;
@@ -755,7 +790,13 @@
       });
     }
 
-    Plotly.react(el.panelDist, traces, layout, PLOTLY_CONFIG);
+    Plotly.react(el.panelDist, traces, layout, PLOTLY_CONFIG_DIST);
+
+    if (el.panelDist.removeAllListeners) el.panelDist.removeAllListeners('plotly_doubleclick');
+    el.panelDist.on('plotly_doubleclick', function () {
+      var activeIdx = state.lockedIdx >= 0 ? state.lockedIdx : state.hoveredIdx;
+      if (activeIdx >= 0) updateDistribution(activeIdx);
+    });
 
     // Update label
     var timeStr = ts[idx] ? formatTimeDisplay(ts[idx]) : '—';
@@ -819,15 +860,61 @@
         hovertemplate: '%{x|%b %d %H:%M} ' + tzShortLabel() + '<br>' + fcLabel + ': %{y:.0f} MW<extra></extra>' }
     ], layout, PLOTLY_CONFIG);
 
-    if (el.panelTraj.removeAllListeners) el.panelTraj.removeAllListeners('plotly_hover');
+    if (el.panelTraj.removeAllListeners) {
+      el.panelTraj.removeAllListeners('plotly_hover');
+      el.panelTraj.removeAllListeners('plotly_click');
+    }
+
     el.panelTraj.on('plotly_hover', function (evt) {
       if (!evt.points || !evt.points.length) return;
+      if (state.lockedIdx >= 0) return;
       state.hoveredIdx = evt.points[0].pointIndex;
       updateDistribution(state.hoveredIdx);
     });
 
+    el.panelTraj.on('plotly_click', function (evt) {
+      if (!evt.points || !evt.points.length) return;
+      var clickIdx = evt.points[0].pointIndex;
+      if (state.lockedIdx >= 0) {
+        state.lockedIdx = -1;
+        removeLockMarker();
+        updateLockLabel(false);
+      } else {
+        state.lockedIdx = clickIdx;
+        state.hoveredIdx = clickIdx;
+        updateDistribution(clickIdx);
+        showLockMarker(clickIdx, tsDisplay, measured, forecast, color);
+        updateLockLabel(true);
+      }
+    });
+
     var initIdx = ts.length > 0 ? ts.length - 1 : 0;
-    updateDistribution(state.hoveredIdx < 0 ? initIdx : state.hoveredIdx);
+    if (state.hoveredIdx < 0) state.hoveredIdx = initIdx;
+    updateDistribution(state.hoveredIdx);
+  }
+
+  // ── Lock marker on trajectory ──────────────────────────────────────────────
+  function showLockMarker(idx, tsDisplay, measured, forecast, color) {
+    if (!el.panelTraj || !el.panelTraj.data) return;
+    var mVal = measured[idx], fVal = forecast[idx];
+    Plotly.addTraces(el.panelTraj, {
+      x: [tsDisplay[idx]], y: [mVal != null ? mVal : fVal],
+      type: 'scatter', mode: 'markers',
+      marker: { color: '#7c3aed', size: 10, symbol: 'circle', line: { color: '#fff', width: 2 } },
+      name: 'Locked', showlegend: false, hoverinfo: 'skip'
+    });
+  }
+
+  function removeLockMarker() {
+    if (!el.panelTraj || !el.panelTraj.data) return;
+    if (el.panelTraj.data.length > 2) Plotly.deleteTraces(el.panelTraj, el.panelTraj.data.length - 1);
+  }
+
+  function updateLockLabel(locked) {
+    if (!el.distLabel) return;
+    var text = el.distLabel.textContent.replace(/\s*\u2014\s*Locked$/, '');
+    if (locked) text += ' \u2014 Locked';
+    el.distLabel.textContent = text;
   }
 
   // ── Metrics panel ─────────────────────────────────────────────────────────
@@ -882,8 +969,16 @@
       var text = 'Source: ' + src;
       if (meta) {
         text += '\u00a0\u00b7\u00a0hist.\u00a0' + meta.hist_start + '\u2013' + meta.hist_end;
-        if (meta.generated) {
-          text += '\u00a0\u00b7\u00a0Updated:\u00a0' + meta.generated;
+        var latestTs = null;
+        Object.keys(data.groups || {}).forEach(function (gk) {
+          var ts = data.groups[gk].recent && data.groups[gk].recent.timestamps;
+          if (ts && ts.length) {
+            var last = ts[ts.length - 1];
+            if (!latestTs || last > latestTs) latestTs = last;
+          }
+        });
+        if (latestTs) {
+          text += '\u00a0\u00b7\u00a0Latest\u00a0data:\u00a0' + formatTimeDisplay(latestTs);
         }
       }
       el.statSource.textContent = text;
@@ -892,8 +987,9 @@
   }
 
   // ── Main render ────────────────────────────────────────────────────────────
-  function render() {
-    state.hoveredIdx = -1;
+  function render(resetHover) {
+    if (resetHover !== false) { state.hoveredIdx = -1; state.lockedIdx = -1; }
+    sampleCache = {};
     clearError();
     loadData(state.tech, function (data) {
       var gk    = groupKey();
@@ -925,7 +1021,7 @@
         document.querySelectorAll('[data-forecast]').forEach(function (b) { b.classList.remove('fc-tab--active'); });
         btn.classList.add('fc-tab--active');
         state.forecast = btn.dataset.forecast;
-        render();
+        render(false);
       });
     });
 
@@ -954,7 +1050,8 @@
           var group = data.groups && data.groups[groupKey()];
           if (group && group.recent && group.recent.timestamps) {
             var n = group.recent.timestamps.length;
-            updateDistribution(state.hoveredIdx < 0 ? n - 1 : state.hoveredIdx);
+            var activeIdx = state.lockedIdx >= 0 ? state.lockedIdx : state.hoveredIdx;
+            updateDistribution(activeIdx < 0 ? n - 1 : activeIdx);
           }
         }
       });
@@ -968,6 +1065,7 @@
       // Re-render trajectory (preserving hover position) and update distribution label + metrics
       var data = cache[state.tech];
       if (data) {
+        updateStats(data);
         var group = data.groups && data.groups[groupKey()];
         if (group && group.recent) renderTrajectory(group);
       }

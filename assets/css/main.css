@@ -1982,6 +1982,7 @@ details[open] .pub-abstract__toggle::before {
   width: 100%;
   min-height: 200px;
 }
+.forecast-chart-area .notifier-note { display: none !important; }
 
 .forecast-loading {
   display: none;
