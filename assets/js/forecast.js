@@ -212,10 +212,10 @@
   // Start bw=0.06, widen by 0.02 until totalN ≥ COND_MIN_N or bw reaches 1.0.
   // Each selected bin contributes proportional to its sample count (no kernel weight).
 
-  var COND_BW_START = 0.06;
+  var COND_BW_START = 0.04;
   var COND_BW_STEP  = 0.02;
   var COND_BW_MAX   = 1.00;
-  var COND_MIN_N    = 1000;
+  var COND_MIN_N    = 500;
 
   // lo/hi are the explicit window bounds in pu space [0, 1].
   function getBinsInWindow(bins, lo, hi) {
