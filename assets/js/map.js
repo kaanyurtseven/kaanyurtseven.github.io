@@ -329,8 +329,9 @@
 
   function hidePreview() {
     if (preview) preview.hidden = true;
-    /* Un-highlight arcs (unless detail is open) */
-    if (activeDetail === null) resetArcs();
+    /* Reset all arcs; if a detail panel is open, restore the active pin's highlight. */
+    resetArcs();
+    if (activeDetail !== null) highlightArc(activeDetail, true);
   }
 
   /* ── Detail panel ───────────────────────────────────────────────── */
