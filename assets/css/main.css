@@ -223,7 +223,7 @@ blockquote {
 .site-nav {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1100;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
   height: var(--nav-height);
