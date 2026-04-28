@@ -971,14 +971,17 @@
         text += '\u00a0\u00b7\u00a0hist.\u00a0' + meta.hist_start + '\u2013' + meta.hist_end;
         var latestTs = null;
         Object.keys(data.groups || {}).forEach(function (gk) {
-          var ts = data.groups[gk].recent && data.groups[gk].recent.timestamps;
-          if (ts && ts.length) {
-            var last = ts[ts.length - 1];
-            if (!latestTs || last > latestTs) latestTs = last;
+          var rec = data.groups[gk].recent;
+          if (!rec || !rec.timestamps || !rec.measured) return;
+          for (var i = rec.timestamps.length - 1; i >= 0; i--) {
+            if (rec.measured[i] != null) {
+              if (!latestTs || rec.timestamps[i] > latestTs) latestTs = rec.timestamps[i];
+              break;
+            }
           }
         });
         if (latestTs) {
-          text += '\u00a0\u00b7\u00a0Latest\u00a0data:\u00a0' + formatTimeDisplay(latestTs);
+          text += '\u00a0\u00b7\u00a0Latest\u00a0measurement:\u00a0' + formatTimeDisplay(latestTs);
         }
       }
       el.statSource.textContent = text;

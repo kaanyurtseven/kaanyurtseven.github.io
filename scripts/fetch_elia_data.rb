@@ -377,7 +377,7 @@ end
 today        = Date.today
 hist_end     = today - 1
 hist_start   = today - 1 - HIST_DAYS
-recent_end   = today          # include today's intraday data (refreshed every 30 min)
+recent_end   = today + 1      # include today + tomorrow so the live forecast look-ahead from ODS086/ODS087 is fetched
 recent_start = today - RECENT_DAYS
 
 recent_where = "datetime >= '#{recent_start}' AND datetime < '#{recent_end + 1}'"
@@ -483,18 +483,20 @@ def process_tech(tech_name, dataset, hist_select, recent_select, group_key_fn,
   puts "  Recent rows (#{dataset}): #{hist_recent_rows.length}"
 
   # Layer 3: fetch live real-time rows and accumulate
+  rt_future_forecast_rows = []
   if recent_dataset && recent_acc_path
     rt_raw = fetch_json(export_url(recent_dataset, where: recent_where,
                                     select: recent_select, order_by: 'datetime ASC'))
-    # Keep only rows with a measured (realtime) value — drop future forecast-only slots
-    rt_raw.select! { |r| r['realtime'] != nil }
-    # Normalise 'realtime' → 'measured'
-    rt_raw.each { |r| r['measured'] = r.delete('realtime') if r.key?('realtime') }
-    puts "  Recent rows (#{recent_dataset}, measured only): #{rt_raw.length}"
+    # Split: rows with realtime measurement (for accumulator) vs. forecast-only future
+    # slots (used only for the trajectory's forward-looking horizon).
+    rt_measured = rt_raw.select { |r| r['realtime'] != nil }
+    rt_measured.each { |r| r['measured'] = r.delete('realtime') if r.key?('realtime') }
+    rt_future_forecast_rows = rt_raw.reject { |r| r['realtime'] != nil }
+    puts "  Recent rows (#{recent_dataset}): measured=#{rt_measured.length} forecast-only=#{rt_future_forecast_rows.length}"
 
-    # Load, upsert, prune, and save the recent accumulator
+    # Load, upsert, prune, and save the recent accumulator (measured slots only)
     recent_acc = load_recent_acc(recent_acc_path)
-    upsert_recent_acc(recent_acc, rt_raw, group_key_fn)
+    upsert_recent_acc(recent_acc, rt_measured, group_key_fn)
     prune_recent_acc(recent_acc, recent_start.to_s)
     save_recent_acc(recent_acc_path, recent_acc)
     puts "  Recent acc: #{recent_acc['rows'].length} cached slots"
@@ -502,25 +504,51 @@ def process_tech(tech_name, dataset, hist_select, recent_select, group_key_fn,
     recent_acc = { 'version' => RECENT_ACC_VERSION, 'rows' => [] }
   end
 
-  # Build (gk|qk) index of ODS031 rows — these take precedence
+  # Build (gk|qk) index of ODS031 slots that already have a validated measured value.
+  # ODS031 returns rows for every quarter of today (forecasts populated) but `measured`
+  # is null on the trailing slots while it backfills. We only let ODS031 take precedence
+  # over recent_acc when its measured is non-null, so today's live ODS086 measurements
+  # in recent_acc aren't dropped.
   hist_index = {}
   hist_recent_rows.each do |r|
     gk = group_key_fn.call(r)
     qk = quarter_key(r['datetime']&.strip || '')
-    hist_index["#{gk}|#{qk}"] = true if gk && qk
+    hist_index["#{gk}|#{qk}"] = true if gk && qk && r['measured']
   end
 
-  # Layer 2: add acc rows for slots not covered by ODS031
+  # Layer 2: add acc rows for slots not yet measured in ODS031
   gap_rows = recent_acc['rows'].reject do |r|
     gk = group_key_fn.call(r)
     qk = quarter_key(r['datetime']&.strip || '')
     hist_index["#{gk}|#{qk}"]
   end
-  puts "  Gap rows from acc (not in #{dataset}): #{gap_rows.length}"
+  puts "  Gap rows from acc (not measured in #{dataset}): #{gap_rows.length}"
 
-  recent_rows = hist_recent_rows + gap_rows
+  recent_rows = hist_recent_rows + gap_rows + rt_future_forecast_rows
 
   recent_data = build_recent(recent_rows, group_key_fn)
+
+  # Trim each group's trajectory to: last measured slot + up to 12 h (48 quarters) of
+  # forward-looking forecasts. This drops the long tail of forecast-only slots that
+  # ODS031 carries beyond the look-ahead horizon.
+  recent_data.each do |_gk, rec|
+    next unless rec
+    ts   = rec['timestamps'] || []
+    meas = rec['measured']   || []
+    last_meas_idx = nil
+    (ts.length - 1).downto(0) do |i|
+      if meas[i]
+        last_meas_idx = i
+        break
+      end
+    end
+    next unless last_meas_idx
+    cut = [last_meas_idx + 48, ts.length - 1].min
+    (['timestamps', 'measured'] + FORECAST_TYPES.values).each do |field|
+      arr = rec[field]
+      rec[field] = arr[0..cut] if arr.is_a?(Array)
+    end
+  end
 
   # Fill capacity from recent rows if not available from hist fetch
   if capacity_map.empty?
