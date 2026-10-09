@@ -2585,6 +2585,13 @@ details[open] .pub-abstract__toggle::before {
   .map-container { padding-bottom: 56.25%; height: 0; }
 }
 
+/* Duotone basemap — recolours Esri's Light Gray Canvas tiles through the SVG
+   filter defined in _includes/map.html (water → pale blue, land → warm
+   off-white). Browsers that cannot apply it show the plain gray tiles. */
+.map-container .leaflet-layer.basemap-duotone {
+  filter: url(#map-duotone);
+}
+
 /* Leaflet overrides — match site typography */
 .map-container .leaflet-control-attribution {
   font-family: var(--font-mono);

@@ -17,13 +17,15 @@
      CARTO's basemaps.cartocdn.com started returning "API KEY REQUIRED"
      placeholder tiles in 2026 (see carto.com/basemaps/apikey), so the map
      uses key-free raster services instead. Each provider lists its tile
-     layers in drawing order (Esri Light Gray = base tiles + label tiles). */
+     layers in drawing order (Esri Light Gray = base tiles + label tiles).
+     `className` lands on the layer container; `basemap-duotone` hooks the SVG
+     recolour filter defined in _includes/map.html (CSS rule in main.css). */
   var TILE_PROVIDERS = [
     {
       name: 'Esri Light Gray Canvas',
       attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, and the GIS user community',
       layers: [
-        { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', maxZoom: 16 },
+        { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', maxZoom: 16, className: 'basemap-duotone' },
         { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', maxZoom: 16 }
       ]
     },
@@ -164,7 +166,8 @@
       var layer = L.tileLayer(spec.url, {
         attribution: i === 0 ? provider.attribution : '',
         maxZoom: spec.maxZoom,
-        zIndex: i + 1
+        zIndex: i + 1,
+        className: spec.className || ''
       });
       layer.on('tileload', function () { loaded++; });
       layer.on('tileerror', function () {
