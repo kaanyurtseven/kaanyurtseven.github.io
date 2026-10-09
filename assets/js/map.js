@@ -1,6 +1,6 @@
 /* Research Footprint Map — Leaflet-based interactive map
    IIFE, reads window.MAP_PINS injected by map.html Liquid template.
-   Uses Leaflet.js with CartoDB Positron tiles.
+   Uses Leaflet.js with Esri Light Gray Canvas tiles (OpenStreetMap fallback).
    --------------------------------------------------------------------- */
 (function () {
   'use strict';
@@ -13,8 +13,28 @@
   var MOBILE_ZOOM = 2;
   var MOBILE_BP = 640;
 
-  var TILE_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-  var TILE_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  /* Basemap tile providers, tried in order.
+     CARTO's basemaps.cartocdn.com started returning "API KEY REQUIRED"
+     placeholder tiles in 2026 (see carto.com/basemaps/apikey), so the map
+     uses key-free raster services instead. Each provider lists its tile
+     layers in drawing order (Esri Light Gray = base tiles + label tiles). */
+  var TILE_PROVIDERS = [
+    {
+      name: 'Esri Light Gray Canvas',
+      attribution: 'Tiles &copy; <a href="https://www.esri.com/">Esri</a> &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, and the GIS user community',
+      layers: [
+        { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', maxZoom: 16 },
+        { url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}', maxZoom: 16 }
+      ]
+    },
+    {
+      name: 'OpenStreetMap',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      layers: [
+        { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', maxZoom: 19 }
+      ]
+    }
+  ];
 
   var PIN_COLOR = '#b45309';
   var COLORS = {
@@ -124,6 +144,41 @@
     return points;
   }
 
+  /* ── Basemap ────────────────────────────────────────────────────── */
+
+  var basemapLayers = [];
+
+  /* Adds TILE_PROVIDERS[idx] to the map. If that provider never delivers a
+     tile but keeps erroring (service gone, DNS failure), it is swapped for
+     the next provider in the list. */
+  function addBasemap(idx) {
+    var provider = TILE_PROVIDERS[idx];
+    if (!provider) return;
+
+    basemapLayers.forEach(function (layer) { map.removeLayer(layer); });
+    basemapLayers = [];
+
+    var loaded = 0, failed = 0, swapped = false;
+
+    provider.layers.forEach(function (spec, i) {
+      var layer = L.tileLayer(spec.url, {
+        attribution: i === 0 ? provider.attribution : '',
+        maxZoom: spec.maxZoom,
+        zIndex: i + 1
+      });
+      layer.on('tileload', function () { loaded++; });
+      layer.on('tileerror', function () {
+        failed++;
+        if (!swapped && loaded === 0 && failed >= 4) {
+          swapped = true;
+          addBasemap(idx + 1);
+        }
+      });
+      layer.addTo(map);
+      basemapLayers.push(layer);
+    });
+  }
+
   /* ── Initialization ─────────────────────────────────────────────── */
 
   function init() {
@@ -158,11 +213,7 @@
       resetView();
     });
 
-    L.tileLayer(TILE_URL, {
-      attribution: TILE_ATTR,
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(map);
+    addBasemap(0);
 
     /* Scroll-zoom activation */
     map.on('click', function (e) {
