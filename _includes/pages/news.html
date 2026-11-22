@@ -1,0 +1,46 @@
+{%- comment -%}
+  News body: the head (h1, the year index); one section per year, newest first; every held entry
+  of _data/news.yml (no status, or status: held) its own row (_includes/news-row.html), newest date
+  first, equal dates in file order. Liquid's sort is not stable, so the distinct dates are sorted
+  and each date's entries follow in file order.
+{%- endcomment -%}
+{%- capture ns_dates -%}
+  {%- for ns_n in site.data.news -%}
+    {%- assign ns_st = ns_n.status | default: 'held' -%}
+    {%- if ns_st == 'held' -%}{{ ns_n.date | append: '' }}|{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign ns_dates = ns_dates | split: '|' | uniq | sort | reverse -%}
+{%- capture ns_years -%}
+  {%- for ns_d in ns_dates -%}{{ ns_d | slice: 0, 4 }}|{%- endfor -%}
+{%- endcapture -%}
+{%- assign ns_years = ns_years | split: '|' | uniq -%}
+{%- capture ns_index -%}
+  {%- for ns_y in ns_years -%}
+<li><a href="#y-{{ ns_y }}"><span class="num">{{ ns_y }}</span></a></li>
+{% endfor -%}
+{%- endcapture -%}
+{%- assign ns_h1 = page.title | escape -%}
+{% include page-head.html h1=ns_h1 index=ns_index index_label="Years" %}
+
+{% for ns_y in ns_years -%}
+{%- capture ns_rows -%}
+  <div class="rows rows--lab">
+{% for ns_d in ns_dates -%}
+  {%- assign ns_dy = ns_d | slice: 0, 4 -%}
+  {%- if ns_dy == ns_y -%}
+    {%- for ns_n in site.data.news -%}
+      {%- assign ns_st = ns_n.status | default: 'held' -%}
+      {%- assign ns_nd = ns_n.date | append: '' -%}
+      {%- if ns_st == 'held' and ns_nd == ns_d -%}
+{% include news-row.html n=ns_n %}
+{% endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endfor -%}
+  </div>
+{%- endcapture -%}
+{%- capture ns_heading %}<span class="num">{{ ns_y }}</span>{% endcapture -%}
+{%- assign ns_id = 'y-' | append: ns_y -%}
+{% include section.html id=ns_id heading=ns_heading body=ns_rows %}
+{% endfor -%}

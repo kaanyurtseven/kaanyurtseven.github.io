@@ -1,0 +1,18 @@
+{%- comment -%}
+  The scripts at the end of <body>. Home: the model's engine, net.js, views.js, studio.js, then
+  site.js, hint.js (the cards' spotlight), shell.js, skin.js. Every other page: site.js, shell.js,
+  skin.js. About's map scripts and the explorer's loader come from their includes inside <main>.
+{%- endcomment -%}
+{%- assign sc_v = site.assets_version -%}
+{%- if page.page_id == 'home' %}
+<script src="{{ '/assets/engine/uncertainty-field.js' | relative_url }}?v={{ sc_v }}"></script>
+<script src="{{ '/assets/net.js' | relative_url }}?v={{ sc_v }}"></script>
+<script src="{{ '/assets/views.js' | relative_url }}?v={{ sc_v }}"></script>
+<script src="{{ '/assets/studio.js' | relative_url }}?v={{ sc_v }}"></script>
+<script src="{{ '/assets/site.js' | relative_url }}?v={{ sc_v }}"></script>
+<script src="{{ '/assets/hint.js' | relative_url }}?v={{ sc_v }}"></script>
+{%- else %}
+<script src="{{ '/assets/site.js' | relative_url }}?v={{ sc_v }}"></script>
+{%- endif %}
+<script src="{{ '/assets/shell.js' | relative_url }}?v={{ sc_v }}"></script>
+<script src="{{ '/assets/skin.js' | relative_url }}?v={{ sc_v }}"></script>

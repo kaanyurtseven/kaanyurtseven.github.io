@@ -1,0 +1,51 @@
+{%- comment -%}
+  The row anatomy for news, papers, the CV's entries and About's affiliations: the label first (so
+  a screen reader hears the date before the title), the title (h3), detail lines, anything extra,
+  body paragraphs, the links line, then at most one picture in the media place. Parameters (an
+  empty or missing one is left out):
+    id          the article's id (plain text)
+    cls         extra classes on article.row ("row--news", "row--pub", ...)
+    attrs       raw attributes with their leading space (' data-key="J4"')
+    label       the label's HTML (p.row-l); tab=true adds row-l--tab (a short label at the end
+                of the title's first line)
+    title       the title's HTML; href (a URL) links it, title_attr (plain text) is the link's title
+    details     pre-rendered <p class="row-d ...">...</p> lines
+    extra       pre-rendered markup after the details (Publications' Abstract <details>)
+    body        pre-rendered <p class="row-p">...</p> lines
+    links       a pre-rendered <p class="row-a">...</p>
+    media       a pre-rendered figure (photo.html mode=row)
+{%- endcomment -%}
+{%- assign rw_id = include.id | default: '' -%}
+{%- assign rw_cls = include.cls | default: '' -%}
+{%- assign rw_label = include.label | default: '' -%}
+{%- assign rw_href = include.href | default: '' -%}
+{%- assign rw_ta = include.title_attr | default: '' -%}
+<article class="row{% if rw_cls != '' %} {{ rw_cls }}{% endif %}"{% if rw_id != '' %} id="{{ rw_id | escape }}"{% endif %}{{ include.attrs }}>
+  <div class="row-b">
+{%- if rw_label != '' %}
+    <p class="row-l{% if include.tab %} row-l--tab{% endif %}">{{ rw_label }}</p>
+{%- endif %}
+    <h3 class="row-t">{% if rw_href != '' %}<a href="{{ rw_href | escape }}"{% if rw_ta != '' %} title="{{ rw_ta | escape }}"{% endif %}>{{ include.title }}</a>{% else %}{{ include.title }}{% endif %}</h3>
+{%- assign rw_x = include.details | default: '' | strip -%}
+{%- if rw_x != '' %}
+    {{ rw_x }}
+{%- endif -%}
+{%- assign rw_x = include.extra | default: '' | strip -%}
+{%- if rw_x != '' %}
+    {{ rw_x }}
+{%- endif -%}
+{%- assign rw_x = include.body | default: '' | strip -%}
+{%- if rw_x != '' %}
+    {{ rw_x }}
+{%- endif -%}
+{%- assign rw_x = include.links | default: '' | strip -%}
+{%- if rw_x != '' %}
+    {{ rw_x }}
+{%- endif %}
+  </div>
+{%- assign rw_x = include.media | default: '' | strip -%}
+{%- if rw_x != '' %}
+{{ rw_x }}
+{%- endif %}
+</article>
+{%- comment -%} end {%- endcomment -%}

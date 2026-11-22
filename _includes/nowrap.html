@@ -1,0 +1,70 @@
+{%- comment -%}
+  The no-wrap pass, without regular expressions: every string of _data/typography.yml `nowrap`
+  (each "from") in the text between tags becomes its "to" (a span.nw that does not wrap, or U+2060
+  after a hyphen). Tag-aware: the HTML is split on "<"; in each part the tag (up to the first ">")
+  is kept as it is and only the text after it is processed. The content of script and style
+  elements is left alone, and so is everything between the comments <!--nowrap:off--> and
+  <!--nowrap:on--> (the explorer's tool, the status line's date); the two comments themselves are
+  dropped from the output.
+  Two passes: each "from" (longest first) becomes a private-use token, then each token its "to", so
+  a shorter row never matches inside a longer one ("6 October 2026" in "26 October 2026").
+  A text is processed only when it holds "-", "/", "–" or " 20" (every row does).
+  Parameter: html. Each compound, date or range in the text needs a row in typography.yml;
+  scripts/check_typography.rb lists missing ones in a built site.
+{%- endcomment -%}
+{%- assign nw_rows = site.data.typography.nowrap -%}
+{%- assign nw_t0 = site.data.typography.token[0] -%}
+{%- assign nw_t1 = site.data.typography.token[1] -%}
+{%- assign nw_parts = include.html | split: '<' -%}
+{%- assign nw_on = true -%}
+{%- assign nw_raw = false -%}
+{%- for nw_part in nw_parts -%}
+  {%- if forloop.first -%}
+    {%- assign nw_text = nw_part -%}
+  {%- else -%}
+    {%- if nw_part contains '>' -%}
+      {%- assign nw_tag = nw_part | split: '>' | first | default: '' -%}
+      {%- assign nw_text = nw_part | remove_first: nw_tag | remove_first: '>' -%}
+      {%- unless nw_tag == '!--nowrap:off--' or nw_tag == '!--nowrap:on--' -%}
+        {{- '<' | append: nw_tag | append: '>' -}}
+      {%- endunless -%}
+    {%- else -%}
+      {%- assign nw_tag = nw_part -%}
+      {%- assign nw_text = '' -%}
+      {{- '<' | append: nw_tag -}}
+    {%- endif -%}
+    {%- assign nw_l7 = nw_tag | slice: 0, 7 | downcase -%}
+    {%- assign nw_l6 = nw_l7 | slice: 0, 6 -%}
+    {%- assign nw_l5 = nw_l7 | slice: 0, 5 -%}
+    {%- if nw_raw -%}
+      {%- if nw_l7 == '/script' or nw_l6 == '/style' -%}{%- assign nw_raw = false -%}{%- endif -%}
+    {%- elsif nw_l6 == 'script' or nw_l5 == 'style' -%}
+      {%- assign nw_raw = true -%}
+    {%- elsif nw_tag == '!--nowrap:off--' -%}
+      {%- assign nw_on = false -%}
+    {%- elsif nw_tag == '!--nowrap:on--' -%}
+      {%- assign nw_on = true -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- if nw_on and nw_raw == false -%}
+    {%- if nw_text contains '-' or nw_text contains '/' or nw_text contains '–' or nw_text contains ' 20' -%}
+      {%- assign nw_used = '' -%}
+      {%- for nw_r in nw_rows -%}
+        {%- if nw_text contains nw_r.from -%}
+          {%- capture nw_k %}{{ nw_t0 }}{{ forloop.index0 }}{{ nw_t1 }}{% endcapture -%}
+          {%- assign nw_text = nw_text | replace: nw_r.from, nw_k -%}
+          {%- assign nw_used = nw_used | append: ' ' | append: forloop.index0 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if nw_used != '' -%}
+        {%- assign nw_ids = nw_used | split: ' ' -%}
+        {%- for nw_i in nw_ids -%}
+          {%- assign nw_ix = nw_i | plus: 0 -%}
+          {%- capture nw_k %}{{ nw_t0 }}{{ nw_i }}{{ nw_t1 }}{% endcapture -%}
+          {%- assign nw_text = nw_text | replace: nw_k, nw_rows[nw_ix].to -%}
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endif -%}
+  {{- nw_text -}}
+{%- endfor -%}

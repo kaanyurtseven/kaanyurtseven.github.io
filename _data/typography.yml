@@ -1,0 +1,99 @@
+# No-wrap rules for visible text, longest "from" first: each "to" is a no-wrap span, or the
+# words with a word joiner (U+2060) after each hyphen.
+# _includes/nowrap.html replaces each "from" in the text between tags by a token, then each token by its "to"
+# (two passes, so a shorter row never matches inside a longer one: "6 October 2026" in "26 October 2026").
+# A new compound (letters-letters), "d Month yyyy" date, "yyyy–yyyy" range or listed name in visible text needs
+# a row here; scripts/check_typography.rb lists the missing ones.
+token: ["\uE000", "\uE001"]
+months: [January, February, March, April, May, June, July, August, September, October, November, December]
+months_abbr: [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+nowrap:
+  - { from: "Security-Constrained", to: "<span class=\"nw\">Security-Constrained</span>" }
+  - { from: "security-constrained", to: "<span class=\"nw\">security-constrained</span>" }
+  - { from: "Renewable-Dominated", to: "<span class=\"nw\">Renewable-Dominated</span>" }
+  - { from: "renewable-dominated", to: "<span class=\"nw\">renewable-dominated</span>" }
+  - { from: "chance-constrained", to: "<span class=\"nw\">chance-constrained</span>" }
+  - { from: "16 September 2025", to: "<span class=\"nw\">16 September 2025</span>" }
+  - { from: "22 September 2026", to: "<span class=\"nw\">22 September 2026</span>" }
+  - { from: "balancing-related", to: "<span class=\"nw\">balancing-related</span>" }
+  - { from: "uncertainty-aware", to: "<span class=\"nw\">uncertainty-aware</span>" }
+  - { from: "3 September 2026", to: "<span class=\"nw\">3 September 2026</span>" }
+  - { from: "risk-constrained", to: "<span class=\"nw\">risk-constrained</span>" }
+  - { from: "state-of-the-art", to: "<span class=\"nw\">state-of-the-art</span>" }
+  - { from: "13 October 2026", to: "<span class=\"nw\">13 October 2026</span>" }
+  - { from: "15 October 2026", to: "<span class=\"nw\">15 October 2026</span>" }
+  - { from: "25 October 2026", to: "<span class=\"nw\">25 October 2026</span>" }
+  - { from: "26 October 2026", to: "<span class=\"nw\">26 October 2026</span>" }
+  - { from: "27 October 2026", to: "<span class=\"nw\">27 October 2026</span>" }
+  - { from: "Balancing-aware", to: "<span class=\"nw\">Balancing-aware</span>" }
+  - { from: "balancing-aware", to: "<span class=\"nw\">balancing-aware</span>" }
+  - { from: "decision-making", to: "<span class=\"nw\">decision-making</span>" }
+  - { from: "(B-KUL-H0P08A)", to: "<span class=\"nw\">(B-KUL-H0P08A)</span>" }
+  - { from: "6 October 2026", to: "<span class=\"nw\">6 October 2026</span>" }
+  - { from: "best-return-on", to: "<span class=\"nw\">best-return-on</span>" }
+  - { from: "cost-efficient", to: "<span class=\"nw\">cost-efficient</span>" }
+  - { from: "ground-mounted", to: "<span class=\"nw\">ground-mounted</span>" }
+  - { from: "near-real-time", to: "<span class=\"nw\">near-\u2060real-\u2060time</span>" }
+  - { from: "scenario-based", to: "<span class=\"nw\">scenario-based</span>" }
+  - { from: "RES-dominated", to: "<span class=\"nw\">RES-dominated</span>" }
+  - { from: "Value-at-Risk", to: "<span class=\"nw\">Value-at-Risk</span>" }
+  - { from: "co-supervisor", to: "<span class=\"nw\">co-supervisor</span>" }
+  - { from: "power-voltage", to: "<span class=\"nw\">power-voltage</span>" }
+  - { from: "voltage-power", to: "<span class=\"nw\">voltage-power</span>" }
+  - { from: "Non-Gaussian", to: "<span class=\"nw\">Non-Gaussian</span>" }
+  - { from: "bi-objective", to: "<span class=\"nw\">bi-objective</span>" }
+  - { from: "co-existence", to: "<span class=\"nw\">co-existence</span>" }
+  - { from: "cross-border", to: "<span class=\"nw\">cross-border</span>" }
+  - { from: "here-and-now", to: "<span class=\"nw\">here-and-now</span>" }
+  - { from: "medium-scale", to: "<span class=\"nw\">medium-scale</span>" }
+  - { from: "moment-based", to: "<span class=\"nw\">moment-based</span>" }
+  - { from: "non-Gaussian", to: "<span class=\"nw\">non-Gaussian</span>" }
+  - { from: "quarter-hour", to: "<span class=\"nw\">quarter-hour</span>" }
+  - { from: "risk-neutral", to: "<span class=\"nw\">risk-neutral</span>" }
+  - { from: "wait-and-see", to: "<span class=\"nw\">wait-and-see</span>" }
+  - { from: "Data-Driven", to: "<span class=\"nw\">Data-Driven</span>" }
+  - { from: "Data-driven", to: "<span class=\"nw\">Data-driven</span>" }
+  - { from: "ESAT-ELECTA", to: "<span class=\"nw\">ESAT-ELECTA</span>" }
+  - { from: "Mohy-ud-din", to: "<span class=\"nw\">Mohy-ud-din</span>" }
+  - { from: "cross-zonal", to: "<span class=\"nw\">cross-zonal</span>" }
+  - { from: "data-driven", to: "<span class=\"nw\">data-driven</span>" }
+  - { from: "high-profit", to: "<span class=\"nw\">high-profit</span>" }
+  - { from: "large-scale", to: "<span class=\"nw\">large-scale</span>" }
+  - { from: "risk-averse", to: "<span class=\"nw\">risk-averse</span>" }
+  - { from: "third-party", to: "<span class=\"nw\">third-party</span>" }
+  - { from: "CITCEA-UPC", to: "<span class=\"nw\">CITCEA-UPC</span>" }
+  - { from: "Risk-Based", to: "<span class=\"nw\">Risk-Based</span>" }
+  - { from: "Risk-based", to: "<span class=\"nw\">Risk-based</span>" }
+  - { from: "Stage-Wise", to: "<span class=\"nw\">Stage-Wise</span>" }
+  - { from: "cloudy-sky", to: "<span class=\"nw\">cloudy-sky</span>" }
+  - { from: "non-costly", to: "<span class=\"nw\">non-costly</span>" }
+  - { from: "risk-aware", to: "<span class=\"nw\">risk-aware</span>" }
+  - { from: "risk-based", to: "<span class=\"nw\">risk-based</span>" }
+  - { from: "set-points", to: "<span class=\"nw\">set-points</span>" }
+  - { from: "solar-wind", to: "<span class=\"nw\">solar-wind</span>" }
+  - { from: "15-minute", to: "15-\u2060minute" }
+  - { from: "2014–2019", to: "<span class=\"nw\">2014–2019</span>" }
+  - { from: "2014–2021", to: "<span class=\"nw\">2014–2021</span>" }
+  - { from: "2019–2021", to: "<span class=\"nw\">2019–2021</span>" }
+  - { from: "2019–2022", to: "<span class=\"nw\">2019–2022</span>" }
+  - { from: "2020–2021", to: "<span class=\"nw\">2020–2021</span>" }
+  - { from: "2022–2026", to: "<span class=\"nw\">2022–2026</span>" }
+  - { from: "2235–2249", to: "<span class=\"nw\">2235–2249</span>" }
+  - { from: "Two-Stage", to: "<span class=\"nw\">Two-Stage</span>" }
+  - { from: "clear-sky", to: "<span class=\"nw\">clear-sky</span>" }
+  - { from: "day-ahead", to: "<span class=\"nw\">day-ahead</span>" }
+  - { from: "ky-motion", to: "<span class=\"nw\">ky-motion</span>" }
+  - { from: "long-term", to: "<span class=\"nw\">long-term</span>" }
+  - { from: "real-life", to: "<span class=\"nw\">real-life</span>" }
+  - { from: "real-time", to: "<span class=\"nw\">real-time</span>" }
+  - { from: "three-day", to: "<span class=\"nw\">three-day</span>" }
+  - { from: "trade-off", to: "<span class=\"nw\">trade-off</span>" }
+  - { from: "ky-theme", to: "<span class=\"nw\">ky-theme</span>" }
+  - { from: "no-fault", to: "<span class=\"nw\">no-fault</span>" }
+  - { from: "start-up", to: "<span class=\"nw\">start-up</span>" }
+  - { from: "EUR-ACE", to: "<span class=\"nw\">EUR-\u2060ACE</span>" }
+  - { from: "on-land", to: "<span class=\"nw\">on-land</span>" }
+  - { from: "N-SIDE", to: "<span class=\"nw\">N-\u2060SIDE</span>" }
+  - { from: "AC/DC", to: "<span class=\"nw\">AC/DC</span>" }
+  - { from: "J.-F.", to: "<span class=\"nw\">J.-F.</span>" }
+  - { from: "N-1", to: "<span class=\"nw\">N-1</span>" }

@@ -1,0 +1,88 @@
+title: Dr. Kaan Yurtseven           # site.title; the pages' <title> and og:site_name read _data/profile.yml display_name
+tagline: Risk-based decision tools for power systems
+# Keep in sync with meta_description in _data/profile.yml, which the head reads.
+description: >
+  Dr. Kaan Yurtseven, postdoctoral researcher at KU Leuven and Etch by EnergyVille, develops
+  stochastic optimization methods for risk-aware congestion management and balancing in hybrid AC/DC grids.
+author:
+  name: Kaan Yurtseven
+  email: kaan.yurtseven@kuleuven.be
+  affiliation: KU Leuven and Etch by EnergyVille
+  github: kaanyurtseven
+  linkedin: kaanyurtseven
+  scholar: "https://scholar.google.com/citations?user=M4bo2DMAAAAJ"
+
+url: "https://kaanyurtseven.com"
+baseurl: ""
+
+# No analytics, no cookies, no third-party requests: every file a page loads
+# comes from this site.
+
+# Cache-busting token appended as ?v= to CSS and JS URLs. Bump it by hand
+# whenever a stylesheet or script changes (site.time changes on every build).
+assets_version: "2026-11-20"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: null
+
+# Plugins (all whitelisted on GitHub Pages). The head is written by hand in
+# _includes/head.html.
+plugins:
+  - jekyll-sitemap
+  - jekyll-redirect-from
+  - jekyll-seo-tag
+# With --safe, Jekyll loads only the gems named here (GitHub Pages sets its own
+# list, so this key changes nothing there). A local `jekyll build --safe` without it
+# loads no plugin: no sitemap.xml and no redirect stubs.
+whitelist:
+  - jekyll-sitemap
+  - jekyll-redirect-from
+  - jekyll-seo-tag
+
+# jekyll-redirect-from: no redirects.json in the published site
+redirect_from:
+  json: false
+
+# Collections
+collections:
+  pages:
+    output: true
+    permalink: /:name/
+
+# Defaults. Every page shell uses _layouts/page.html (its body is
+# _includes/pages/<page_id>.html, inside _layouts/default.html).
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "page"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+
+# Exclude from build. CI reads the accumulators and scripts/ from the repository,
+# not from _site, so the site does not serve them.
+# "README.md" matches only the root file. GitHub Pages' default plugins
+# jekyll-optional-front-matter and jekyll-readme-index turn any other Markdown file
+# without front matter into a page (assets/data/basemap/README.md would appear at
+# /assets/data/basemap/ and in sitemap.xml), so each one is named here.
+# _config.dev.yml repeats this list (Jekyll replaces arrays instead of merging them).
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENSE
+  - .git
+  - vendor
+  - scripts
+  - _config.dev.yml
+  - assets/data/wind_acc.json
+  - assets/data/solar_acc.json
+  - assets/data/wind_recent_acc.json
+  - assets/data/solar_recent_acc.json
+  - assets/data/basemap/README.md

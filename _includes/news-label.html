@@ -1,0 +1,10 @@
+{%- comment -%}
+  A News entry's label: the date in full in <time>, then the place, each part in span.row-l-p with
+  the ", " between them in span.row-l-sep, so a reader and a screen reader get
+  "15 October 2026, Leuven, Belgium".
+  Parameter: n (a _data/news.yml entry). Used by News (news-row.html) and Home's Latest.
+{%- endcomment -%}
+{%- assign nl_d = include.n.date | append: '' -%}
+{%- capture nl_t %}{% include date.html d=nl_d %}{% endcapture -%}
+<span class="row-l-p"><time datetime="{{ nl_d | escape }}">{{ nl_t | escape }}</time></span>
+{%- if include.n.place %}<span class="row-l-sep">, </span><span class="row-l-p">{{ include.n.place | escape }}</span>{% endif -%}

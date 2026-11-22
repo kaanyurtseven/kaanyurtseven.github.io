@@ -1,0 +1,172 @@
+{%- comment -%}
+  Home. Rendered by _layouts/page.html without the no-wrap pass; this include runs that pass
+  itself on Latest and Selected publications only (the hero holds about 1 MB of inline SVG).
+  1. The hero: the byline (home.yml hero.byline, tokens from profile.yml; the honorific and the
+     name in span.nm, the name with lang), the h1 in its display lines (a word joiner U+2060 after
+     each hyphen, so "Risk-based" stays whole) and the dek (its last part after ", " kept on one
+     line when it is 28 characters or fewer).
+  2. The model: the two stages (_includes/home/stage-*.html), the visually hidden text
+     alternative (home.yml model.caption by id; the balancing, HVDC, flows and DC parts in spans
+     that assets/site.css shows for the html data attributes of _layouts/default.html) and the
+     Pause control. The engine loads from data-engine.
+  3. The four cards (home.yml themes): each card's link goes to a paper (pub: DOI, else url; its
+     title as the tooltip, venue and year after the label) or to a page (url).
+  4. Latest (the home.yml news.count newest held news.yml entries, newest date first, equal dates
+     in file order) and Selected publications (featured publications.yml entries in file order,
+     home.yml selected.limit).
+  A separator space inside an if/unless is written {{ ' ' }}: Liquid prints nothing for a block
+  whose body is only whitespace.
+{%- endcomment -%}
+{%- assign hm = site.data.home -%}
+{%- assign hm_prof = site.data.profile -%}
+{%- capture hm_name_html %}<span lang="{{ hm_prof.name_lang }}" class="nm">{{ hm_prof.name | escape }}</span>{% endcapture -%}
+{%- assign hm_hon = hm_prof.honorific | escape | append: ' ' -%}
+{%- capture hm_hon_html %}<span class="nm">{{ hm_prof.honorific | escape }}</span> {% endcapture -%}
+{%- capture hm_byline -%}
+  {%- for hm_part in hm.hero.byline -%}
+    {%- capture hm_s %}{% include pages/fill.html text=hm_part %}{% endcapture -%}
+    {%- assign hm_s = hm_s | escape | replace_first: hm_prof.name, hm_name_html -%}
+    {%- assign hm_s4 = hm_s | slice: 0, hm_hon.size -%}
+    {%- if hm_s4 == hm_hon -%}{%- assign hm_s = hm_s | replace_first: hm_hon, hm_hon_html -%}{%- endif -%}
+    {%- unless forloop.first %} <span aria-hidden="true">·</span> {% endunless -%}
+    {{- hm_s -}}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- comment -%} the second argument of this replace is a hyphen and U+2060 (word joiner) {%- endcomment -%}
+{%- capture hm_h1 -%}
+  {%- for hm_l in hm.hero.headline.lines -%}
+    {%- unless forloop.first %}{{ ' ' }}{% endunless -%}
+    <span class="h1-l">{{ hm_l | escape | replace: '-', '-⁠' }}</span>
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign hm_dek = hm.hero.headline.dek | default: '' -%}
+{%- assign hm_dek_parts = hm_dek | split: ', ' -%}
+{%- assign hm_dek_tail = hm_dek_parts | last | default: '' -%}
+{%- if hm_dek_parts.size > 1 and hm_dek_tail.size <= 28 -%}
+  {%- assign hm_dek_n = hm_dek.size | minus: hm_dek_tail.size | minus: 1 -%}
+  {%- assign hm_dek_head = hm_dek | slice: 0, hm_dek_n -%}
+  {%- capture hm_dek_html %}{{ hm_dek_head | escape }} <span class="nw">{{ hm_dek_tail | escape }}</span>{% endcapture -%}
+{%- else -%}
+  {%- assign hm_dek_html = hm_dek | escape -%}
+{%- endif -%}
+{%- for hm_c in hm.model.caption -%}
+  {%- assign hm_t = hm_c.text | normalize_whitespace | escape -%}
+  {%- case hm_c.id -%}
+    {%- when 'model' -%}{%- assign hm_alt_model = hm_t -%}
+    {%- when 'view' -%}{%- assign hm_alt_view = hm_t -%}
+    {%- when 'stories' -%}{%- assign hm_alt_stories = hm_t -%}
+    {%- when 'balancing' -%}{%- assign hm_alt_bal = hm_t -%}
+    {%- when 'hvdc' -%}{%- assign hm_alt_hvdc = hm_t -%}
+    {%- when 'flows' -%}{%- assign hm_alt_flows = hm_t -%}
+    {%- when 'dc' -%}{%- assign hm_alt_dc = hm_t -%}
+  {%- endcase -%}
+{%- endfor -%}
+<section class="hero" aria-labelledby="h1">
+  <div class="hero-top">
+    <p class="byline" data-byline>{{ hm_byline }}</p>
+    <h1 class="h1" id="h1">{{ hm_h1 }}</h1>
+    <p class="dek" id="dek">{{ hm_dek_html }}</p>
+  </div>
+  <div class="studio-wrap">
+    <figure class="studio" id="studio" data-engine="{{ '/assets/engine/' | relative_url }}" data-open="L-AD">
+      <div class="st-frame" aria-hidden="true" style="--ar-wide: 1440 / 486; --ar-compact: 390 / 352">
+{% include home/stage-wide.html %}
+{% include home/stage-compact.html %}
+      </div>
+      <figcaption class="visually-hidden">{{ hm_alt_model }} {{ hm_alt_view }} {{ hm_alt_stories }}<span class="alt-bal7"> {{ hm_alt_bal }}</span><span class="alt-hv-day"> {{ hm_alt_hvdc }}</span><span class="alt-flows"> {{ hm_alt_flows }}<span class="alt-dc"><span class="alt-hv-day"> {{ hm_alt_dc }}</span></span></span></figcaption>
+    </figure>
+    <button class="pause" id="studio-pause" type="button" aria-pressed="false" aria-label="Pause animation" hidden><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path class="ico-pause" d="M4 3h3v10H4zM9 3h3v10H9z"/><path class="ico-play" d="M5 3l8 5-8 5z"/></svg></button>
+  </div>
+</section>
+
+<section class="themes" aria-labelledby="themes-h">
+  <div class="wrap">
+    <h2 class="visually-hidden" id="themes-h">{{ hm.themes.heading | escape }}</h2>
+    <ul class="theme-grid">
+{%- for hm_th in hm.themes.items %}
+      <li class="theme" data-theme-key="{{ hm_th.key | escape }}">
+        <h3>{{ hm_th.title | escape }}</h3>
+        <p>{{ hm_th.text | normalize_whitespace | escape }}</p>
+        <div class="theme-say" aria-hidden="true"></div>
+{%- if hm_th.link.pub %}
+  {%- assign hm_p = site.data.publications | where: 'key', hm_th.link.pub | first -%}
+  {%- if hm_p.doi -%}{%- assign hm_href = 'https://doi.org/' | append: hm_p.doi -%}{%- else -%}{%- assign hm_href = hm_p.url -%}{%- endif %}
+        <a class="theme-link" href="{{ hm_href | escape }}" title="{{ hm_p.title | escape }}"><span class="lbl">{{ hm_th.link.label | escape }}</span> <span class="ven">{{ hm_p.venue | escape }}, {{ hm_p.year }}</span></a>
+{%- else %}
+        <a class="theme-link" href="{{ hm_th.link.url | relative_url | escape }}"><span class="lbl">{{ hm_th.link.label | escape }}</span></a>
+{%- endif %}
+      </li>
+{%- endfor %}
+    </ul>
+  </div>
+</section>
+{%- comment -%}
+  Latest: the held entries (no status, or status: held) by date, newest first, equal dates in file
+  order (Jekyll 3's sort is not stable, so the distinct dates are sorted and each date's entries
+  follow in file order), the first home.yml news.count of them.
+{%- endcomment -%}
+{%- assign hm_count = hm.news.count | default: 2 -%}
+{%- assign hm_dates = '' | split: '' -%}
+{%- for hm_n in site.data.news -%}
+  {%- assign hm_st = hm_n.status | default: 'held' -%}
+  {%- if hm_st == 'held' -%}{%- assign hm_d = hm_n.date | append: '' -%}{%- assign hm_dates = hm_dates | push: hm_d -%}{%- endif -%}
+{%- endfor -%}
+{%- assign hm_dates = hm_dates | uniq | sort | reverse -%}
+{%- assign hm_latest = '' | split: '' -%}
+{%- for hm_d in hm_dates -%}
+  {%- for hm_n in site.data.news -%}
+    {%- assign hm_st = hm_n.status | default: 'held' -%}
+    {%- assign hm_nd = hm_n.date | append: '' -%}
+    {%- if hm_st == 'held' and hm_nd == hm_d and hm_latest.size < hm_count -%}{%- assign hm_latest = hm_latest | push: hm_n -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if hm_latest.size >= hm_count -%}{%- break -%}{%- endif -%}
+{%- endfor -%}
+{%- assign hm_sel_limit = hm.selected.limit | default: 3 -%}
+{%- assign hm_selected = site.data.publications | where: 'featured', true -%}
+{%- capture hm_low %}
+
+<section class="sec sec--home" id="latest" aria-labelledby="latest-h">
+  <div class="sec-h">
+    <h2 class="sec-t" id="latest-h">{{ hm.news.heading | escape }}</h2>
+    <a class="sec-more" href="{{ hm.news.all_url | relative_url | escape }}">{{ hm.news.all_label | escape }}</a>
+  </div>
+  <ul class="latest">
+{%- for hm_n in hm_latest %}
+    <li class="latest-item" id="{{ hm_n.id | escape }}">
+{%- assign hm_img = hm_n.images | first -%}
+{%- if hm_img %}
+      <figure class="latest-mat">{% include photo.html src=hm_img.src alt=hm_img.alt mode='latest' %}</figure>
+{%- endif %}
+      <div class="latest-b">
+        <p class="row-l">{% include news-label.html n=hm_n %}</p>
+        <h3 class="row-t">{{ hm_n.title | escape }}</h3>
+        <p class="row-p">{{ hm_n.body | normalize_whitespace | escape }}</p>
+{%- if hm_n.link or hm_n.links %}
+        <p class="row-a">
+  {%- if hm_n.link %}<a href="{{ hm_n.link | escape }}">{{ hm_n.link_label | escape }}</a>{% endif -%}
+  {%- for hm_l in hm_n.links -%}
+    {%- if hm_n.link or forloop.index > 1 %}{{ ' ' }}{% endif %}<a href="{{ hm_l.url | escape }}">{{ hm_l.label | escape }}</a>
+  {%- endfor -%}
+        </p>
+{%- endif %}
+{%- if hm_n.credit %}
+        <p class="latest-credit">{{ hm_n.credit | escape }}</p>
+{%- endif %}
+      </div>
+    </li>
+{%- endfor %}
+  </ul>
+</section>
+
+<section class="sec sec--home" id="selected" aria-labelledby="selected-h">
+  <div class="sec-h">
+    <h2 class="sec-t" id="selected-h">{{ hm.selected.heading | escape }}</h2>
+    <a class="sec-more" href="{{ hm.selected.link.url | relative_url | escape }}">{{ hm.selected.link.label | escape }}</a>
+  </div>
+  <div class="rows rows--lab">
+{%- for hm_p in hm_selected limit: hm_sel_limit %}
+{% include pub-row.html p=hm_p abstract=false id='none' tab=false %}
+{%- endfor %}
+  </div>
+</section>{% endcapture -%}
+{% include nowrap.html html=hm_low %}

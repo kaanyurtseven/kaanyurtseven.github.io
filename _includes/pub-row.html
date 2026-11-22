@@ -1,0 +1,85 @@
+{%- comment -%}
+  A publication row for Publications and Home's Selected publications, through row.html: the label
+  ("Journal, May 2026": the type word and the month abbreviated, in <time>), the title linked (url,
+  else the DOI), the authors (authors.html), the venue line (venue, vol. (issue), pp., art., then
+  ". note"; a thesis "venue_short, year"), on the PhD thesis (research.yml thesis.key) the line
+  "Supervisor X, co-supervisor Y." (cv.yml labels, research.yml thesis), and the closed Abstract
+  <details> when the entry has an abstract. Parameters:
+    p         the publications.yml entry (a variable)
+    abstract  false: no Abstract toggle (Home); default true
+    id        the article's id: default (or "auto") the key in lower case, "none" for no id
+    tab       false: the label on its own line above the title (Publications, Home); default true
+  Output: <article …> … </article>, no surrounding whitespace.
+{%- endcomment -%}
+{%- assign pr_p = include.p -%}
+{%- assign pr_abs = true -%}
+{%- if include.abstract == false or include.abstract == 'false' -%}{%- assign pr_abs = false -%}{%- endif -%}
+{%- assign pr_tab = true -%}
+{%- if include.tab == false or include.tab == 'false' -%}{%- assign pr_tab = false -%}{%- endif -%}
+{%- assign pr_id = include.id | default: 'auto' -%}
+{%- if pr_id == 'auto' -%}
+  {%- assign pr_id = pr_p.key | downcase -%}
+{%- elsif pr_id == 'none' -%}
+  {%- assign pr_id = '' -%}
+{%- endif -%}
+{%- if pr_p.url -%}
+  {%- assign pr_href = pr_p.url -%}
+{%- elsif pr_p.doi -%}
+  {%- assign pr_href = 'https://doi.org/' | append: pr_p.doi -%}
+{%- else -%}
+  {%- assign pr_href = '' -%}
+{%- endif -%}
+{%- assign pr_has_abs = false -%}
+{%- if pr_abs and pr_p.abstract -%}{%- assign pr_has_abs = true -%}{%- endif -%}
+{%- comment -%} the label {%- endcomment -%}
+{%- if pr_p.type == 'journal' -%}
+  {%- assign pr_tw = 'Journal' -%}
+{%- elsif pr_p.type == 'conference' -%}
+  {%- assign pr_tw = 'Conference' -%}
+{%- elsif pr_p.type == 'thesis' -%}
+  {%- assign pr_tw = 'Thesis' -%}
+{%- else -%}
+  {%- assign pr_tw = pr_p.type | capitalize -%}
+{%- endif -%}
+{%- if pr_p.month -%}
+  {%- assign pr_mm = pr_p.month | prepend: '0' | slice: -2, 2 -%}
+  {%- assign pr_iso = pr_p.year | append: '-' | append: pr_mm -%}
+{%- else -%}
+  {%- assign pr_iso = pr_p.year | append: '' -%}
+{%- endif -%}
+{%- capture pr_dt %}{% include date.html d=pr_iso form='short' %}{% endcapture -%}
+{%- capture pr_label %}<span class="row-l-p">{{ pr_tw }}</span><span class="row-l-sep">, </span><span class="row-l-p"><time datetime="{{ pr_iso | escape }}">{{ pr_dt | escape }}</time></span>{% endcapture -%}
+{%- comment -%} the venue line {%- endcomment -%}
+{%- if pr_p.type == 'thesis' -%}
+  {%- assign pr_vs = pr_p.venue_short | escape -%}
+  {%- capture pr_venue %}{% include tr.html t=pr_vs %}, {{ pr_p.year }}{% endcapture -%}
+{%- else -%}
+  {%- capture pr_vl -%}
+    {{- pr_p.venue -}}
+    {%- if pr_p.volume %}, vol. {{ pr_p.volume }}{% if pr_p.issue %} ({{ pr_p.issue }}){% endif %}{% endif -%}
+    {%- if pr_p.pages %}, pp. {{ pr_p.pages }}{% endif -%}
+    {%- if pr_p.article %}, art. {{ pr_p.article }}{% endif -%}
+    {%- if pr_p.note %}. {{ pr_p.note }}{% endif -%}
+  {%- endcapture -%}
+  {%- assign pr_vl = pr_vl | escape -%}
+  {%- capture pr_venue %}{% include tr.html t=pr_vl %}{% endcapture -%}
+{%- endif -%}
+{%- if pr_has_abs -%}{%- assign pr_vcls = 'row-v has-abs' -%}{%- else -%}{%- assign pr_vcls = 'row-v' -%}{%- endif -%}
+{%- assign pr_th = site.data.research.thesis -%}
+{%- assign pr_cvl = site.data.cv.labels -%}
+{%- capture pr_details -%}
+<p class="row-d">{% include authors.html a=pr_p.authors %}</p>
+    <p class="row-d {{ pr_vcls }}">{{ pr_venue }}</p>
+{%- if pr_p.key == pr_th.key %}
+    <p class="row-d">{{ pr_cvl.supervisor | escape }} {{ pr_th.supervisor | escape }}, {{ pr_cvl.co_supervisor | escape }} {{ pr_th.co_supervisor | escape }}.</p>
+{%- endif -%}
+{%- endcapture -%}
+{%- if pr_has_abs -%}
+  {%- capture pr_extra %}<details class="abs"><summary>Abstract</summary><div class="abs-b"><p>{{ pr_p.abstract | normalize_whitespace | escape }}</p></div></details>{% endcapture -%}
+{%- else -%}
+  {%- assign pr_extra = '' -%}
+{%- endif -%}
+{%- capture pr_title %}{{ pr_p.title | escape }}{% endcapture -%}
+{%- capture pr_attrs %} data-key="{{ pr_p.key | escape }}"{% endcapture -%}
+{%- include row.html id=pr_id cls='row--pub' attrs=pr_attrs label=pr_label tab=pr_tab title=pr_title href=pr_href details=pr_details extra=pr_extra -%}
+{%- comment -%} end {%- endcomment -%}

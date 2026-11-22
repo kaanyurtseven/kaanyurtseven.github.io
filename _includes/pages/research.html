@@ -1,0 +1,73 @@
+{%- comment -%}
+  Research. The head: research.yml title, lead and sentence. Then two parts, each an h2 on the
+  page's full width with items (h3) under it: Themes (research.yml themes: each id in the theme's
+  anchors as an empty anchor at its top, its paragraphs on the left, {explorer} linking the explorer
+  page by its full name, and its papers by full title on the right, paper-list.html) and Projects
+  (research.yml projects: name, full name, meta line and text through tr.html; a project with keys
+  lists its papers, one without lists its link and its News entry under labels.links). The page's
+  no-wrap pass (_layouts/page.html) runs over the result.
+{%- endcomment -%}
+{%- assign rs = site.data.research -%}
+{%- assign rs_h1 = rs.title | escape -%}
+{%- assign rs_lead = rs.lead | normalize_whitespace | escape -%}
+{%- assign rs_sent = rs.sentence | normalize_whitespace | escape -%}
+{%- capture rs_xlink %}<a href="{{ site.data.explorer.url | relative_url | escape }}">{{ site.data.explorer.name | escape }}</a>{% endcapture -%}
+{% include page-head.html h1=rs_h1 lead=rs_lead sent=rs_sent %}
+
+{% capture rs_rows %}  <div class="rows">
+{%- for rs_t in rs.themes.items %}
+<article class="row row--split theme" id="{{ rs_t.id }}" aria-labelledby="{{ rs_t.id }}-h">
+{%- for rs_a in rs_t.anchors %}
+  <span class="anchor" id="{{ rs_a }}"></span>
+{%- endfor %}
+  <div class="row-b">
+    <h3 class="row-t" id="{{ rs_t.id }}-h">{{ rs_t.title | escape }}</h3>
+{%- for rs_para in rs_t.text %}
+{%- assign rs_ptext = rs_para | normalize_whitespace | escape | replace_first: '{explorer}', rs_xlink %}
+    <p class="row-p">{{ rs_ptext }}</p>
+{%- endfor %}
+  </div>
+  <div class="row-x">
+{% include paper-list.html keys=rs_t.keys label=rs.labels.papers %}
+  </div>
+</article>
+{%- endfor %}
+  </div>{% endcapture -%}
+{%- assign rs_heading = rs.themes.heading | escape -%}
+{% include section.html id='themes' cls='part' h_cls='part-t' heading=rs_heading body=rs_rows %}
+{% capture rs_rows %}  <div class="rows">
+{%- for rs_pr in rs.projects.items %}
+{%- assign rs_id = 'project-' | append: rs_pr.id -%}
+{%- assign rs_name = rs_pr.name | escape -%}
+{%- assign rs_full = rs_pr.full_name | escape -%}
+{%- assign rs_meta = rs_pr.meta | escape -%}
+{%- assign rs_text = rs_pr.text | normalize_whitespace | escape %}
+<article class="row row--split project" id="{{ rs_id }}" aria-labelledby="{{ rs_id }}-h">
+  <div class="row-b">
+    <h3 class="row-t" id="{{ rs_id }}-h">{% include tr.html t=rs_name %}</h3>
+    <p class="row-d">{% include tr.html t=rs_full %}</p>
+    <p class="row-d">{% include tr.html t=rs_meta %}</p>
+    <p class="row-p">{% include tr.html t=rs_text %}</p>
+  </div>
+  <div class="row-x">
+{%- if rs_pr.keys and rs_pr.keys.size > 0 %}
+{% include paper-list.html keys=rs_pr.keys label=rs.labels.papers %}
+{%- else %}
+    <div class="papers">
+      <p class="row-x-k">{{ rs.labels.links | escape }}</p>
+      <ul class="paper-list">
+{%- if rs_pr.link %}
+        <li><a href="{{ rs_pr.link.url | escape }}">{{ rs_pr.link.label | escape }}</a></li>
+{%- endif -%}
+{%- if rs_pr.news %}
+        <li><a href="{{ '/news/' | relative_url | append: '#' | append: rs_pr.news | escape }}">{{ rs_pr.news_label | escape }}</a></li>
+{%- endif %}
+      </ul>
+    </div>
+{%- endif %}
+  </div>
+</article>
+{%- endfor %}
+  </div>{% endcapture -%}
+{%- assign rs_heading = rs.projects.heading | escape -%}
+{% include section.html id='projects' cls='part' h_cls='part-t' heading=rs_heading body=rs_rows %}

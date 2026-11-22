@@ -1,0 +1,23 @@
+---
+layout: default
+---
+{%- comment -%}
+  Every page shell (_pages/*.md, index.html, 404.html) uses this layout. Its body is
+  _includes/pages/<page_id>.html, which reads the words from _data and the shell's front matter;
+  the shell's own rendered body is {{ content }} inside that include (Privacy only).
+  Inner pages go through the no-wrap pass (_includes/nowrap.html) as a whole; Home runs it on
+  its two lower sections itself (its hero holds about 1 MB of inline SVG).
+  photo_seen counts the page's pictures for _includes/photo.html (an assign is global to the
+  page's render, so every include sees it); it starts at 0 here.
+{%- endcomment -%}
+{%- assign photo_seen = 0 -%}
+{%- if page.page_id -%}
+{%- capture pg_body %}{% include pages/{{ page.page_id }}.html %}{% endcapture -%}
+{%- if page.page_id == 'home' -%}
+{{ pg_body }}
+{%- else -%}
+{% include nowrap.html html=pg_body %}
+{%- endif -%}
+{%- else -%}
+{{ content }}
+{%- endif -%}

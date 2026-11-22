@@ -1,0 +1,57 @@
+{%- comment -%}
+  The page head of every inner page. The grid's mesh (_includes/grid/mesh.svg) is the head's
+  first child, behind its text. Parameters, all HTML strings the caller has escaped (an empty or
+  missing one is left out):
+    h1          the heading's content
+    print_line  a line under the h1 shown only in print (the CV's contact line)
+    lead        the lead (p.page-lead)
+    sent        one sentence (p.page-sent)
+    extra       markup after the h1, lead and sentence, before the index (the explorer page's
+                status line, the CV's PDF link)
+    index       the in-page links, pre-rendered <li><a href="#...">...</a></li> lines (the year
+                index, the CV's contents row); index_label (plain text) names the nav
+    media       markup in the head's media place (About's portrait)
+    after       markup after the text, beside the media (About's bio); adds .page-head--after
+    cls         extra classes on div.page-head
+{%- endcomment -%}
+{%- capture ph_mesh %}{% include grid/mesh.svg %}{% endcapture -%}
+{%- assign ph_after = include.after | default: '' -%}
+{%- assign ph_cls = include.cls | default: '' -%}
+<div class="page-head{% if ph_cls != '' %} {{ ph_cls }}{% endif %}{% if ph_after != '' %} page-head--after{% endif %}">
+{{ ph_mesh | strip }}
+  <div class="head-b">
+    <h1 class="page-h1">{{ include.h1 }}</h1>
+{%- assign ph_x = include.print_line | default: '' -%}
+{%- if ph_x != '' %}
+    <p class="page-print">{{ ph_x }}</p>
+{%- endif -%}
+{%- assign ph_x = include.lead | default: '' -%}
+{%- if ph_x != '' %}
+    <p class="page-lead">{{ ph_x }}</p>
+{%- endif -%}
+{%- assign ph_x = include.sent | default: '' -%}
+{%- if ph_x != '' %}
+    <p class="page-sent">{{ ph_x }}</p>
+{%- endif -%}
+{%- assign ph_x = include.extra | default: '' | strip -%}
+{%- if ph_x != '' %}
+    {{ ph_x }}
+{%- endif -%}
+{%- assign ph_x = include.index | default: '' | strip -%}
+{%- if ph_x != '' %}
+    <nav class="head-index" aria-label="{{ include.index_label | escape }}">
+      <ul>
+        {{ ph_x }}
+      </ul>
+    </nav>
+{%- endif %}
+  </div>
+{%- assign ph_x = include.media | default: '' | strip -%}
+{%- if ph_x != '' %}
+{{ ph_x }}
+{%- endif -%}
+{%- if ph_after != '' %}
+{{ ph_after }}
+{%- endif %}
+</div>
+{%- comment -%} end {%- endcomment -%}

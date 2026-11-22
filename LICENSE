@@ -1,0 +1,19 @@
+Copyright (c) 2026 Kaan Yurtseven. All rights reserved, except where noted below.
+
+The text, photos and code of this website are not licensed for reuse. You may view this
+repository and fork it on GitHub as GitHub's Terms of Service allow. Any other reuse needs
+written permission.
+
+Third-party material keeps its own license:
+
+- assets/fonts/  Schibsted Grotesk and Azeret Mono, SIL Open Font License 1.1
+  (OFL-schibsted-grotesk.txt, OFL-azeret-mono.txt)
+- assets/vendor/plotly/  plotly.js, MIT (LICENSE, plotly-cartesian-2.35.2.min.js.LICENSE.txt)
+- assets/vendor/leaflet/  Leaflet, BSD-2-Clause (LICENSE-leaflet.txt); Leaflet.markercluster,
+  MIT (LICENSE-markercluster.txt)
+- assets/data/basemap/  Natural Earth, public domain (README.md)
+- Data derived from Elia Open Data (Elia Transmission Belgium SA), CC BY 4.0
+  (https://creativecommons.org/licenses/by/4.0/): assets/data/*.json, _data/figures/,
+  assets/engine/hero-shapes.json, scripts/fixtures/
+- Photos credited to others on the site, screenshots of publications and paper abstracts
+  quoted as published stay with their rights holders.

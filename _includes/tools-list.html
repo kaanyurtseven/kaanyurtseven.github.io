@@ -1,0 +1,23 @@
+{%- comment -%}
+  The Tools item of the main nav: "Tools" is a plain link; the chevron button (data-js-only) opens
+  the list, which stays hidden without JavaScript (disclosure pattern, no role="menu"). Items:
+  _data/nav.yml, the Tools item's `list` (the explorer with its mini visual,
+  _data/figures/tools_fx.json glyph; StochasticPowerModels.jl; the PV fault detection tool), then
+  "All tools". Parameters: item (the nav.yml item), cur (its aria-current attribute, from
+  header.html). aria-current="page" on the explorer item on the explorer page and on "All tools"
+  on /tools/.
+{%- endcomment -%}
+        <li class="nav-has-list">
+          <a class="nav-a nav-tools" href="{{ include.item.url | relative_url }}"{{ include.cur }}>{{ include.item.label | escape }}</a>
+          <button type="button" class="nav-list-btn" aria-expanded="false" aria-controls="nav-tools" data-js-only><span class="visually-hidden">{{ include.item.list_label | escape }}</span><svg viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false"><path d="M1.5 3.5 5 7l3.5-3.5"/></svg></button>
+          <div class="nav-list" id="nav-tools" hidden>
+            <ul>
+{%- for tl_t in include.item.list %}
+{%- assign tl_line = tl_t.line | escape %}
+              <li class="nl-{{ tl_t.key }}"><a href="{{ tl_t.url | relative_url }}"{% if tl_t.url == page.url %} aria-current="page"{% endif %}><span class="nl-t">{{ tl_t.name | escape }}</span> <span class="nl-d">{% include tr.html t=tl_line %}</span>{% if tl_t.key == 'explorer' %}<span class="nl-fx">{{ site.data.figures.tools_fx.glyph }}</span>{% endif %}</a></li>
+{%- endfor %}
+              <li class="nl-all"><a href="{{ include.item.url | relative_url }}"{% if page.url == include.item.url %} aria-current="page"{% endif %}><span class="nl-t">{{ include.item.all_label | escape }}</span></a></li>
+            </ul>
+          </div>
+        </li>
+{%- comment -%} end {%- endcomment -%}

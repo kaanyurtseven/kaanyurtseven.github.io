@@ -1,0 +1,208 @@
+/* The Forecast Error Uncertainty Explorer on its own page, styled through the --fx-* tokens that forecast.js reads and
+   the tool's own classes. Color only where it carries a meaning: the empirical distribution in the probability accent,
+   the two fitted curves in orange (Gaussian) and green (Beta), the physical limits (0 MW, installed capacity) in red.
+   The measured series is a solid ink line and the forecast a dotted one, in both charts.
+   The colors were checked against each other and against the violet bars, for normal vision and simulated protanopia
+   and deuteranopia (OKLab distance, Machado et al. 2009); each holds 3:1 on the chart's paper. */
+
+:root {
+  --fx-paper: var(--mat);
+  --fx-ink: var(--ink-2);
+  --fx-ink-2: var(--ink-2);
+  --fx-grid: var(--rule);
+  --fx-axis: var(--rule-2);
+  --fx-axis-width: 1;
+  --fx-empirical: var(--accent);
+  --fx-empirical-solar: var(--accent);
+  /* 0.66 in light, so the bars hold 3:1 on the paper (#f4f5f6); dark sets its own below */
+  --fx-empirical-opacity: 0.66;
+  --fx-empirical-line: var(--mat);
+  --fx-empirical-line-width: 0.4;
+  --fx-gauss: #c4750e;          /* orange */
+  --fx-gauss-dash: solid;
+  --fx-gauss-width: 2;
+  --fx-beta: #087970;           /* green */
+  --fx-beta-width: 2;
+  --fx-measured: var(--ink);
+  --fx-forecast: var(--ink);
+  --fx-forecast-dash: dot;
+  --fx-bound: #9e2225;          /* the physical limits */
+  --fx-bound-width: 1.5;
+  --fx-infeasible: transparent;
+  --fx-hatch: var(--rule-2);
+  --fx-hatch-shape: /;
+  --fx-hatch-size: 7;
+  --fx-hatch-solidity: 0.2;
+  --fx-tail-tint: transparent;
+  --fx-lock: var(--ink);
+  --fx-lock-symbol: circle-open;
+  --fx-lock-size: 12;
+  --fx-lock-line: var(--ink);
+  --fx-lock-line-width: 2;
+  --fx-label-bg: var(--mat);
+  --fx-font: "Schibsted Grotesk", "Schibsted Fallback", Arial, sans-serif;
+  /* the grotesk for the tick labels: Azeret Mono's are too wide for the chart's fixed 70 px margin and run
+     into the "Probability density" title (the rail keeps the mono) */
+  --fx-font-num: "Schibsted Grotesk", "Schibsted Fallback", Arial, sans-serif;
+  --fx-font-size: 14;
+  --fx-tick-size: 13;
+}
+
+.fx-wrap { padding-bottom: 80px; }
+.forecast-section { padding: 0; }
+.forecast-section__inner { max-width: none; margin: 0; padding: 0; }
+/* the page's H1 and lead name the tool; the section's own header stays for assistive tech */
+.forecast-section__header { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+.fx-sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+.forecast-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 28px; margin-bottom: 14px; }
+.fc-group { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--rule-2); }
+.fc-tab, .fc-tz-btn, .fc-step {
+  display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 14px;
+  border: 0; border-radius: 0; background: transparent; color: var(--ink); font: 500 15px/1.2 var(--sans); cursor: pointer; white-space: nowrap;
+}
+.fc-group .fc-tab + .fc-tab { border-left: 1px solid var(--rule-2); }
+.fc-tab[aria-pressed="true"], .fc-tz-btn[aria-pressed="true"], .fc-step[aria-pressed="true"] { background: var(--ink); color: var(--wall); }
+.fc-tz-group { display: flex; border: 1px solid var(--rule-2); }
+.fc-tz-btn { min-height: 36px; font-size: 14px; }
+.fc-tz-btn + .fc-tz-btn { border-left: 1px solid var(--rule-2); }
+.fc-step { border: 1px solid var(--rule-2); font-size: 14px; min-height: 40px; }
+.fc-step[aria-disabled="true"] { color: var(--ink-3); border-color: var(--rule); cursor: default; }
+
+.forecast-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 28px; margin-bottom: 16px; }
+.fc-filter-group { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; }
+.fc-filter { display: flex; flex-direction: column; gap: 4px; }
+.fc-filter__label { font: 400 14px/1.3 var(--mono); color: var(--ink-2); }
+.fc-filter__select { min-height: 44px; min-width: 9.5rem; padding: 0 10px; border: 1px solid var(--rule-2); border-radius: 0; background-color: var(--mat); color: var(--ink); font: 500 15px var(--sans); }
+.fc-filter--note { max-width: 18rem; }
+.fc-filter__note-text { font-size: 14px; color: var(--ink-2); }
+.fc-gauss-wrap { margin-left: auto; }
+.fc-gauss-toggle { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; cursor: pointer; font-size: 15px; }
+.fc-gauss-toggle__check { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); cursor: pointer; }
+
+.fc-guide { position: relative; margin-bottom: 16px; padding: 12px 56px 12px 18px; border-left: 3px solid var(--accent); background: var(--mat); font-size: 15.5px; }
+.fc-guide[hidden] { display: none; }
+.fc-guide__label { font-weight: 700; }
+.fc-guide__text { color: var(--ink); max-width: 80ch; }
+.fc-guide__close { position: absolute; top: 6px; right: 6px; width: 44px; height: 44px; border: 1px solid transparent; background: none; color: var(--ink); font: 400 22px/1 var(--sans); cursor: pointer; }   /* the site's sans, not the browser's button font */
+@media (hover: hover) and (pointer: fine) { .fc-guide__close:hover { border-color: var(--rule-2); } }
+
+.forecast-layout { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; border: 1px solid var(--rule-2); background: var(--mat); }
+.forecast-panels { position: relative; display: flex; flex-direction: column; min-width: 0; }
+.forecast-panel { display: flex; flex-direction: column; min-width: 0; }
+.forecast-panel--dist { border-bottom: 1px solid var(--rule); }
+.forecast-panel__label { padding: 10px 14px 0; font: 400 14px/1.45 var(--mono); color: var(--ink-2); min-height: calc(1.45em + 10px); }
+.forecast-panel__label-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px 0; }
+.forecast-panel__label-row .forecast-panel__label { padding: 0; flex: 1 1 18rem; min-height: 0; }
+.forecast-chart-area { flex: 1; width: 100%; min-height: 220px; }
+.forecast-panel--dist .forecast-chart-area { min-height: 290px; }
+.forecast-chart-area .notifier-note { display: none !important; }
+.fc-stepper { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 14px 14px; }
+.fc-range { flex: 1 1 200px; min-width: 0; height: 32px; margin: 0; background: transparent; accent-color: var(--ink); cursor: pointer; }
+.fc-range:disabled { cursor: default; }
+
+.forecast-loading { position: absolute; inset: 0; z-index: 2; display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--mat) 90%, transparent); color: var(--ink-2); font: 400 14px var(--mono); pointer-events: none; }
+.forecast-loading[hidden] { display: none; }
+.forecast-error-overlay { display: none; position: absolute; inset: 0; z-index: 3; align-items: center; justify-content: center; padding: 24px; background: color-mix(in srgb, var(--mat) 94%, transparent); color: var(--ink); font-size: 15px; text-align: center; }
+.forecast-noscript { position: absolute; inset: 0; z-index: 3; display: flex; align-items: center; justify-content: center; margin: 0; padding: 24px; background: var(--mat); color: var(--ink-2); text-align: center; }
+
+.forecast-metrics { border-left: 1px solid var(--rule); padding: 8px 16px; min-width: 0; }
+.fm-section { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.fm-section:last-child { border-bottom: 0; }
+.fm-row { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 10px; padding: 3px 0; }
+.fm-row--header { display: block; font-size: 15px; font-weight: 700; color: var(--ink); }
+.fm-label { font-size: 14px; color: var(--ink-2); }
+.fm-value { font: 500 16px/1.3 var(--mono); color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; }
+.fm-value--time { font-size: 14px; }
+.fm-unit { font: 400 14px var(--mono); color: var(--ink-2); }
+.fm-val-mw { display: block; text-align: right; }
+.fm-val-delta { display: block; text-align: right; font: 400 14px var(--mono); color: var(--ink-2); }
+.fm-def { margin: 2px 0 6px; font-size: 14px; line-height: 1.4; color: var(--ink-2); }
+.fm-c-emp::before, .fm-c-gauss::before, .fm-c-beta::before, .fm-c-fc::before, .fm-c-meas::before { content: ""; display: inline-block; width: 16px; margin-right: 7px; vertical-align: middle; }
+.fm-c-fc::before { height: 2px; background: repeating-linear-gradient(90deg, var(--fx-forecast) 0 3px, transparent 3px 6px); }   /* Plotly's dots, the same in every browser */
+.fm-c-meas::before { border-top: 2px solid var(--fx-measured); }
+.fm-c-emp::before { height: 8px; background: color-mix(in srgb, var(--accent) 66%, transparent); }   /* as the bars (0.66 in light) */
+.fm-c-gauss::before { border-top: 2px solid var(--fx-gauss); }
+.fm-c-beta::before { border-top: 2px solid var(--fx-beta); }
+
+/* The trajectory's hover box (drawn by forecast.js; the distribution label and its summary carry the same values for
+   assistive tech). Each value has the key of its own line. */
+.forecast-panel--traj { position: relative; }
+.fc-tip { position: absolute; z-index: 2; top: 0; left: 0; padding: 6px 10px; border: 1px solid var(--rule-2); background: var(--mat); color: var(--ink); font: 400 14px/1.45 var(--sans); white-space: nowrap; pointer-events: none; }
+.fc-tip[hidden] { display: none; }
+.fc-tip__time { color: var(--ink-2); }
+.fc-tip__row { display: flex; align-items: center; gap: 8px; }
+.fc-tip__row b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.fc-tip__key { flex: none; width: 18px; height: 2px; }
+.fc-tip__key--measured { background: var(--fx-measured); }
+.fc-tip__key--forecast { background: repeating-linear-gradient(90deg, var(--fx-forecast) 0 3px, transparent 3px 6px); opacity: 0.55; }   /* as the trajectory's dotted forecast */
+
+.forecast-stats { margin-top: 14px; font: 400 14px/1.5 var(--mono); color: var(--ink-2); }
+.forecast-stat__source { display: block; max-width: 110ch; }
+.forecast-section .js-plotly-plot .plotly .modebar { background: transparent !important; }
+.forecast-section .js-plotly-plot .plotly .modebar-btn path { fill: var(--ink-2) !important; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .fc-tab, .fc-tz-btn, .fc-step { transition: background-color 120ms ease-out; }
+}
+@media (max-width: 960px) {
+  .forecast-layout { grid-template-columns: minmax(0, 1fr); }
+  .forecast-metrics { border-left: 0; border-top: 1px solid var(--rule); display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0 28px; }
+  .fm-section { border-bottom: 0; }
+  .fc-gauss-wrap { margin-left: 0; }
+}
+@media (max-width: 560px) {
+  /* buttons may wrap: each keeps its own border, so a wrapped group still reads as buttons */
+  .fc-group { border: 0; gap: 6px; }
+  .fc-group .fc-tab, .fc-group .fc-tab + .fc-tab { border: 1px solid var(--rule-2); }
+}
+@media (max-width: 480px) {
+  .forecast-chart-area, .forecast-panel--dist .forecast-chart-area { min-height: 260px; }
+  .fc-tab { padding: 0 11px; font-size: 14px; }
+}
+
+/* ── The instrument ──
+   In light the chart and the metrics rail stand on the page's own paper (--mat) with its ink and rules, the empirical
+   distribution in the violet accent, the controls as the rest of the page (the base rules above); in dark they are a lit
+   acrylic instrument: a dark face with a lit violet edge and a soft glow. The instrument's tokens are literal colors,
+   because --fx-* defined on :root resolve against the page's ink. forecast.js re-reads the --fx-* tokens and redraws its
+   two Plotly charts on a theme change either way (themechange, the OS setting, html[data-theme]), keeping a locked point. */
+:root { --inst-face: #17161f; --inst-edge: rgba(167, 155, 255, 0.62); --inst-halo: rgba(167, 155, 255, 0.10); --inst-glow: rgba(167, 155, 255, 0.16); --inst-hi: rgba(220, 214, 255, 0.30); --inst-drop: 0 0 0 transparent; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .forecast-layout {
+  --ink: #eceef0; --ink-2: #b9bec4; --ink-3: #9aa1a8; --rule: #2f3440; --rule-2: #4c5361; --accent: #a79bff;
+  --mat: var(--inst-face); --wall: #121416;
+  color: var(--ink); background: var(--inst-face);
+  border: 1px solid var(--inst-edge);
+  box-shadow: 0 0 0 1px var(--inst-halo), 0 0 28px var(--inst-glow), inset 0 1px 0 var(--inst-hi), var(--inst-drop, 0 0 0 transparent);
+}
+  :root:not([data-theme="light"]) .forecast-section {
+  --fx-paper: var(--inst-face); --fx-ink: #b9bec4; --fx-ink-2: #b9bec4; --fx-grid: #2a2f39; --fx-axis: #4c5361;
+  --fx-empirical: #a79bff; --fx-empirical-solar: #a79bff; --fx-empirical-opacity: 0.74; --fx-empirical-line: var(--inst-face);
+  --fx-gauss: #f5ae39; --fx-beta: #15b6a9; --fx-measured: #eceef0; --fx-forecast: #eceef0;
+  --fx-bound: #e8605b; --fx-hatch: #4c5361; --fx-lock: #eceef0; --fx-lock-line: #eceef0; --fx-label-bg: var(--inst-face);
+}
+  :root:not([data-theme="light"]) .forecast-metrics { border-left-color: rgba(167, 155, 255, 0.28); }
+  :root:not([data-theme="light"]) .forecast-panel--dist { border-bottom-color: rgba(167, 155, 255, 0.22); }
+  :root:not([data-theme="light"]) .fc-range { accent-color: #a79bff; }
+  @media (max-width: 960px) { :root:not([data-theme="light"]) .forecast-metrics { border-top-color: rgba(167, 155, 255, 0.28); } }
+}
+:root[data-theme="dark"] .forecast-layout {
+--ink: #eceef0; --ink-2: #b9bec4; --ink-3: #9aa1a8; --rule: #2f3440; --rule-2: #4c5361; --accent: #a79bff;
+--mat: var(--inst-face); --wall: #121416;
+color: var(--ink); background: var(--inst-face);
+border: 1px solid var(--inst-edge);
+box-shadow: 0 0 0 1px var(--inst-halo), 0 0 28px var(--inst-glow), inset 0 1px 0 var(--inst-hi), var(--inst-drop, 0 0 0 transparent);
+}
+:root[data-theme="dark"] .forecast-section {
+--fx-paper: var(--inst-face); --fx-ink: #b9bec4; --fx-ink-2: #b9bec4; --fx-grid: #2a2f39; --fx-axis: #4c5361;
+--fx-empirical: #a79bff; --fx-empirical-solar: #a79bff; --fx-empirical-opacity: 0.74; --fx-empirical-line: var(--inst-face);
+--fx-gauss: #f5ae39; --fx-beta: #15b6a9; --fx-measured: #eceef0; --fx-forecast: #eceef0;
+--fx-bound: #e8605b; --fx-hatch: #4c5361; --fx-lock: #eceef0; --fx-lock-line: #eceef0; --fx-label-bg: var(--inst-face);
+}
+:root[data-theme="dark"] .forecast-metrics { border-left-color: rgba(167, 155, 255, 0.28); }
+:root[data-theme="dark"] .forecast-panel--dist { border-bottom-color: rgba(167, 155, 255, 0.22); }
+:root[data-theme="dark"] .fc-range { accent-color: #a79bff; }
+@media (max-width: 960px) {
+  :root[data-theme="dark"] .forecast-metrics { border-top-color: rgba(167, 155, 255, 0.28); }
+}

@@ -1,0 +1,348 @@
+/* Home's stylesheet: the hero (byline, headline and the model), the cards and the shell. A lit model in a studio, and the
+   same studio after hours. One accent, indigo violet, for probability only (the particles and the acrylic). No text in the
+   figure; the headline has a second line. */
+
+/* ── Fonts (self-hosted, SIL OFL 1.1) ─────────────────────────────────── */
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url("fonts/schibsted-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2248, U+2264-2265, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url("fonts/schibsted-grotesk-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-0130, U+0132-0151, U+0154-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: italic; font-weight: 400 700; font-display: swap;
+  src: url("fonts/schibsted-grotesk-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2248, U+2264-2265, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: italic; font-weight: 400 700; font-display: swap;
+  src: url("fonts/schibsted-grotesk-italic-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-0130, U+0132-0151, U+0154-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Azeret Mono"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("fonts/azeret-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2248, U+2264-2265, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Azeret Mono"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("fonts/azeret-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-0130, U+0132-0151, U+0154-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* metric-matched fallbacks, so the swap does not reflow */
+@font-face { font-family: "Schibsted Fallback"; src: local("Arial"); size-adjust: 104.23%; ascent-override: 93.7%; descent-override: 24.74%; line-gap-override: 0%; }
+@font-face { font-family: "Schibsted Fallback"; font-weight: 700 900; src: local("Arial Bold"); size-adjust: 104.16%; ascent-override: 93.75%; descent-override: 24.75%; line-gap-override: 0%; }
+@font-face { font-family: "Azeret Fallback"; src: local("Courier New"); size-adjust: 108.32%; ascent-override: 86.51%; descent-override: 21.23%; line-gap-override: 0%; }
+
+/* ── Tokens: the studio by day (a daylight model, smoked acrylic that glows, a cool light
+   gallery; the base, so it applies without JS and in system light) ──────────────────────────────── */
+:root {
+  color-scheme: light dark;
+  --wall: #e6e7e8;
+  --wall-2: #d6d8db;
+  --hero-wall-2: #d3d5d8;
+  --ink: #15171a;
+  --ink-2: #41464c;
+  --ink-3: #565c62;
+  --rule: #c5c7ca;
+  --rule-2: #9ea2a7;
+  --mat: #f4f5f6;
+  --accent: #4b35d4;          /* probability: particles and acrylic only */
+  --uf-particle: #ddd6ff;     /* pale dots on the smoked acrylic */
+  --uf-alpha: 0.92;
+  --uf-blend: lighter;
+  --pool: rgba(255, 255, 255, 0.62);
+  --vignette: rgba(50, 56, 64, 0.12);
+  --sans: "Schibsted Grotesk", "Schibsted Fallback", Arial, sans-serif;
+  --mono: "Azeret Mono", "Azeret Fallback", "Courier New", monospace;
+  --gutter: clamp(20px, 5vw, 72px);
+  --header-h: 72px;
+  --h1: clamp(42px, min(6.15vw, 9.6vh), 96px);
+}
+/* without a smoked sheet (light volumes, the floating band) the dots are deep violet on the light model; with the acrylic
+   sheets (data-panels="r4") they stay pale on the smoked acrylic (above). Before the dark blocks, so dark wins. */
+:root:not([data-panels="r4"]) { --uf-particle: #4a36cf; --uf-alpha: 0.9; --uf-blend: source-over; }
+/* ── Tokens: the studio after hours ───────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --wall: #121416; --wall-2: #0c0e10; --hero-wall-2: #0c0e10; --ink: #eceef0; --ink-2: #b9bec4; --ink-3: #9aa1a8;
+    --rule: #30363c; --rule-2: #4a525a; --mat: #1a1d20; --accent: #a79bff;
+    --uf-particle: #a79bff; --uf-alpha: 0.88; --uf-blend: lighter;
+    --pool: rgba(160, 170, 190, 0.11); --vignette: rgba(0, 0, 0, 0.6);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --wall: #121416; --wall-2: #0c0e10; --hero-wall-2: #0c0e10; --ink: #eceef0; --ink-2: #b9bec4; --ink-3: #9aa1a8;
+  --rule: #30363c; --rule-2: #4a525a; --mat: #1a1d20; --accent: #a79bff;
+  --uf-particle: #a79bff; --uf-alpha: 0.88; --uf-blend: lighter;
+  --pool: rgba(160, 170, 190, 0.11); --vignette: rgba(0, 0, 0, 0.6);
+}
+/* without a sheet the dark dots are drawn over the model itself, where additive light would turn them white over the gray
+   turbines, so they are painted normally; with the acrylic sheets (data-panels="r4") they stay additive on the smoked
+   acrylic. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-panels="r4"]) { --uf-blend: source-over; }
+}
+:root[data-theme="dark"]:not([data-panels="r4"]) { --uf-blend: source-over; }
+:root[data-theme="light"] { color-scheme: light; }
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--wall); color: var(--ink); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; font-synthesis: none; }
+body { margin: 0; background: var(--wall); color: var(--ink); font: 400 17px/1.55 var(--sans); overflow-x: clip; font-kerning: normal; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--ink); text-decoration-line: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+@media (hover: hover) and (pointer: fine) { a:hover { text-decoration-thickness: 2px; } }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+p, h1, h2, h3, figure, ul, ol { margin: 0; }
+h1, h2, h3 { font-weight: 800; }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+/* WCAG 1.4.12: the model's long text alternative is clipped at the figure's own width, so with a reader's text spacing its
+   lines wrap there instead of running thousands of px past the page as one line */
+.studio > figcaption.visually-hidden { width: 100%; white-space: normal; }
+.skip { position: absolute; left: 16px; top: -80px; z-index: 50; background: var(--mat); color: var(--ink); padding: 10px 14px; font: 600 16px/1.2 var(--sans); }
+.skip:focus { top: 12px; }
+html:not(.js) [data-js-only] { display: none !important; }
+
+/* ── Header (scrolls away with the page) ──────────────────────────────── */
+.site-header {
+  position: absolute; z-index: 20; top: 0; left: 0; right: 0; height: var(--header-h);
+  display: flex; align-items: center; gap: 28px; padding: 0 var(--gutter);
+}
+.wordmark { font: 700 18px/1 var(--sans); color: var(--ink); text-decoration: none; margin-right: auto; padding: 12px 0; }
+@media (hover: hover) and (pointer: fine) { .wordmark:hover { text-decoration: underline; text-decoration-thickness: 2px; } }
+.site-nav { display: flex; align-items: center; gap: 28px; }
+.site-nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
+.site-nav a { display: inline-block; padding: 12px 0; font: 500 16px/1 var(--sans); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .site-nav a:hover { text-decoration: underline; text-decoration-thickness: 1px; } }
+.nav-toggle { display: none; }
+
+/* ── Hero: byline, headline, the model ────────────────────────────────── */
+.hero {
+  position: relative; display: flex; flex-direction: column;
+  min-height: max(560px, 100svh); padding-top: calc(var(--header-h) + 12px); --dek-mt: 16px;
+  background:
+    radial-gradient(ellipse 58% 44% at 44% 70%, var(--pool), transparent 72%),
+    radial-gradient(ellipse 72% 56% at 50% 66%, var(--hero-wall-2, var(--wall-2)), transparent 100%),
+    var(--wall);
+}
+/* the headline block: the byline, the h1 in its display lines and the second line (a <p class="dek">, display type,
+   clearly smaller than the h1, part of the headline, not a heading), in one column at every width. The stage starts below
+   the block. */
+.hero-top { position: relative; z-index: 2; display: grid; grid-template-columns: minmax(0, 1fr); padding: 0 var(--gutter); }
+.byline { font: 600 17px/1.35 var(--sans); color: var(--ink-2); }
+.byline .nm { color: var(--ink); }
+.h1 {
+  margin-top: 12px; font: 800 var(--h1)/0.93 var(--sans); letter-spacing: -0.038em; color: var(--ink);
+  max-width: 100%;
+}
+/* WCAG 1.4.12: a display line may wrap when a reader's own text spacing makes it wider than the column; at the page's own
+   spacing every line fits, so nothing moves */
+.h1-l { display: block; }
+.h1.h1-fit .h1-l { white-space: nowrap; }   /* site.js fitTitle measures each line unwrapped */
+.dek {
+  margin-top: var(--dek-mt, 16px); max-width: 26em; font: 600 clamp(19px, calc(var(--h1) * 0.355), 34px)/1.16 var(--sans);
+  letter-spacing: -0.017em; color: var(--ink); text-wrap: balance;
+}
+.dek[hidden] { display: none; }
+/* the second line's last short clause stays together as one inline block: it moves to the next line whole, as with
+   nowrap, but can still wrap inside itself when a reader's text spacing makes it wider than the line (WCAG 1.4.12) */
+.dek .nw { display: inline-block; }
+/* wide screens: the second line 18 px under the h1 */
+@media (min-width: 1180px) {
+  .hero { --dek-mt: 18px; }
+}
+
+.studio-wrap { position: relative; z-index: 1; flex: 1 1 auto; display: flex; flex-direction: column; margin-top: 10px; min-height: 0; }
+.studio { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; }
+/* on short laptop screens (1536 x 730, 1366 x 768, 1280 x 600) the stage keeps at least 27vw of height instead of
+   shrinking to fit above the fold, so only the plinth's front edge runs under the fold; Pause stays at the top */
+.st-frame { position: relative; flex: 1 1 auto; min-height: max(250px, min(27vw, 520px)); max-height: 760px; }
+.st-stage { position: absolute; inset: 0; }
+.st-stage[data-layout="compact"] { display: none; }
+/* wide screens: the frame's basis is the model's own height at the frame's width (the wide view's aspect, --ar-wide on the
+   frame, 100cqw its width) plus 8 px, and it never grows past that, so where the first screen leaves room the model and the
+   cards sit close under the second line. The hero is as tall as the headline block and that frame, but never taller than
+   the first screen: where the screen is shorter (1536 x 730, 1366 x 768) the frame shrinks to fill it, never below its
+   min-height. The hero's max-height lets the headline block and that min-height through on very short screens
+   (1280 x 585). --hero-top is the block's height: site.js (fitHero) sets the measured height as --hero-block on wide
+   screens; the estimate from the font sizes and line heights (the header's, the byline's 17 px x 1.35, the h1's two lines
+   at 0.93, the second line's one at 1.16, the margins), which the web font does not change, is the first paint's and the
+   page's without JS, with its own form for a headline without a second line (:has). Phones (the compact layout) need none
+   of this. */
+@media (min-width: 900px) {
+  .hero {
+    --hero-top: calc(var(--header-h) + 12px + var(--hero-block, calc(17px * 1.35 + 12px + 1.86 * var(--h1) + var(--dek-mt) + 1.16 * clamp(19px, calc(var(--h1) * 0.355), 34px))) + 10px);
+    min-height: 560px; max-height: max(560px, 100svh, calc(var(--hero-top) + max(250px, min(27vw, 520px))));
+  }
+  .hero:has(.dek[hidden]) { --hero-top: calc(var(--header-h) + 12px + var(--hero-block, calc(17px * 1.35 + 12px + 1.86 * var(--h1))) + 10px); }
+  .studio-wrap { container-type: inline-size; }
+  .st-frame { height: calc(100cqw / (var(--ar-wide)) + 8px); max-height: min(760px, calc(100cqw / (var(--ar-wide)) + 8px)); }
+}
+/* no caption, key or label under or on the model: the text alternative is the visually hidden figcaption. */
+/* Pause: an icon button that reads as a media control, alone in the scene's empty top-right corner (wide and
+   phone). Its accessible name stays "Pause animation"; aria-pressed carries the state (the play triangle shows
+   while paused). No title tooltip: that would be text in the figure. */
+.pause {
+  position: absolute; z-index: 3; top: 14px; right: var(--gutter); width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; padding: 0; color: var(--ink);
+  background: color-mix(in srgb, var(--wall) 70%, transparent); border: 1px solid var(--rule-2); cursor: pointer;
+}
+@media (hover: hover) and (pointer: fine) { .pause:hover { border-color: var(--ink); } }
+.pause svg { fill: currentColor; display: block; }
+.pause .ico-play, .pause[aria-pressed="true"] .ico-pause { display: none; }
+.pause[aria-pressed="true"] .ico-play { display: inline; }
+.pause[hidden] { display: none; }
+
+/* ── Themes: right after the model ────────────────────────────────────── */
+.wrap { max-width: 1440px; margin: 0 auto; padding: 0 var(--gutter); }
+.themes { padding: 22px 0 84px; }
+.theme-grid { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 36px; }
+.theme { position: relative; display: flex; flex-direction: column; padding-top: 18px; border-top: 1px solid var(--rule-2); }
+.theme::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 3px; background: var(--ink); transform-origin: left; transform: scaleX(0); }
+.theme.is-hl::before, .theme:focus-within::before { transform: scaleX(1); }
+.theme h3 { font-size: 27px; line-height: 1.08; letter-spacing: -0.02em; }
+.theme p { margin-top: 12px; font-size: 16.5px; line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }   /* pretty: a card's last line does not hold one word alone */
+.theme-link { margin-top: auto; padding-top: 16px; display: inline-flex; flex-direction: column; gap: 3px; align-self: flex-start; text-decoration: none; }
+.theme-link .lbl { font-weight: 600; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.theme-link:focus-visible .lbl { text-decoration-thickness: 2px; }
+@media (hover: hover) and (pointer: fine) { .theme-link:hover .lbl { text-decoration-thickness: 2px; } }
+.theme-link .ven { font: 400 14px/1.4 var(--mono); color: var(--ink-2); }
+/* the story text in the hovered or focused card (site.js fills .theme-say with one span per beat; all beats share one
+   grid cell, so the box keeps the height of the longest beat at every width and nothing moves when a beat changes).
+   html[data-story] text: a reserved line under the copy; swap: over the copy, which fades out while a beat shows; none
+   (and JS off): no box. The card's own type and ink, never the figure's colors. */
+.theme-say { display: none; }
+html[data-story="text"] .theme-say, html[data-story="swap"] .theme-say { display: grid; grid-template-columns: minmax(0, 1fr); }
+/* the card's copy size, a heavier weight and a heavier rule, so the line at the foot of a long card reads as the story
+   and not as a footnote */
+html[data-story="text"] .theme-say { margin-top: 14px; min-height: 2.9em; padding-left: 12px; border-left: 3px solid transparent; font: 600 16.5px/1.42 var(--sans); color: var(--ink); }
+html[data-story="text"] .theme.is-say .theme-say { border-left-color: var(--ink); }
+.theme-say .say-b { grid-area: 1 / 1; opacity: 0; visibility: hidden; text-wrap: balance; }
+.theme-say .say-b.is-on { opacity: 1; visibility: visible; }
+html[data-story="swap"] .theme { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; }
+html[data-story="swap"] .theme > p, html[data-story="swap"] .theme-say { grid-row: 2; grid-column: 1; }
+html[data-story="swap"] .theme-say { align-self: start; margin-top: 12px; font: 500 16.5px/1.55 var(--sans); color: var(--ink); }
+html[data-story="swap"] .theme-link { grid-row: 3; justify-self: start; }
+/* opacity only, never visibility: the beats are aria-hidden, so the copy must stay in the accessibility tree */
+html[data-story="swap"] .theme.is-say > p { opacity: 0; }
+/* 8 px of the link's 16 px top padding moves under the beat line, so the keyboard ring (2 px, offset
+   3 px) clears the beat and its rule; nothing moves */
+@media not all and (hover: none) { html[data-story="text"] .theme-say { margin-bottom: 8px; } html[data-story="text"] .theme-link { padding-top: 8px; } }
+@media (hover: none) { html[data-story] .theme-say { display: none; } }
+
+/* ── Selected publications, Latest ────────────────────────────────────── */
+.sec { padding: 64px 0 72px; border-top: 1px solid var(--rule); }
+.sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.sec-more { font-weight: 600; padding: 8px 0; }
+
+/* ── Footer ───────────────────────────────────────────────────────────── */
+.site-footer { border-top: 1px solid var(--rule); padding: 40px 0 48px; background: var(--wall-2); }
+.foot { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 3fr) minmax(0, 5fr); gap: 24px 48px; align-items: start; }
+.foot-name { font-weight: 700; font-size: 18px; }
+.foot-role { margin-top: 4px; color: var(--ink-2); font-size: 16px; }
+.foot-links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 2px 22px; }
+.foot-links a { display: inline-block; padding: 6px 0; }
+.foot-prov { color: var(--ink-2); font-size: 16px; }
+
+/* ── Interaction feedback only, short; never on text position ─────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .theme::before { transition: transform 160ms ease-out; }
+  /* the replay cue (studio.js cutTick): with each restart of the switching story the hovered card's rule empties and fills
+     again (data-rk a and b alternate, so each restart starts the animation afresh), over --rk-d, which cutTick sets on the
+     card (1.2 s without it). A transform animation runs on the compositor, so the page around the model's large inline SVG
+     is not repainted every frame */
+  @keyframes rule-replay-a { 0% { transform: scaleX(1); } 50% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+  @keyframes rule-replay-b { 0% { transform: scaleX(1); } 50% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+  .theme[data-rk]::before { transition: none; }
+  .theme[data-rk="a"]::before { animation: rule-replay-a var(--rk-d, 1.2s) ease-in-out both; }
+  .theme[data-rk="b"]::before { animation: rule-replay-b var(--rk-d, 1.2s) ease-in-out both; }
+  .pause { transition: background-color 120ms ease-out, border-color 120ms ease-out; }
+  .st-static { transition: opacity 220ms ease-out; }
+  .st-hl .hl { transition: opacity 220ms ease-out, visibility 0s linear 220ms; }
+  [data-hl="renewables"] .st-hl .hl[data-hl="renewables"], [data-hl="switching"] .st-hl .hl[data-hl="switching"],
+  [data-hl="hvdc"] .st-hl .hl[data-hl="hvdc"], [data-hl="balancing"] .st-hl .hl[data-hl="balancing"] { transition: opacity 220ms ease-out, visibility 0s linear 0s; }
+  /* paused, hidden or off-screen: the canvas cannot follow a fade, so the veil snaps as well */
+  .st-snap .st-static, .st-snap .st-hl .hl { transition: none !important; }
+  /* a beat fades out in 160 ms, the next fades in over 240 ms after it (no overlap of two texts) */
+  .theme-say .say-b { transition: opacity 160ms ease-out, visibility 0s linear 160ms; }
+  .theme-say .say-b.is-on { transition: opacity 240ms ease-out 140ms, visibility 0s linear 140ms; }
+  html[data-story="text"] .theme-say { transition: border-color 160ms ease-out; }
+  html[data-story="swap"] .theme > p { transition: opacity 160ms ease-out 140ms, visibility 0s linear 0s; }
+  html[data-story="swap"] .theme.is-say > p { transition: opacity 160ms ease-out, visibility 0s linear 160ms; }
+}
+
+/* ── Tablets and narrow laptops ──────────────────────────────────────── */
+@media (max-width: 1179px) {
+  .theme-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 36px; }
+  .foot { grid-template-columns: 1fr 1fr; }
+  .foot-prov { grid-column: 1 / -1; }
+}
+@media (max-width: 999px) {
+  .site-header { gap: 12px; }
+  .nav-toggle {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; padding: 0 14px;
+    font: 500 15px/1 var(--mono); color: var(--ink); background: transparent; border: 1px solid var(--rule-2); border-radius: 0; cursor: pointer;
+  }
+  html.js .site-nav { display: none; position: absolute; top: var(--header-h); left: 0; right: 0; flex-direction: column; align-items: flex-start; gap: 14px; padding: 8px var(--gutter) 18px; background: var(--mat); border-bottom: 1px solid var(--rule); }
+  html.js .site-nav.is-open { display: flex; }
+  html.js .site-nav ul { flex-direction: column; gap: 0; }
+  html.js .site-nav a { padding: 11px 0; font-size: 18px; }
+  html:not(.js) .site-header { position: relative; flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 6px; }
+  html:not(.js) .hero { padding-top: 14px; }
+  html:not(.js) .site-nav { flex-wrap: wrap; }
+  html:not(.js) .site-nav ul { flex-wrap: wrap; gap: 0 18px; }
+  html:not(.js) .nav-toggle { display: none; }
+}
+@media (max-width: 899px) {
+  .st-stage[data-layout="wide"] { display: none; }
+  .st-stage[data-layout="compact"] { display: block; }
+  .st-frame { flex: 0 0 auto; min-height: 0; aspect-ratio: var(--ar-compact, 390 / 352); max-height: none; width: min(100%, 620px); margin: 0 auto; }
+  .hero { height: auto; min-height: 0; }
+}
+@media (max-width: 760px) {
+  :root { --header-h: 60px; }
+  .byline { font-size: 15.5px; }
+  .hero-top { --h1: clamp(38px, 11.4vw, 60px); }
+  .h1 { margin-top: 10px; letter-spacing: -0.034em; }
+  .h1-l { display: inline; white-space: normal; }
+  .dek { margin-top: 12px; }
+}
+@media (max-width: 599px) {
+  /* phones: the model comes straight after the headline */
+  .studio { margin-top: 6px; }
+  .pause { top: 4px; }
+  .theme-grid { grid-template-columns: 1fr; gap: 36px; }
+  .theme h3 { font-size: 26px; }
+  .foot { grid-template-columns: 1fr; }
+}
+
+/* the text alternative's sentences follow the attributes on html that select what the model shows */
+html:not([data-flows="on"]) .alt-flows { display: none; }
+/* the HVDC sentence only with the held DC light (data-dc held, pair or drift) */
+html:not([data-dc="held"]):not([data-dc="pair"]):not([data-dc="drift"]) .alt-dc { display: none; }
+/* the balancing sentence follows data-bal */
+html[data-bal="b1"] .alt-bal4, html[data-bal="b5"] .alt-bal4, html:not([data-bal="b1"]):not([data-bal="b5"]) .alt-bal1 { display: none; }
+/* b6 has its own sentence (it shows the gas-engine plant it adds) */
+html[data-bal="b6"] .alt-bal4, html:not([data-bal="b6"]) .alt-bal6 { display: none; }
+/* b7 has its own sentence (it shows the biomass power station it adds), also without data-bal */
+html[data-bal="b7"] .alt-bal4, html:not([data-bal]) .alt-bal4, html[data-bal]:not([data-bal="b7"]) .alt-bal7 { display: none; }
+/* the HVDC hover's sentence: the day of market hours (data-hv day or absent) or the light-only hover (data-hv r8) */
+html[data-hv="r8"] .alt-hv-day, html:not([data-hv="r8"]) .alt-hv-r8 { display: none; }
+
+/* ── Shell: the current page and the footer's links ─────────────────────── */
+/* the current page in the nav (aria-current) and the footer's profile links above Contact and Privacy */
+.site-nav a[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.42em; }
+.foot-nav { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; }
+/* the links on a two-column grid, the email across both, so no label is left alone on a line; Contact and Privacy stand in
+   the same two columns */
+.foot-profile, .foot-links { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.foot-profile li:first-child { grid-column: 1 / -1; }
+.foot-profile a, .foot-links a { display: inline-block; padding: 4px 0; font-size: 17px; color: var(--ink); }
+/* Plotly's modebar keeps no fade under reduced motion */
+@media (prefers-reduced-motion: reduce) { .modebar, .modebar-group, .modebar-btn { transition-duration: 0s !important; transition-delay: 0s !important; } }

@@ -1,0 +1,77 @@
+{%- comment -%}
+  Tools (_pages/tools.md, page_id tools). The page head (tools.yml title and lead), then three
+  tools, each a section on two zones: the name, the maturity line and the description on the left;
+  on the right what supports it.
+    #explorer            explorer.yml name and description; on the right the one link to the
+                         explorer (explorer.yml url) above its figure, then the data's status light
+                         (_includes/status-line.html). The figure is what the explorer shows at a
+                         96 % forecast (_data/figures/tools_fx.json, scripts/build_figures.rb); its
+                         SVG title is tools.yml explorer.figure.title with the data's numbers, its
+                         tick words tools.yml explorer.figure.ticks.
+    #code                StochasticPowerModels.jl (tools.yml code.items): language, license, papers
+    #pv-fault-detection  tools.yml fault: maturity, description, paper
+  The papers: _includes/paper-list.html, labeled "Paper" for one key, "Papers" otherwise.
+{%- endcomment -%}
+{%- assign to_t = site.data.tools -%}
+{%- assign to_ex = site.data.explorer -%}
+{%- assign to_fx = site.data.figures.tools_fx -%}
+{%- assign to_lb = to_t.labels -%}
+{%- assign to_h1 = to_t.title | escape -%}
+{%- assign to_lead = to_t.lead | escape -%}
+{%- assign to_e = to_t.explorer -%}
+{%- assign to_title = to_e.figure.title | replace: '{level_pct}', to_fx.level_pct | replace: '{gauss_above_pct}', to_fx.gauss_above_pct | escape -%}
+{% include page-head.html h1=to_h1 lead=to_lead %}
+
+<section class="sec tool sec--split" id="{{ to_e.anchor | escape }}" aria-labelledby="explorer-h">
+  <div class="sec-main">
+    <h2 class="sec-t" id="explorer-h">{{ to_ex.name | escape }}</h2>
+    <p class="maturity">{{ to_e.maturity | escape }}</p>
+    <div class="sec-b">
+{%- for to_para in to_ex.description %}
+      <p>{{ to_para | normalize_whitespace | escape }}</p>
+{%- endfor %}
+    </div>
+  </div>
+  <div class="sec-x">
+    <p class="row-a fx-open"><a href="{{ to_ex.url | relative_url }}">{{ to_e.link.label | escape }}</a></p>
+    <figure class="fx-fig">
+      <div class="fx-draw">{{ to_fx.figure_open }}<title id="fx-fig-t">{{ to_title }}</title>{{ to_fx.figure_body }}</div>
+      <div class="fx-ticks" aria-hidden="true"><span style="left: {{ to_fx.walls_pct[0] }}%">{{ to_e.figure.ticks[0] | escape }}</span><span style="right: {{ to_fx.tick_right_pct }}%">{{ to_e.figure.ticks[1] | escape }}</span></div>
+    </figure>
+    {% include status-line.html %}
+  </div>
+</section>
+{%- assign to_c = to_t.code.items | first -%}
+{%- if to_c.keys.size == 1 -%}{%- assign to_pl = to_lb.paper -%}{%- else -%}{%- assign to_pl = to_lb.papers -%}{%- endif %}
+<section class="sec tool sec--split" id="{{ to_t.code.anchor | escape }}" aria-labelledby="{{ to_c.id | escape }}-h">
+  <article class="sec-main" id="{{ to_c.id | escape }}" aria-labelledby="{{ to_c.id | escape }}-h">
+    <h2 class="sec-t" id="{{ to_c.id | escape }}-h">{{ to_c.name | escape }}</h2>
+    <p class="maturity">{{ to_c.maturity | escape }}</p>
+    <div class="sec-b">
+      <p>{{ to_c.description | normalize_whitespace | escape }}</p>
+      <p class="row-a"><a href="{{ to_c.url | escape }}">{{ to_c.link_label | escape }}</a></p>
+    </div>
+  </article>
+  <div class="sec-x">
+    <p class="row-x-k">{{ to_lb.language_licence | escape }}</p>
+    <p class="row-x-v">{{ to_c.language | escape }}, {{ to_c.license | escape }}</p>
+{% include paper-list.html keys=to_c.keys label=to_pl %}
+  </div>
+</section>
+{%- assign to_f = to_t.fault -%}
+{%- if to_f.keys.size == 1 -%}{%- assign to_pl = to_lb.paper -%}{%- else -%}{%- assign to_pl = to_lb.papers -%}{%- endif -%}
+{%- assign to_mat = to_f.maturity | escape %}
+<section class="sec tool sec--split" id="{{ to_f.anchor | escape }}" aria-labelledby="{{ to_f.anchor | escape }}-h">
+  <div class="sec-main">
+    <h2 class="sec-t" id="{{ to_f.anchor | escape }}-h">{{ to_f.name | escape }}</h2>
+    <p class="maturity">{% include tr.html t=to_mat %}</p>
+    <div class="sec-b">
+{%- for to_para in to_f.description %}
+      <p>{{ to_para | normalize_whitespace | escape }}</p>
+{%- endfor %}
+    </div>
+  </div>
+  <div class="sec-x">
+{% include paper-list.html keys=to_f.keys label=to_pl %}
+  </div>
+</section>

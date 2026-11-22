@@ -1,0 +1,38 @@
+{%- comment -%}
+  The footer of every page: the name, the role line, the five profile links (profile.yml links in the order email, linkedin, scholar,
+  github, orcid; the email shows the address, the others their label; data-print is the URL
+  without its scheme, "www." and trailing slash, the form the CV's print line uses), then Contact
+  and Privacy. Outside the no-wrap pass.
+{%- endcomment -%}
+{%- assign ft_p = site.data.profile -%}
+{%- assign ft_keys = "email,linkedin,scholar,github,orcid" | split: "," -%}
+<footer class="site-footer">
+  <div class="foot">
+    <div class="foot-a">
+      <p class="foot-name" lang="{{ ft_p.name_lang }}">{{ ft_p.name | escape }}</p>
+      <p class="foot-role">{{ ft_p.role_line | escape }}</p>
+    </div>
+    <div class="foot-b">
+      <ul class="foot-profile">
+{%- for ft_k in ft_keys %}
+{%- assign ft_l = ft_p.links | where: "key", ft_k | first -%}
+{%- if ft_k == 'email' -%}
+  {%- assign ft_text = ft_p.email -%}{%- assign ft_print = '' -%}
+{%- else -%}
+  {%- assign ft_text = ft_l.label -%}
+  {%- assign ft_print = ft_l.url -%}
+  {%- assign ft_s = ft_print | slice: 0, 8 -%}{%- if ft_s == 'https://' -%}{%- assign ft_print = ft_print | slice: 8, 4096 -%}{%- endif -%}
+  {%- assign ft_s = ft_print | slice: 0, 7 -%}{%- if ft_s == 'http://' -%}{%- assign ft_print = ft_print | slice: 7, 4096 -%}{%- endif -%}
+  {%- assign ft_s = ft_print | slice: 0, 4 -%}{%- if ft_s == 'www.' -%}{%- assign ft_print = ft_print | slice: 4, 4096 -%}{%- endif -%}
+  {%- assign ft_s = ft_print | slice: -1, 1 -%}{%- if ft_s == '/' -%}{%- assign ft_n = ft_print | size | minus: 1 -%}{%- assign ft_print = ft_print | slice: 0, ft_n -%}{%- endif -%}
+{%- endif %}
+        <li><a href="{{ ft_l.url | escape }}" rel="me"{% if ft_print != '' %} data-print="{{ ft_print | escape }}"{% endif %}>{{ ft_text | escape }}</a></li>
+{%- endfor %}
+      </ul>
+      <ul class="foot-links">
+        <li><a href="{{ '/about/' | relative_url }}#contact">Contact</a></li>
+        <li><a href="{{ '/privacy/' | relative_url }}">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>

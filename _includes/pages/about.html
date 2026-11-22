@@ -1,0 +1,66 @@
+{%- comment -%}
+  About body: the head with the h1 (the honorific and the name, its lang from profile.yml
+  name_lang), the portrait in the media place and the bio (#bio, no h2) beside it; then the
+  Research Footprint Map (_includes/map.html), Affiliations (profile.yml affiliations) and Contact
+  (#contact: profile.yml links, then "Open to"). Copy: _data/about.yml; identity:
+  _data/profile.yml.
+{%- endcomment -%}
+{%- assign ab = site.data.about -%}
+{%- assign ab_p = site.data.profile -%}
+{%- capture ab_h1 %}{{ ab_p.honorific | escape }} <span lang="{{ ab_p.name_lang | escape }}">{{ ab_p.name | escape }}</span>{% endcapture -%}
+{%- capture ab_media -%}
+<div class="about-photos about-photos--one"><figure class="about-portrait">{% include photo.html src=ab_p.photo.src alt=ab_p.photo.alt mode="portrait" %}</figure></div>
+{%- endcapture -%}
+{%- capture ab_after -%}
+  <div class="head-after about-bio" id="bio">
+{% for ab_para in ab.bio -%}
+{%- capture ab_t %}{% include pages/fill.html text=ab_para %}{% endcapture %}    <p>{{ ab_t | normalize_whitespace | escape }}</p>
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{% include page-head.html h1=ab_h1 media=ab_media after=ab_after %}
+
+{% include map.html %}
+
+{% capture ab_rows -%}
+  <div class="rows">
+{% for ab_a in ab_p.affiliations -%}
+{%- capture ab_title %}{{ ab_a.name | escape }}{% endcapture -%}
+{%- capture ab_d %}<p class="row-d">{{ ab_a.unit_long | escape }}, {{ ab_a.city | escape }}</p>{% endcapture -%}
+{%- assign ab_id = 'aff-' | append: ab_a.key -%}
+{% include row.html id=ab_id title=ab_title href=ab_a.url details=ab_d %}
+{% endfor -%}
+{{ '  </div>' }}
+  <p class="note aff-note">{{ ab.affiliations.note | normalize_whitespace | escape }}</p>
+{%- endcapture -%}
+{%- assign ab_heading = ab.affiliations.heading | escape -%}
+{% include section.html id="affiliations" heading=ab_heading body=ab_rows %}
+{% assign ab_c = ab.contact -%}
+{%- capture ab_body -%}
+  <div class="sec-b">
+    <p>{{ ab_c.intro | normalize_whitespace | escape }}</p>
+    <dl class="contact-links">
+{%- for ab_l in ab_p.links -%}
+  {%- if ab_l.key == 'email' -%}
+    {%- assign ab_v = ab_p.email -%}
+  {%- else -%}
+    {%- assign ab_v = ab_l.url -%}
+    {%- assign ab_s = ab_v | slice: 0, 8 -%}{%- if ab_s == 'https://' -%}{%- assign ab_v = ab_v | slice: 8, 4096 -%}{%- endif -%}
+    {%- assign ab_s = ab_v | slice: 0, 7 -%}{%- if ab_s == 'http://' -%}{%- assign ab_v = ab_v | slice: 7, 4096 -%}{%- endif -%}
+    {%- assign ab_v = ab_v | remove_first: 'www.' -%}
+    {%- assign ab_s = ab_v | slice: -1, 1 -%}{%- if ab_s == '/' -%}{%- assign ab_n = ab_v | size | minus: 1 -%}{%- assign ab_v = ab_v | slice: 0, ab_n -%}{%- endif -%}
+    {%- if ab_v contains '?' -%}{%- assign ab_v = ab_v | split: '/' | first -%}{%- endif -%}
+  {%- endif %}
+      <div><dt>{{ ab_l.label | escape }}</dt><dd><a href="{{ ab_l.url | escape }}" rel="me">{{ ab_v | escape }}</a></dd></div>
+{%- endfor %}
+    </dl>
+    <h3 class="sub-t">{{ ab_c.open_to.heading | escape }}</h3>
+    <ul class="plain">
+{%- for ab_it in ab_c.open_to.items %}
+      <li>{{ ab_it | escape }}</li>
+{%- endfor %}
+    </ul>
+  </div>
+{%- endcapture -%}
+{%- assign ab_heading = ab_c.heading | escape -%}
+{% include section.html id=ab_c.anchor cls="contact" heading=ab_heading body=ab_body %}

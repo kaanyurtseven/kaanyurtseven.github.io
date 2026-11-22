@@ -1,0 +1,4 @@
+# Text files are stored with LF line endings.
+* text=auto eol=lf
+# Vendored third-party files keep their upstream bytes (published hashes).
+assets/vendor/** -text

@@ -1,0 +1,903 @@
+/* The base stylesheet: fonts, tokens, the shell (header, Tools list, phone Menu, footer), the patterns (page head, section,
+   row), the explorer page's data part, and print. Every page loads it; Home loads it after site.css, tones.css and
+   model.css.
+
+   site.css styles Home's hero and cards partly through element rules (body, a, img, h1-h3), so this file keeps its tokens,
+   its element rules and .wrap inside @layer base: on Home the unlayered site.css beats every layered rule, whatever the order,
+   so nothing of the base reaches the hero or the cards; on inner pages, where site.css is absent, the layer applies in full.
+   The shell and the patterns are unlayered, written with classes only, and restate every property a site.css rule would
+   otherwise impose inside them; their selectors carry one class more than site.css's matching rule where both exist (for
+   example .site-header .site-nav .nav-a against site.css's .site-nav a). No selector here names the hero, the cards or the
+   model.
+
+   Scale: margins, paddings and gaps use 4, 8, 12, 16, 24, 32, 48, 72, 96 only, plus these named fixed exceptions: 36 (Home's
+   card gap, reused as the column gap), 28 (between nav items), 20 (the Tools panel's inset and sides), #latest's negative top
+   margin on Home, and the cap-line offsets --cap-* (a picture's top on a title's cap line, computed from the font's metrics:
+   cap top = line-height / 2 - 0.3438 x font-size for Schibsted Grotesk, ascent 2000, descent 528, cap height 1440 of 2048
+   units). */
+
+/* ── Fonts (self-hosted, SIL OFL 1.1; the faces and metric fallbacks of site.css, outside any layer) ─────────────────────────── */
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url("fonts/schibsted-grotesk-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2248, U+2264-2265, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: normal; font-weight: 400 800; font-display: swap;
+  src: url("fonts/schibsted-grotesk-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-0130, U+0132-0151, U+0154-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* the italic faces, as site.css declares them (font-synthesis is none: without them em and the map's paper titles would stand upright) */
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: italic; font-weight: 400 700; font-display: swap;
+  src: url("fonts/schibsted-grotesk-italic-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2248, U+2264-2265, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Schibsted Grotesk"; font-style: italic; font-weight: 400 700; font-display: swap;
+  src: url("fonts/schibsted-grotesk-italic-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-0130, U+0132-0151, U+0154-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Azeret Mono"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("fonts/azeret-mono-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212, U+2215, U+2248, U+2264-2265, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Azeret Mono"; font-style: normal; font-weight: 400 600; font-display: swap;
+  src: url("fonts/azeret-mono-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-0130, U+0132-0151, U+0154-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face { font-family: "Schibsted Fallback"; src: local("Arial"); size-adjust: 104.23%; ascent-override: 93.7%; descent-override: 24.74%; line-gap-override: 0%; }
+@font-face { font-family: "Schibsted Fallback"; font-weight: 700 900; src: local("Arial Bold"); size-adjust: 104.16%; ascent-override: 93.75%; descent-override: 24.75%; line-gap-override: 0%; }
+@font-face { font-family: "Azeret Fallback"; src: local("Courier New"); size-adjust: 108.32%; ascent-override: 86.51%; descent-override: 21.23%; line-gap-override: 0%; }
+
+@layer base {
+  /* ── Tokens: light on :root, dark in both theme selectors, as in site.css. The eight colors, --sans, --mono and --gutter
+     equal site.css's, so on Home, where both load, nothing changes. ──────────────────────────────────────────────────────── */
+  :root {
+    color-scheme: light dark;
+    --wall: #e6e7e8;
+    --ink: #15171a;
+    --ink-2: #41464c;
+    --ink-3: #565c62;
+    --rule: #c5c7ca;
+    --rule-2: #9ea2a7;
+    --mat: #f4f5f6;
+    --accent: #4b35d4;          /* probability only: Home's model, the explorer and its figures */
+    --live: #1a8a46;            /* the data's status light, green while the Elia data are current (>= 3:1 on wall and mat) */
+    --sans: "Schibsted Grotesk", "Schibsted Fallback", Arial, sans-serif;
+    --mono: "Azeret Mono", "Azeret Fallback", "Courier New", monospace;
+    --gutter: clamp(20px, 5vw, 72px);
+    /* the map (About): the basemap, then the pins */
+    --map-water: #bccbd2; --map-land: #f1f1ef; --map-border: #b7b4ae; --map-coast: #93a6af;
+    --map-halo: var(--mat); --map-shade: transparent; --map-arc-mode: geodesic; --map-fly-duration: 0.5s;
+    --pin-award: #cc2c1b; --pin-publication: #034062; --pin-training: #96580c; --pin-talk: #126d5b;
+    --pin-visit: #014501; --pin-education: #884c73; --pin-home: #071318; --pin-data: #33667d;
+    --pin-cluster: #47494a; --pin-cluster-text: var(--ink); --map-arc: #8f99a3;
+    /* type: five sizes, three weights */
+    --fs-h1: 40px; --lh-h1: 44px;
+    --fs-h2: 26px; --lh-h2: 32px;
+    --fs-item: 20px; --lh-item: 26px; --lh-lead: 28px;
+    --fs-body: 17px; --lh-body: 26px;
+    --fs-small: 14px; --lh-small: 20px;
+    /* spacing */
+    --bar-h: 64px;
+    --head-top: 48px; --head-gap: 16px; --para: 12px;
+    --sec-above: 48px; --sec-below: 24px; --h2-gap: 16px;
+    --row: 24px; --inner: 8px;
+    --foot-above: 72px; --foot-pad: 32px; --foot-end: 48px;
+    --col-gap: 36px;              /* fixed exception: Home's card gap, reused as the column gap */
+    --nav-gap: 28px;              /* fixed exception: between nav items */
+    --panel-in: 20px;             /* fixed exception: the Tools panel's inset and sides */
+    --read: 600px;                /* the reading column's cap */
+    /* the cap-line offsets (named fixed exceptions): a picture's top on the cap line of the text beside it */
+    --cap-item: calc(var(--lh-item) / 2 - 0.3438 * var(--fs-item));
+    --cap-h1: calc(var(--lh-h1) / 2 - 0.3438 * var(--fs-h1));
+    --cap-news: calc(var(--lh-small) + var(--inner) + var(--cap-item));
+    --cap-h2: calc(var(--lh-h2) / 2 - 0.3438 * var(--fs-h2));
+    --cap-body: calc(var(--lh-body) / 2 - 0.3438 * var(--fs-body));
+    --cap-small: calc(var(--lh-small) / 2 - 0.3438 * var(--fs-small));
+    /* motion */
+    --ease: cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --wall: #121416; --ink: #eceef0; --ink-2: #b9bec4; --ink-3: #9aa1a8;
+      --rule: #30363c; --rule-2: #4a525a; --mat: #1a1d20; --accent: #a79bff; --live: #3fb766;
+      --map-water: #101820; --map-land: #2e3338; --map-border: #4c555e; --map-coast: #3a4b56;
+      --pin-award: #fa663e; --pin-publication: #51aae5; --pin-training: #b16c39; --pin-talk: #3a8a7e;
+      --pin-visit: #77bb85; --pin-education: #b172a5; --pin-home: #c2cad8; --pin-data: #7aacbf;
+      --pin-cluster: #929596; --map-arc: #56606a;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --wall: #121416; --ink: #eceef0; --ink-2: #b9bec4; --ink-3: #9aa1a8;
+    --rule: #30363c; --rule-2: #4a525a; --mat: #1a1d20; --accent: #a79bff; --live: #3fb766;
+    --map-water: #101820; --map-land: #2e3338; --map-border: #4c555e; --map-coast: #3a4b56;
+    --pin-award: #fa663e; --pin-publication: #51aae5; --pin-training: #b16c39; --pin-talk: #3a8a7e;
+    --pin-visit: #77bb85; --pin-education: #b172a5; --pin-home: #c2cad8; --pin-data: #7aacbf;
+    --pin-cluster: #929596; --map-arc: #56606a;
+  }
+  :root[data-theme="light"] { color-scheme: light; }
+  @media (max-width: 999px) {
+    :root {
+      --fs-h1: 32px; --lh-h1: 36px; --fs-h2: 22px; --lh-h2: 28px; --fs-item: 19px; --lh-item: 25px; --lh-lead: 27px;
+      --bar-h: 56px; --head-top: 32px; --head-gap: 12px; --sec-above: 32px; --sec-below: 16px; --h2-gap: 12px; --row: 16px;
+      --foot-above: 48px; --foot-pad: 24px; --foot-end: 32px;
+    }
+  }
+
+  /* ── Elements ── */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { background: var(--wall); color: var(--ink); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; font-synthesis: none; }
+  body { margin: 0; background: var(--wall); color: var(--ink); font: 400 var(--fs-body)/var(--lh-body) var(--sans); overflow-x: clip; font-kerning: normal; }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--ink); text-decoration-line: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+  p, h1, h2, h3, figure, ul, ol, dl, dd { margin: 0; }
+  h1, h2 { font-weight: 700; }
+  h3 { font-weight: 600; }
+  p { text-wrap: pretty; }
+  h1, h2, h3 { text-wrap: balance; }
+  time, .num { font-variant-numeric: tabular-nums; }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 0 var(--gutter); }
+  .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  html:not(.js) [data-js-only] { display: none !important; }
+
+  /* print: dark ink on white paper in every theme (the light values; the page surfaces white) */
+  @media print {
+    :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+      color-scheme: light; --wall: #fff; --mat: #fff; --ink: #15171a; --ink-2: #41464c; --ink-3: #565c62; --rule: #c5c7ca; --rule-2: #9ea2a7;
+    }
+    html, body { background: #fff; color: #15171a; }
+  }
+}
+
+/* ── Words that must not break: the nowrap pass (_includes/nowrap.html) wraps them in span.nw. Scoped to the base's own
+   blocks, so the hero's .dek .nw (site.css: an inline block that may wrap inside, WCAG 1.4.12) is untouched. ──────────────── */
+.page-head .nw, .sec .nw, .site-footer .nw { white-space: nowrap; }
+
+/* ── Skip link ── */
+.skip { position: absolute; left: var(--gutter); top: -96px; z-index: 50; padding: 12px 16px; background: var(--mat); color: var(--ink); font: 600 var(--fs-body)/var(--lh-body) var(--sans); }
+.skip:focus { top: 12px; }
+
+/* ── Header: in the flow on inner pages, scrolls away; on Home absolutely placed, in the same 1440 px box (left and
+   right 0 with auto margins center it), so the wordmark and the nav stand where they do on every page ── */
+.site-header { position: relative; z-index: 20; top: auto; left: auto; right: auto; height: auto; display: block; gap: 0;
+  max-width: 1440px; margin: 0 auto; padding: 0 var(--gutter); }
+.is-home .site-header { position: absolute; top: 0; left: 0; right: 0; max-width: 1440px; margin: 0 auto; }
+.site-header .bar { position: relative; display: flex; align-items: stretch; height: var(--bar-h); }
+.site-header.is-ruled .bar { border-bottom: 1px solid var(--rule); }
+/* the header's links carry 4 px of padding inside an equal negative margin (8 px in the Tools panel): the text keeps its
+   position, and the focus ring, drawn 2 px inside the box so the bar never clips it, stays clear of the letters */
+.site-header .wordmark { display: flex; align-items: center; margin: 0 auto 0 -4px; padding: 0 4px; font: 700 var(--fs-body)/var(--lh-body) var(--sans);
+  color: var(--ink); text-decoration: none; }
+/* hover looks only for a fine pointer that can hover, so a tap leaves nothing behind; focus rings stay outside */
+@media (hover: hover) and (pointer: fine) {
+  .site-header .wordmark:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}
+.site-header .site-nav { display: flex; align-items: stretch; gap: 0; }
+.site-header .site-nav .nav-items { display: flex; align-items: stretch; gap: var(--nav-gap); list-style: none; margin: 0; padding: 0; }
+.site-header .nav-items > li { position: relative; display: flex; align-items: center; }
+.site-header .site-nav .nav-a { position: relative; display: flex; align-items: center; align-self: stretch; margin: 0 -4px; padding: 0 4px;
+  font: 400 var(--fs-body)/var(--lh-body) var(--sans); color: var(--ink-2); text-decoration: none; }
+@media (hover: hover) and (pointer: fine) { .site-header .site-nav .nav-a:hover { color: var(--ink); text-decoration: none; } }
+.site-header .site-nav .nav-a[aria-current] { color: var(--ink); text-decoration: none; }
+/* the "you are here" marker: 2 px of ink exactly the label's width, lying on the header's bottom hairline */
+.site-header .site-nav .nav-a[aria-current]::after { content: ""; position: absolute; left: 4px; right: 4px; bottom: -1px; height: 2px; background: var(--ink); z-index: 31; }
+.site-header :focus-visible { outline-offset: -2px; }
+.site-header .nav-toggle { display: none; }
+
+/* ── The Tools list ── */
+.site-header .nav-list-btn { display: inline-grid; place-items: center; width: 24px; height: 24px; margin: 0 0 0 4px; padding: 0;
+  border: 0; border-radius: 0; background: transparent; color: var(--ink-2); cursor: pointer; }
+.site-header .nav-list-btn svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.site-header .nav-list-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+@media (hover: hover) and (pointer: fine) { .site-header .nav-list-btn:hover { color: var(--ink); } }
+@media (pointer: coarse) { .site-header .nav-list-btn { width: 44px; height: 44px; } }
+/* the panel: its text on the T of Tools (left edge 20 px left of it, plus its 1 px edge), its right edge on the content box's
+   (shell.js measures --nl-w when it opens); its top border lies on the header's hairline; one surface, no shadow */
+.site-header .nav-list { position: absolute; top: 100%; left: calc(-1 * var(--panel-in) - 1px); z-index: 30; width: var(--nl-w, 414px);
+  padding: 8px var(--panel-in); background: var(--wall); border: 1px solid var(--rule); border-radius: 0; visibility: hidden; opacity: 0; }
+.site-header .nav-list.is-open { visibility: visible; opacity: 1; }
+.site-header .nav-list[hidden] { display: none !important; }
+.site-header .site-nav .nav-list ul { display: block; list-style: none; margin: 0; padding: 0; }
+.site-header .nav-list li + li { border-top: 1px solid var(--rule); }
+.site-header .site-nav .nav-list a { display: block; margin: 0 -8px; padding: 12px 8px; color: var(--ink); text-decoration: none; font: 400 var(--fs-body)/var(--lh-body) var(--sans); }
+.site-header .nav-list .nl-t { display: block; font: 600 var(--fs-body)/var(--lh-body) var(--sans); color: var(--ink);
+  text-decoration-line: none; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.site-header .nav-list .nl-all .nl-t { font-weight: 400; }
+.site-header .nav-list .nl-d { display: block; margin-top: 4px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.site-header .site-nav .nav-list a:focus-visible .nl-t { text-decoration-line: underline; }
+@media (hover: hover) and (pointer: fine) { .site-header .site-nav .nav-list a:hover .nl-t { text-decoration-line: underline; } }
+.site-header .site-nav .nav-list a[aria-current="page"] .nl-t { text-decoration-line: underline; text-decoration-thickness: 2px; }
+
+/* ── Footer: the same surface, a hairline across the content box, Small text ── */
+.site-footer { max-width: 1440px; margin: var(--foot-above) auto 0; padding: 0 var(--gutter) var(--foot-end); border: 0; background: transparent; }
+.site-footer .foot { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px var(--col-gap); align-items: start;
+  padding-top: var(--foot-pad); border-top: 1px solid var(--rule); font: 400 var(--fs-small)/var(--lh-small) var(--sans); }
+.site-footer .foot-a { grid-column: 1 / 3; max-width: var(--read); }
+.site-footer .foot-b { grid-column: 4; display: grid; gap: 8px; }
+.site-footer .foot-name { font: 600 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink); }
+.site-footer .foot-role { margin-top: 4px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+/* the profile links on two columns inside column 4 (the email across both), Contact and Privacy on the same two */
+.site-footer .foot-profile, .site-footer .foot-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; list-style: none; margin: 0; padding: 0; }
+.site-footer .foot-profile li:first-child { grid-column: 1 / -1; }
+.site-footer .foot-profile a, .site-footer .foot-links a { display: inline-block; padding: 0;
+  font: 400 var(--fs-small)/24px var(--sans); color: var(--ink); text-decoration: none; }
+.site-footer a:focus-visible { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+@media (hover: hover) and (pointer: fine) { .site-footer a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; } }
+
+/* ── The page head ── */
+.page-head { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--col-gap);
+  max-width: 1440px; margin: 0 auto; padding: var(--head-top) var(--gutter) 0; }
+.page-head .head-b { grid-column: 1 / 4; grid-row: 1; position: relative; z-index: 1; min-width: 0; }
+.page-head .head-m, .page-head > figure { grid-column: 4; grid-row: 1; margin-top: var(--cap-h1); }
+/* the grid drawing is the head's background, behind its text; skin.css places it */
+.page-head > .head-band { position: absolute; z-index: 0; top: 0; right: var(--gutter); pointer-events: none; }
+.page-h1 { max-width: var(--read); font: 700 var(--fs-h1)/var(--lh-h1) var(--sans); letter-spacing: -0.015em; color: var(--ink); }   /* a long title wraps in the reading column, clear of the grid drawing */
+.page-lead { margin-top: var(--head-gap); max-width: var(--read); font: 400 var(--fs-item)/var(--lh-lead) var(--sans); color: var(--ink); }
+.page-sent { margin-top: var(--para); max-width: var(--read); color: var(--ink-2); }
+/* the publication summary (pub-summary.html), every line in one muted body style: the journal articles' total, the
+   journals under its words each after its number of articles, then the conference papers and theses */
+.pub-sum { font: 400 var(--fs-body)/var(--lh-body) var(--sans); color: var(--ink-2); }
+.pub-sum .num { display: inline-block; min-width: calc(1ch + 8px); white-space: pre; text-indent: 0; }   /* the number and its space */
+.pub-sum-j { list-style: none; margin: 0; padding: 0 0 0 calc(1ch + 8px); }   /* under the total's words */
+.pub-sum-j li { padding-left: calc(1ch + 8px); text-indent: calc(-1ch - 8px); }   /* a long name wraps under itself */
+.page-head .pub-sum { margin-top: var(--head-gap); max-width: var(--read); }
+/* the CV's PDF link under the h1: a button in a 1 px ink frame, 44 px tall, the download glyph before its label */
+.cv-pdf { margin-top: var(--head-gap); }
+.cv-pdf a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--ink);
+  color: var(--ink); font: 500 var(--fs-body)/1 var(--sans); text-decoration: none; }
+.cv-pdf svg { flex: none; display: block; fill: none; stroke: currentColor; stroke-width: 1.5; }
+@media (hover: hover) and (pointer: fine) { .cv-pdf a:hover { background: var(--rule); } }   /* as the map's zoom buttons */
+.head-index { margin-top: var(--head-gap); max-width: var(--read); }   /* the contents row (CV) within the reading column */
+.head-index ul { display: flex; flex-wrap: wrap; gap: 4px 24px; list-style: none; margin: 0; padding: 0; }
+/* a link that is a whole item of a list is an inline block, so its target is its line's full 26 px (24 in the 404 lists)
+   instead of the 21 px of its letters */
+.head-index a, .link-list a, .contact-links dd > a { display: inline-block; }
+.head-index a, .row-a a, .sec-more { color: var(--ink); text-decoration-line: underline; text-decoration-color: var(--rule-2);
+  text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.head-index a:focus-visible, .row-a a:focus-visible, .sec-more:focus-visible { text-decoration-color: var(--ink); text-decoration-thickness: 1px; }
+@media (hover: hover) and (pointer: fine) {
+  .head-index a:hover, .row-a a:hover, .sec-more:hover { text-decoration-color: var(--ink); text-decoration-thickness: 1px; }
+}
+
+/* ── Sections: a hairline across the content box, the h2, the content ── */
+.sec, .fx-tool { display: block; max-width: 1440px; margin: var(--sec-above) auto 0; padding: 0 var(--gutter); border: 0; }
+.sec::before { content: ""; display: block; height: 1px; margin-bottom: var(--sec-below); background: var(--rule); transform-origin: top; }
+/* arrival at a #fragment: the target section's top hairline becomes the 2 px ink marker (a still mark, no JS) */
+/* an arrival lands 24 px under the window's top edge, and a row that is not its section's first carries the marker on its
+   own top hairline, so the marker is on screen */
+.sec, .anchor, .row { scroll-margin-top: 24px; }
+.sec:target::before, .sec:has(> .anchor:target)::before, .sec:has(> article:target)::before,
+.sec:has(> .rows > .row:first-child:target)::before { background: var(--ink); transform: scaleY(2); }
+html:not([data-labels="column"]) .row:not(:first-child):target { position: relative; }
+html:not([data-labels="column"]) .row:not(:first-child):target::after { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: var(--ink); }
+.sec .anchor { display: block; }
+.sec-t { margin: 0 0 var(--h2-gap); max-width: var(--read); font: 700 var(--fs-h2)/var(--lh-h2) var(--sans); letter-spacing: -0.01em; color: var(--ink);
+  text-wrap: balance; }   /* every h2 within the reading column */
+.sec-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 24px; max-width: var(--read); margin: 0 0 var(--h2-gap); }
+.sec-h .sec-t { margin: 0; }
+.sec .sec-more { padding: 0; font: 400 var(--fs-body)/var(--lh-body) var(--sans); }
+.sec-b, .sec-main { max-width: var(--read); }
+.sec-b > * + * { margin-top: var(--para); }
+.sub-t { font: 600 var(--fs-item)/var(--lh-item) var(--sans); color: var(--ink); }
+.sec-b > .sub-t { margin-top: var(--sec-below); }
+.sec-b > .sub-t + * { margin-top: var(--inner); }
+.plain { list-style: none; padding: 0; }
+.plain li + li { margin-top: var(--inner); }   /* at 4 px a wrapped item would read as two items */
+.plain li { text-wrap: pretty; }
+.note, .maturity { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.tool .sec-t { margin-bottom: 4px; }
+.tool .maturity { margin-bottom: var(--h2-gap); }
+.tool .maturity:has(+ .maturity) { margin-bottom: 0; }
+
+/* ── Rows: label, body, media; a hairline between rows ── */
+.rows { display: block; }
+.row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: start;
+  padding: var(--row) 0; border-top: 1px solid var(--rule); }
+.row:first-child { padding-top: 0; border-top: 0; }
+.row:last-child { padding-bottom: 0; }
+.row-b { grid-column: 1 / 3; max-width: var(--read); min-width: 0; }
+.row-b > * + * { margin-top: var(--inner); }
+.row-l { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+/* a short label at the right end of the title's first line, on the title's baseline (line box of the title's height, 2 px down) */
+.row-l--tab { float: right; position: relative; top: 2px; margin: 0 0 0 24px; line-height: var(--lh-item); white-space: nowrap; }
+/* a quoted title hangs its opening quote, so its first letter stands on the title edge: the quote's advance in Schibsted
+   Grotesk 600 (measured: 9.98 px at 20 px, 0.499 em) */
+.hang { margin-left: -0.5em; }
+.row-b > .row-l--tab + .row-t { margin-top: 0; }
+.row-t { font: 600 var(--fs-item)/var(--lh-item) var(--sans); color: var(--ink); text-wrap: wrap; }   /* greedy: beside a floated label, balance and pretty leave the first line short */
+.row-t a { color: var(--ink); text-decoration-line: none; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.row-t a:focus-visible { text-decoration-line: underline; }
+@media (hover: hover) and (pointer: fine) { .row-t a:hover { text-decoration-line: underline; } }
+.row-d { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.row-d strong { font-weight: 600; color: var(--ink); }
+.row-a { display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.row-m { grid-column: 4; margin-top: var(--cap-item); container-type: inline-size; }
+/* a News picture's top on the cap line of the row's first line, the dateline; from 1000 px only, so a phone keeps the 16 px
+   every media place has under its text */
+@media (min-width: 1000px) { .row--news .row-m { margin-top: var(--cap-small); } }
+/* contained in the 4:3 box (column 4 wide, 75cqw tall): the width is definite from the picture's aspect ratio (--ar, written by
+   the build), so the box is reserved before a lazy file loads */
+.row-m img { width: min(100%, calc(75cqw * var(--ar, 1.3333))); height: auto; aspect-ratio: var(--ar, auto); max-width: 100%; }
+.row-m figcaption { margin-top: 8px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+/* the Abstract toggle: its summary at the right end of the venue line; the opened abstract under it, across the body */
+.row-v.has-abs { padding-right: 96px; }
+.row-b > .abs { position: relative; margin-top: 0; }
+.abs > summary { position: absolute; right: 0; top: -22px; display: flex; align-items: center; gap: 4px; min-height: 24px; list-style: none; cursor: pointer;
+  font: 600 var(--fs-small)/24px var(--sans); color: var(--ink); }
+.abs > summary::-webkit-details-marker { display: none; }
+.abs > summary::after { content: ""; width: 7px; height: 7px; margin: 0 4px 4px; border: solid var(--ink-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.abs[open] > summary::after { margin-bottom: 0; margin-top: 4px; transform: rotate(-135deg); }
+@media (hover: hover) and (pointer: fine) { .abs > summary:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; } }
+.abs-b { padding-top: var(--inner); }
+.abs:not([open]) > .abs-b { display: none; }   /* closed means not displayed (not only unrendered) */
+.abs-b p { color: var(--ink); }
+
+/* ── Home's lower sections: the space under the cards is set here, not on the cards ── */
+/* fixed exception: 48 - 84 (site.css's .themes bottom padding), so Latest's hairline is 48 px under the cards' last line */
+#latest { margin-top: -36px; }
+/* Home's two lists from 1180 px: titles, labels and detail lines run across columns 1-2, to the second card's right edge
+   (630 px at 1440); paragraphs keep the 600 px measure */
+@media (min-width: 1180px) {
+  .sec--home .sec-h { max-width: calc(50% - var(--col-gap) / 2); }
+  .sec--home .row-b { max-width: none; }
+  .sec--home .row-b > .row-p { max-width: var(--read); }
+}
+
+/* ── The CV: many rows, so rows of 16 px padding, as on a phone ── */
+@media (min-width: 1000px) { .page-cv { --row: 16px; } }
+
+/* ── A head with a block after its text (page-head.html's after parameter, About's bio): the block starts under the lead, in the reading
+   column, and the media (the portrait) spans both rows, so the bio runs beside the portrait instead of under it ── */
+.page-head > .head-after { grid-column: 1 / 3; grid-row: 2; position: relative; z-index: 1; min-width: 0; max-width: var(--read); margin-top: var(--sec-below); }
+.page-head--after > figure, .page-head--after > .head-m { grid-row: 1 / span 2; align-self: start; }
+/* the CV's contact line is for paper only */
+.page-print { display: none; }
+
+/* ── About: the bio in the reading column under the h1; beside it, at the right edge of columns 3-4, the portrait, its top on
+   the h1's cap line. The head's third row takes what the portrait needs beyond the h1 and the bio, so the bio starts under
+   the h1. 1000-1179 px: the portrait in the 240 px media column. Phones: under the h1. ── */
+.about-bio > * + * { margin-top: var(--para); }
+.page-head:has(> .about-photos) { grid-template-rows: auto auto 1fr; }
+.page-head > .about-photos { grid-column: 3 / -1; grid-row: 1 / -1; align-self: start; display: flex; align-items: flex-start; gap: 24px;
+  margin-top: var(--cap-h1); }
+.about-photos figure { margin: 0; min-width: 0; }
+.about-photos .about-portrait { flex: 1 1 0; }
+.about-photos img { width: 100%; height: auto; }
+.page-head--after:not(:has(.page-lead)) > .head-after { margin-top: var(--head-gap); }
+@media (min-width: 1000px) and (max-width: 1179px) {
+  .page-head > .about-photos { grid-column: 2; flex-direction: column; }
+  .about-photos .about-portrait { flex: none; width: 100%; }
+}
+.aff-note { max-width: var(--read); margin-top: var(--h2-gap); }
+.contact-links { display: block; margin-top: var(--h2-gap); }
+.contact-links div { display: grid; grid-template-columns: 120px minmax(0, 1fr); column-gap: 16px; align-items: baseline; }
+.contact-links div + div { margin-top: 4px; }
+.contact-links dt { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.contact-links dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.contact-links a { color: var(--ink); text-decoration-line: underline; text-decoration-color: var(--rule-2);
+  text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.contact-links a:focus-visible { text-decoration-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .contact-links a:hover { text-decoration-color: var(--ink); } }
+
+/* ── 404: plain lists of links, one per line on the reading column's edge. Body size on 24 px lines, no gap between them
+   (24 px targets, WCAG 2.5.8) ── */
+.link-list { max-width: var(--read); list-style: none; margin: 0; padding: 0; line-height: 24px; }
+.link-list a { color: var(--ink); text-decoration-line: underline; text-decoration-color: var(--rule-2); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.link-list a:focus-visible { text-decoration-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .link-list a:hover { text-decoration-color: var(--ink); } }
+
+/* ── Privacy: the storage key in the page's own type, not in monospace ── */
+.privacy-sec code { font: inherit; }
+/* one section: its parts' headings are h2 set at Item size (sub-t), 24 px above each, no hairline */
+.privacy-sec .sec-b > .sub-t:first-child { margin-top: 0; }
+.page-privacy .privacy-sec .sec-b { max-width: 584px; }   /* the body lines' median length within a 55-72 character measure */
+
+/* ── The map: this file styles what map.js, Leaflet and the basemap draw. The content box's width, 480 px tall at 1440 (400 at
+   390), radius 0, no frame, no vignette; pins in atlas inks by kind, the awards the only vermilion and the only filled star;
+   clusters, the off-screen buttons and the arcs at rest neutral; no violet. Text never takes a pin color. Selectors on the
+   map's own elements are two classes deep (.map-container ...), so they beat leaflet.css, which the loader puts first. ── */
+.map-section__header { max-width: var(--read); }
+.map-section .map-section__title { margin-bottom: var(--inner); }
+.map-section__subtitle { color: var(--ink-2); }
+/* isolation: Leaflet's panes and controls (z-index 400-1000) and the map's preview and panel stay inside the map's own stacking
+   context, under the header's Tools list and the open phone Menu */
+.map-wrap { position: relative; isolation: isolate; display: grid; grid-template-columns: minmax(0, 1fr); margin-top: var(--h2-gap); overflow: clip; overflow-clip-margin: 8px; }
+.map-container, .map-preview, .map-detail, .map-hint { grid-area: 1 / 1 / 2 / 2; }   /* all four lines: an absolute child's auto line would be the wrap's edge */
+.map-legend { grid-area: 2 / 1; margin-top: 16px; }
+.map-container { position: relative; width: 100%; height: clamp(400px, calc(100vw / 3), 480px); border-radius: 0; background: transparent; }
+.map-container.leaflet-container { background: var(--map-water); font: 400 var(--fs-small)/var(--lh-small) var(--sans); }
+.map-container.leaflet-container:focus-visible { outline: none; }
+.map-container.leaflet-container:focus-visible::after { content: ""; position: absolute; inset: 0; z-index: 1000; pointer-events: none; border: 2px solid var(--ink); }
+.map-container .map-marker { display: flex; align-items: center; justify-content: center; background: none; border: 0; }
+.map-cluster-icon { background: none; border: 0; }
+.map-container .map-marker:focus-visible, .map-container .map-cluster-icon:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* a focused or open pin lies above its neighbors (Leaflet's inline z-index would keep some pins under others) */
+/* the Research Base square is the anchor of every arc: it lies above the other pins; a focused or open pin still lies
+   above it */
+.map-container .leaflet-marker-icon.map-marker--home { z-index: 1000 !important; }
+.map-container .leaflet-marker-icon:focus, .map-container .map-marker.is-active { z-index: 100000 !important; }
+/* while a pin has keyboard focus the attribution steps aside (it can cover a pin in the bottom-right corner) */
+.map-container:has(.leaflet-marker-icon:focus-visible) .leaflet-control-attribution { visibility: hidden; }
+.map-container .map-land { fill: var(--map-land); fill-opacity: 1; stroke: none; }
+.map-container .map-lake { fill: var(--map-water); fill-opacity: 1; stroke: none; }
+.map-container .map-coast { fill: none; stroke: var(--map-coast); stroke-width: 0.8px; stroke-opacity: 1; }
+.map-container .map-border { fill: none; stroke: var(--map-border); stroke-width: 0.7px; stroke-opacity: 1; }
+.map-container .map-border--disputed { stroke-dasharray: 3 2; }
+/* glyphs (map, key, list of places): one shape per kind, so a kind never depends on color */
+.map-glyph { --pin: var(--pin-publication); display: inline-block; flex: none; box-sizing: border-box; width: 12px; height: 12px;
+  border-radius: 50%; background: var(--pin); box-shadow: 0 0 0 2px var(--map-halo); vertical-align: -1px; }
+.map-glyph--home        { --pin: var(--pin-home); border-radius: 1px; }
+.map-glyph--publication { --pin: var(--pin-publication); }
+.map-glyph--talk        { --pin: var(--pin-talk); background: var(--map-halo); border: 2.5px solid var(--pin); }
+.map-glyph--education   { --pin: var(--pin-education); border-radius: 1px; background: var(--map-halo); border: 2.5px solid var(--pin); }
+.map-glyph--training    { --pin: var(--pin-training); background: radial-gradient(circle, var(--pin) 0 1.6px, var(--map-halo) 2.1px); border: 2px solid var(--pin); }
+.map-glyph--data        { --pin: var(--pin-data); border-radius: 1px; background: radial-gradient(circle, var(--pin) 0 1.6px, var(--map-halo) 2.1px); border: 2px solid var(--pin); }
+.map-glyph--visit       { --pin: var(--pin-visit); width: 10px; height: 10px; border-radius: 1px; transform: rotate(45deg); }
+.map-glyph--award       { --pin: var(--pin-award); position: relative; width: 18px; height: 18px; border-radius: 0; background: none; box-shadow: none;
+  filter: drop-shadow(1.5px 0 0 var(--map-halo)) drop-shadow(-1.5px 0 0 var(--map-halo)) drop-shadow(0 1.5px 0 var(--map-halo)) drop-shadow(0 -1.5px 0 var(--map-halo)); }
+.map-glyph--award::before { content: ""; position: absolute; inset: 0; background: var(--pin);
+  clip-path: polygon(50% 4.6%, 64.1% 35.2%, 97.6% 39.1%, 72.8% 62%, 79.4% 95.1%, 50% 78.6%, 20.6% 95.1%, 27.2% 62%, 2.4% 39.1%, 35.9% 35.2%); }
+.map-container .map-marker.is-active .map-glyph { box-shadow: 0 0 0 2px var(--map-halo), 0 0 0 3.5px var(--pin); }
+.map-container .map-marker.is-active .map-glyph--award { box-shadow: none; scale: 1.2; }
+/* arcs: quiet gray at rest, the pin's own color while it is hovered, focused or open */
+.map-container .map-arc { fill: none; stroke: var(--map-arc); stroke-width: 1; stroke-opacity: 1; }
+.map-container .map-arc.is-active { stroke-width: 1.6; }
+.map-container .map-arc--award.is-active { stroke: var(--pin-award); }
+.map-container .map-arc--publication.is-active { stroke: var(--pin-publication); }
+.map-container .map-arc--training.is-active { stroke: var(--pin-training); }
+.map-container .map-arc--talk.is-active { stroke: var(--pin-talk); }
+.map-container .map-arc--visit.is-active { stroke: var(--pin-visit); }
+.map-container .map-arc--education.is-active { stroke: var(--pin-education); }
+.map-container .map-arc--data.is-active { stroke: var(--pin-data); }
+/* clusters and off-screen buttons: the halo's surface, a graphite ring, the count in ink */
+.map-container .map-cluster { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--map-halo); color: var(--pin-cluster-text);
+  box-shadow: inset 0 0 0 2px var(--pin-cluster), 0 0 0 2px var(--map-halo); font: 600 var(--fs-small)/1 var(--sans); font-variant-numeric: tabular-nums; }
+/* at the overview, pins that would hide each other fan out (map.js updateSpread), each with a hairline to its place */
+.map-container .map-leader { fill: none; stroke: var(--map-arc); stroke-width: 1; stroke-opacity: 1; }
+.map-offscreen-wrap { position: absolute; inset: 0; pointer-events: none; z-index: 800; }
+.map-container .map-osi { position: absolute; pointer-events: auto; min-height: 32px; min-width: 32px; padding: 0 8px; display: inline-flex; align-items: center; gap: 4px;
+  background: var(--map-halo); color: var(--ink); border: 1px solid var(--pin-cluster); border-radius: 0; font: 600 var(--fs-small)/1 var(--sans); font-variant-numeric: tabular-nums; cursor: pointer; }
+@media (hover: hover) and (pointer: fine) { .map-container .map-osi:hover { border-color: var(--ink); } }
+.map-osi--n { top: 8px; left: 50%; transform: translateX(-50%); }
+.map-osi--ne { top: 8px; right: 52px; }
+.map-osi--e { top: 50%; right: 8px; transform: translateY(-50%); }
+.map-osi--se { bottom: 40px; right: 8px; }
+.map-osi--s { bottom: 40px; left: 50%; transform: translateX(-50%); }
+.map-osi--sw { bottom: 40px; left: 8px; }
+.map-osi--w { top: 50%; left: 8px; transform: translateY(-50%); }
+.map-osi--nw { top: 8px; left: 52px; }
+/* Leaflet's zoom bar and map.js's Reset: one square group; the grayed state restated (leaflet.css's would otherwise show) */
+.map-container .leaflet-control-zoom { border: 1px solid var(--ink-3); border-radius: 0; box-shadow: none; }
+.map-container .leaflet-control-zoom a { display: block; width: 32px; height: 32px; text-align: center; text-decoration: none; font: 600 var(--fs-body)/32px var(--sans);
+  color: var(--ink); background: var(--map-halo); border-radius: 0; border-bottom: 1px solid var(--rule); cursor: pointer; }
+.map-container .leaflet-control-zoom a:first-child, .map-container .leaflet-control-zoom a:last-child { border-radius: 0; }
+.map-container .leaflet-control-zoom a:last-child { border-bottom: 0; }
+@media (hover: hover) and (pointer: fine) { .map-container .leaflet-control-zoom a:hover { background: var(--rule); } }
+.map-container .leaflet-control-zoom a.leaflet-disabled, .map-container .leaflet-control-zoom a.leaflet-disabled:hover { color: var(--ink-3); background: var(--map-halo); cursor: default; }
+.map-container .leaflet-control-attribution { background: color-mix(in srgb, var(--map-halo) 88%, transparent); color: var(--ink-2); font: 400 var(--fs-small)/var(--lh-small) var(--sans); }
+.map-container .leaflet-control-attribution a { color: var(--ink); }
+.map-container .leaflet-control-attribution a:focus-visible { outline-offset: -2px; }
+.map-container .leaflet-attribution-flag { display: none !important; }
+/* the hover preview, the detail panel, the wheel hint, the skip link and the no-JS line */
+.map-preview { position: absolute; z-index: 1000; pointer-events: none; max-width: 260px; padding: 8px 12px; background: var(--map-halo); color: var(--ink);
+  border: 1px solid var(--rule-2); font: 400 var(--fs-small)/var(--lh-small) var(--sans); }
+.map-preview[hidden] { display: none; }
+.map-preview__type, .map-preview__photo { color: var(--ink-2); }
+.map-preview__label { font-weight: 600; }
+.map-preview__summary { color: var(--ink-2); }
+.map-preview__photo { display: inline-block; margin-top: 4px; }
+.map-preview__photo[hidden] { display: none; }
+.map-detail { position: absolute; z-index: 1001; inset: 0 0 0 auto; width: min(380px, 100%); overflow-y: auto; visibility: hidden; opacity: 0; transform: translateX(16px);
+  padding: 16px 24px 24px; background: var(--map-halo); color: var(--ink); border-left: 1px solid var(--rule-2); }
+.map-detail[hidden] { display: block; }
+.map-detail[data-visible="true"] { visibility: visible; opacity: 1; transform: none; }
+.map-detail__close { position: absolute; top: 4px; right: 4px; width: 44px; height: 44px; padding: 0; border: 1px solid transparent; border-radius: 0; background: none; color: var(--ink);
+  font: 400 var(--fs-h2)/1 var(--sans); cursor: pointer; }
+@media (hover: hover) and (pointer: fine) { .map-detail__close:hover { border-color: var(--rule-2); } }
+.map-detail__head { display: flex; gap: 12px; padding-right: 48px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.map-detail__label { margin-top: 8px; font: 600 var(--fs-item)/var(--lh-item) var(--sans); color: var(--ink); }
+.map-detail__label:focus { outline: none; }
+.map-detail__label:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.map-detail__location, .map-detail__venue { margin-top: 4px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.map-detail__paper { margin-top: 8px; font-style: italic; }
+.map-detail__desc { margin-top: 8px; white-space: pre-line; }
+.map-detail__image { margin-top: 12px; width: 100%; height: auto; }
+.map-detail__image[hidden] { display: none; }
+.map-detail__tags { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px 12px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.map-detail__actions { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px 24px; }
+.map-detail__link { display: inline-block; padding: 0; font-weight: 600; color: var(--ink); text-decoration-color: var(--rule-2); }
+.map-detail__link:focus-visible { text-decoration-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .map-detail__link:hover { text-decoration-color: var(--ink); } }
+.map-hint { position: absolute; left: 0; right: 0; top: 45%; z-index: 900; text-align: center; pointer-events: none; visibility: hidden; }
+.map-hint span { display: inline-block; padding: 8px 12px; background: var(--ink); color: var(--wall); font: 400 var(--fs-small)/var(--lh-small) var(--sans); }
+.map-hint--visible { visibility: visible; }
+.map-skip:not(:focus) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.map-skip:focus { position: absolute; z-index: 1100; top: 8px; left: 8px; padding: 8px 12px; background: var(--mat); color: var(--ink); }
+.map-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; margin: 0; padding: 24px; color: var(--ink-2); }
+/* the key (one wrapping line, 16 px under the map) and the list of places: the glyph in an 18 px slot on the page color */
+/* on the page the halo would be the page color, so it is left out (no shadow or filter where it cannot show) */
+.map-legend .map-glyph, .map-places .map-glyph { --map-halo: var(--wall); box-shadow: none; filter: none; }
+.map-legend__slot { display: inline-grid; place-items: center; flex: none; width: 18px; height: 18px; }
+.map-legend__list { display: flex; flex-wrap: wrap; gap: 8px 24px; list-style: none; margin: 0; padding: 0; }
+.map-legend__item { display: inline-flex; align-items: center; gap: 8px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.map-legend__hint { margin-top: 8px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.map-section:has(.map-detail[data-visible="true"]) .map-legend__hint { visibility: hidden; }
+.map-places { margin-top: 16px; max-width: calc(75% - 9px); }
+.map-places__summary { display: inline-flex; align-items: center; gap: 8px; min-height: 24px; font: 600 var(--fs-body)/var(--lh-body) var(--sans); color: var(--ink);
+  cursor: pointer; list-style: none; }
+.map-places__summary::-webkit-details-marker { display: none; }
+.map-places__summary::after { content: ""; width: 7px; height: 7px; margin: 0 4px 4px; border: solid var(--ink-2); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
+.map-places[open] .map-places__summary::after { margin-bottom: 0; margin-top: 4px; transform: rotate(-135deg); }
+@media (hover: hover) and (pointer: fine) { .map-places__summary:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; } }
+.map-places__list { list-style: none; margin: 8px 0 0; padding: 0; }
+.map-places__item { display: grid; grid-template-columns: 96px minmax(0, 1fr) 168px; column-gap: 24px; align-items: baseline; padding: 8px 0; border-top: 1px solid var(--rule); }
+.map-places__year, .map-places__type { font: 400 var(--fs-small)/var(--lh-body) var(--sans); color: var(--ink-2); }   /* digits tabular through .num */
+.map-places__type { display: inline-flex; align-items: center; gap: 8px; align-self: start; }
+.map-places__main { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+.map-places__label { font-weight: 600; color: var(--ink); }
+a.map-places__label { text-decoration-line: underline; text-decoration-color: var(--rule-2); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+a.map-places__label:focus-visible { text-decoration-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { a.map-places__label:hover { text-decoration-color: var(--ink); } }
+.map-places__where { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+/* without JS the map is its one sentence on the page color, not an empty box, and the pin hint is hidden */
+html:not(.js) .map-container { height: auto; }
+html:not(.js) .map-fallback { position: static; padding: 0; justify-content: flex-start; text-align: left; }
+html:not(.js) .map-legend__hint { display: none; }
+
+/* ── The explorer page's data part ── */
+.datasets { list-style: none; padding: 0; }
+/* the datasets one line each at 1180 px and up: the list may run across columns 1-3 (a list of names, not reading text;
+   a one-line item has no full line, so it never counts against the reading measure). The source line under the list
+   (.note) takes the list's width, so the two-line credit does not break into short lines; the other paragraphs keep
+   the reading column */
+.sec-b--wide { max-width: none; }
+.sec-b--wide > :not(.datasets, .note) { max-width: var(--read); }
+@media (min-width: 1180px) { .sec-b--wide > :is(.datasets, .note) { max-width: calc(75% + 1.25 * var(--col-gap)); } }
+@media (max-width: 1179px) { .sec-b--wide > :is(.datasets, .note) { max-width: var(--read); } }
+.datasets li + li { margin-top: var(--inner); }
+.ds-code { font: 400 var(--fs-small)/var(--lh-small) var(--mono); }
+.ds-n { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+
+/* ── The explorer tool: its color changes on the site's linear curve, and the reduced-motion rule for Plotly's modebar
+   (site.css, which has it too, is not loaded on the explorer page) ── */
+.forecast-section .fc-tab, .forecast-section .fc-tz-btn, .forecast-section .fc-step { transition-timing-function: linear; }
+.forecast-section .modebar, .forecast-section .modebar-group, .forecast-section .modebar-btn { transition-timing-function: linear !important; }
+@media (prefers-reduced-motion: reduce) { .modebar, .modebar-group, .modebar-btn { transition-duration: 0s !important; transition-delay: 0s !important; } }
+
+/* explorer.css hides the tool's own header (its h2 stays for screen readers); its "Elia Open Data" link leaves the tab
+   order, so no Tab stop is without a visible ring (WCAG 2.4.7). The page's Data and provenance section and its footer link
+   Elia Open Data visibly */
+.forecast-section__header .fc-elia-link { visibility: hidden; }
+
+/* ── 1000-1179 px: the reading column and a 240 px media place at the box's right edge, 48 px apart ── */
+@media (max-width: 1179px) {
+  .row, .page-head { grid-template-columns: minmax(0, 1fr) 240px; column-gap: 48px; }
+  .row-b { grid-column: 1; }
+  .page-head .head-b { grid-column: 1; }
+  .row-m, .page-head .head-m, .page-head > figure { grid-column: 2; }
+  .site-footer .foot { grid-template-columns: minmax(0, 1fr) 240px; column-gap: 48px; }
+  .site-footer .foot-a { grid-column: 1; }
+  .site-footer .foot-b { grid-column: 2; }
+  .page-head > .head-after { grid-column: 1; }
+  .map-places { max-width: none; }
+}
+/* the list of places: below 760 px the type under the place */
+@media (max-width: 759px) {
+  .map-places__item { grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; }
+  .map-places__type { grid-column: 2; }
+}
+/* the map's phone view follows map.js's MOBILE_BP (640): the panel as a bottom sheet */
+@media (max-width: 639px) {
+  .map-detail { inset: auto 0 0 0; width: auto; height: 64%; border-left: 0; border-top: 1px solid var(--rule-2); transform: translateY(16px); }
+  /* map.js puts the zoom bar bottom right here: the south-east button stands to its left, the north-east one in the corner */
+  .map-osi--se { right: 52px; }
+  .map-osi--ne { right: 8px; }
+}
+
+/* ── Below 1000 px: one column; the phone Menu ── */
+@media (max-width: 999px) {
+  #latest { margin-top: -52px; }   /* fixed exception: 32 - 84 */
+  .row, .page-head, .site-footer .foot { display: block; }
+  .row-m, .page-head .head-m, .page-head > figure { margin-top: 16px; }
+  .row-m { container-type: normal; }
+  .row-m img { width: min(100%, calc(160px * var(--ar, 1.3333))); }   /* at most 160 px tall: a crop is 240 x 160 */
+  /* a short label on a phone stands on its own line above the title, as every News label does: floated at 390 px it would
+     leave a title's first line one word long */
+  .row-l--tab { float: none; position: static; margin: 0; line-height: var(--lh-small); }
+  .row-b > .row-l--tab + .row-t { margin-top: var(--inner); }
+  .row-v.has-abs { padding-right: 0; }
+  .row-b > .abs { margin-top: var(--inner); }
+  .abs > summary { position: static; display: inline-flex; }
+  .site-footer .foot-b { margin-top: 16px; }
+  /* About on a phone: the portrait under the lead (DOM order head, portrait, bio) */
+  .page-head > .about-photos { gap: 16px; margin-top: 16px; }
+  .page-head > .head-after { margin-top: var(--sec-below); }
+
+  .site-header .nav-toggle { display: inline-flex; align-items: center; justify-content: center; align-self: center; min-width: 44px; min-height: 44px;
+    margin: 0 -8px 0 0; padding: 0 8px; border: 0; border-radius: 0; background: transparent; color: var(--ink); font: 400 var(--fs-body)/var(--lh-body) var(--sans); cursor: pointer; }
+  html.js .site-header .site-nav { display: none; position: static; flex-direction: row; gap: 0; padding: 0; background: transparent; border: 0; }
+  html.js .site-header .site-nav.is-open { display: block; position: fixed; z-index: 40; inset: var(--bar-h) 0 0 0; overflow-y: auto;
+    padding: 8px var(--gutter) 48px; background: var(--wall); }
+  html.js .site-header:has(.site-nav.is-open) .bar { position: fixed; z-index: 41; top: 0; left: 0; right: 0; padding: 0 var(--gutter); background: var(--wall); }
+  html.js .site-header:has(.site-nav.is-open) { height: var(--bar-h); }
+  /* the color theme group opens over the open Menu (the Menu is z-index 40 inside the open bar) */
+  html.js .site-header:has(.site-nav.is-open) .bar > .theme-pick { z-index: 41; }
+  /* the open bar spans the window, so its hairline is drawn across the content box only, as closed */
+  html.js .site-header.is-ruled:has(.site-nav.is-open) .bar { border-bottom: 0; }
+  html.js .site-header.is-ruled:has(.site-nav.is-open) .bar::after { content: ""; position: absolute; left: var(--gutter); right: var(--gutter); bottom: 0;
+    border-top: 1px solid var(--rule); }
+  html:has(.site-header .site-nav.is-open) { overflow: hidden; }
+  html.js .site-header .site-nav .nav-items { display: block; }
+  html.js .site-header .nav-items > li { display: block; }
+  html.js .site-header .site-nav .nav-a { display: flex; min-height: 48px; font-size: var(--fs-body); color: var(--ink); }
+  html.js .site-header .site-nav .nav-a[aria-current]::after { display: none; }
+  html.js .site-header .site-nav .nav-a[aria-current] { text-decoration-line: underline; text-decoration-thickness: 2px; text-underline-offset: 0.3em; }
+  /* the Tools list in the Menu: always shown under Tools, its items indented 16 px, no chevron, no lines under the names */
+  html.js .site-header .nav-list-btn { display: none; }
+  html.js .site-header .nav-list { position: static; width: auto; visibility: visible; opacity: 1; transform: none; padding: 0 0 0 16px; border: 0; background: transparent; }
+  html.js .site-header .nav-list li + li { border-top: 0; }
+  html.js .site-header .site-nav .nav-list a { display: flex; align-items: center; min-height: 44px; margin: 0 -4px; padding: 0 4px; }
+  html.js .site-header .nav-list .nl-d { display: none; }
+  html.js .site-header .nav-list .nl-t { font-weight: 400; }
+  html.js .site-header .nav-list .nl-explorer .nl-t { font-weight: 600; }
+  /* without JS: the nav is a wrapped row of links under the wordmark */
+  html:not(.js) .site-header .bar { flex-wrap: wrap; height: auto; padding: 4px 0 8px; }
+  html:not(.js) .site-header .wordmark { min-height: 44px; }
+  html:not(.js) .site-header .site-nav { position: static; display: block; width: 100%; padding: 0; background: transparent; border: 0; }
+  html:not(.js) .site-header .site-nav .nav-items { flex-wrap: wrap; gap: 0 24px; }
+  html:not(.js) .site-header .site-nav .nav-a { min-height: 44px; font-size: var(--fs-body); }
+  html:not(.js) .site-header .site-nav .nav-a[aria-current]::after { bottom: 8px; }
+  html:not(.js) .site-header .nav-toggle { display: none; }
+}
+/* phones: each contact label above its value, so no address (the ORCID iD, the LinkedIn path) breaks inside a word */
+@media (max-width: 599px) {
+  /* on a phone the CV's contents row would wrap to many lines above the first section; the h2s follow in the same order */
+  .page-cv .head-index { display: none; }
+  .contact-links div { display: block; }
+  .contact-links div + div { margin-top: 8px; }
+}
+
+/* ── Motion: only in answer to a pointer, a key or a tap; one curve; nothing on load or scroll ── */
+@media (prefers-reduced-motion: no-preference) {
+  .site-header .nav-list { transform: translateY(-4px); transition: opacity 120ms linear, visibility 0s linear 120ms, transform 0s linear 120ms; }
+  .site-header .nav-list.is-open { transform: none; transition: opacity 180ms var(--ease), transform 180ms var(--ease), visibility 0s linear 0s; }
+  .site-header .nav-list-btn svg { transition: transform 160ms var(--ease); }
+  .site-header .site-nav .nav-a, .site-header .nav-list-btn { transition: color 120ms linear; }
+  .cv-pdf a { transition: background-color 120ms linear; }
+  .head-index a, .row-a a, .sec-more, .contact-links a, .link-list a, a.map-places__label { transition: text-decoration-color 120ms linear; }
+  .map-container .leaflet-control-zoom a, .map-container .map-osi { transition: background-color 120ms linear, border-color 120ms linear; }
+  /* the map's panel: enters in 180 ms, exits in 120 ms; map.js waits for the longest transition before setting [hidden] */
+  .map-detail { transition: opacity 120ms linear, transform 120ms linear, visibility 0s linear 120ms; }
+  .map-detail[data-visible="true"] { transition: opacity 180ms var(--ease), transform 180ms var(--ease), visibility 0s linear 0s; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 999px) {
+  html.js .site-header .nav-list, html.js .site-header .nav-list.is-open { transform: none; transition: none; }
+}
+
+/* ── Forced colors: markers and the chevron stay visible ── */
+@media (forced-colors: active) {
+  .site-header .site-nav .nav-a[aria-current]::after { background: CanvasText; }
+  .sec::before { background: GrayText; }   /* the section hairline is a background, painted Canvas otherwise */
+  .sec:target::before, .sec:has(> .anchor:target)::before, .sec:has(> article:target)::before,
+  .sec:has(> .rows > .row:first-child:target)::before, .row:target::after { background: CanvasText; }
+  /* the map's glyphs: CanvasText on Canvas, so the shapes and the words carry the kinds */
+  .map-glyph { forced-color-adjust: none; --pin: CanvasText; --map-halo: Canvas; }
+}
+
+/* ── Print: no shell, no skin figures. The paper is white whatever the theme (the tokens' print values sit in the layer, above). ── */
+@media print {
+  .skip, .site-header, .site-footer .foot-b, .head-band, .page-head .head-m, .sec-m, .map-section { display: none !important; }
+  .page-head .head-index { display: none; }
+}
+
+/* ── The CV on A4: no screen shell, no row split across pages. Sizes in points: h1 20 / 700, h2 12.5 / 700 with a 0.5 pt rule
+   above, h3 10.5 / 600, body 10 / 14, labels and details 8.5. Hidden: the skip link, the header (the Tools list, the theme
+   control and the Menu), the footer, the PDF link, the contents row, every skin figure and the rows' links. Shown: the
+   print-only line under the h1 (the name, the email and the profile URLs). Links print as text, with no URL appended. ── */
+@media print {
+  @page { size: A4; margin: 16mm 15mm; }
+  body.page-cv { font: 400 10pt/14pt var(--sans); color: #15171a; }
+  .page-cv .site-footer, .page-cv .rows .row-a, .page-cv .cv-pdf, .page-cv .nav-toggle { display: none !important; }
+  .page-cv .page-head, .page-cv .sec { max-width: none; margin: 0; padding: 0; }
+  .page-cv .page-head { display: block; }
+  .page-cv .head-b { max-width: none; }
+  .page-cv .page-h1 { font: 700 20pt/24pt var(--sans); letter-spacing: -0.01em; }
+  .page-cv .page-print { display: block; margin-top: 3pt; font: 400 8.5pt/12pt var(--sans); color: #41464c; }
+  .page-cv .sec { margin-top: 11pt; }
+  /* the 0.5 pt rule is drawn on the h2 itself, so a page break never leaves it alone at the foot of a page */
+  .page-cv .sec::before { display: none; }
+  .page-cv .sec-t { max-width: none; margin-bottom: 3pt; padding-top: 4pt; border-top: 0.5pt solid #15171a; font: 700 12.5pt/16pt var(--sans); letter-spacing: 0; break-after: avoid; page-break-after: avoid; }
+  .page-cv .sec-b { max-width: none; }
+  .page-cv .sec-b > * + * { margin-top: 3pt; }
+  .page-cv .sec-b p, .page-cv .row-p { font: 400 10pt/14pt var(--sans); }
+  .page-cv .row { display: block; padding: 4pt 0; border-top: 0.5pt solid #c5c7ca; break-inside: avoid; page-break-inside: avoid; }
+  .page-cv .row:first-child { padding-top: 1pt; border-top: 0; }
+  .page-cv .row:last-child { padding-bottom: 0; }
+  .page-cv .row-b { max-width: none; }
+  .page-cv .row-b > * + * { margin-top: 1pt; }
+  .page-cv .row-t { font: 600 10.5pt/14pt var(--sans); break-after: avoid; page-break-after: avoid; }
+  .page-cv .row-l, .page-cv .row-d { font: 400 8.5pt/12pt var(--sans); color: #41464c; }
+  /* the period at the right end of the title's line, as on screen (the paper is narrower than 1000 px, where the screen rule
+     would put it on a line of its own) */
+  .page-cv .row-l--tab { float: right; position: relative; top: 1pt; margin: 0 0 0 12pt; line-height: 14pt; }
+  /* "View publications" names a page, not an address: on paper it is a dead instruction */
+  .page-cv #cv-pubs .row-a { display: none; }
+  .page-cv .row-b > .row-l--tab + .row-t { margin-top: 0; }
+  /* on paper the opening quote does not hang: it would fall in the page margin, which the printer clips */
+  .page-cv .hang { margin-left: 0; }
+  .page-cv a { color: inherit; text-decoration: none; }
+}
+
+/* ── The color theme control at the end of the header's bar: an ink-3 icon, 32 px target, no box; the group of three under
+   the bar's hairline, as the Tools panel, one surface and a 1 px edge, its right edge on the content box's (right 8 px undoes
+   the pick's -8 px margin) ── */
+.site-header .theme-pick { position: relative; display: flex; align-items: center; align-self: stretch; margin: 0 -8px 0 20px; }
+.site-header .theme-btn { display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 0;
+  background: transparent; color: var(--ink-3); cursor: pointer; }
+.site-header .theme-btn svg { display: block; fill: none; stroke: currentColor; stroke-width: 1.25; }
+.site-header .theme-btn svg path { fill: currentColor; stroke: none; }
+.site-header .theme-btn[aria-expanded="true"] { color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .site-header .theme-btn:hover { color: var(--ink); } }
+.site-header .theme-menu { position: absolute; top: 100%; right: 8px; z-index: 30; display: grid; min-width: 136px; padding: 8px;
+  background: var(--wall); border: 1px solid var(--rule); }
+.site-header .theme-menu[hidden] { display: none; }
+.site-header .theme-menu button { display: flex; align-items: center; gap: 8px; min-height: 32px; padding: 0 8px; border: 0; border-radius: 0;
+  background: transparent; color: var(--ink-2); font: 400 var(--fs-small)/var(--lh-small) var(--sans); text-align: left; cursor: pointer; }
+.site-header .theme-menu button::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: transparent; }
+.site-header .theme-menu button[aria-pressed="true"] { color: var(--ink); }
+.site-header .theme-menu button[aria-pressed="true"]::before { background: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .site-header .theme-menu button:hover { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; } }
+@media (max-width: 999px) {
+  .site-header .theme-pick { margin: 0 -8px 0 8px; }
+  .site-header .theme-btn { width: 44px; height: 44px; }
+}
+html:not(.js) .site-header .theme-pick { display: none; }
+
+/* ── Pages without pictures use the whole width. Two zones: a row's or a section's text in columns 1-2, what supports it
+   (papers, details, the explorer's figure) in columns 3-4, its first line on the title's cap line. Labels in a column
+   (.rows--lab: Publications, the CV, Privacy, Home's Selected publications): the label in column 1, the rest in columns 2-4.
+   Below 1000 px everything stacks. */
+.row--split > .row-b { grid-column: 1 / 3; }
+.row--split > .row-x { grid-column: 3 / -1; min-width: 0; margin-top: calc(var(--cap-item) - var(--cap-small)); }
+.sec--split { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: start; }
+.sec--split::before { grid-column: 1 / -1; }
+.sec--split > .sec-main { grid-column: 1 / 3; min-width: 0; max-width: var(--read); }
+.sec--split > .sec-x { grid-column: 3 / -1; min-width: 0; margin-top: calc(var(--cap-h2) - var(--cap-small)); }
+.row-x > * + *, .sec-x > * + * { margin-top: var(--sec-below); }
+.row-x-k { font: 600 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.row-x-k + * { margin-top: var(--inner); }
+.row-x-v { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink); }
+.row-x-k + .row-x-v { margin-top: 4px; }
+.row-x-note { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.paper-list { list-style: none; margin: 0; padding: 0; }
+.paper-list li { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); text-wrap: pretty; }
+.paper-list li + li { margin-top: 12px; }
+.paper-list a { color: var(--ink); text-decoration-line: underline; text-decoration-color: var(--rule-2); text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em; }
+.paper-list a:focus-visible { text-decoration-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .paper-list a:hover { text-decoration-color: var(--ink); } }
+.paper-list .pl-v { display: block; margin-top: 4px; }
+/* below 1000 px the two zones stack: what supports the text follows it */
+@media (max-width: 999px) {
+  .sec--split { display: block; }
+  .sec--split > .sec-x, .row--split > .row-x { margin-top: var(--sec-below); }
+}
+@media (min-width: 1000px) {
+  .rows--lab > .row > .row-b { display: contents; }
+  .rows--lab > .row > .row-b > * { grid-column: 2 / -1; min-width: 0; max-width: none; }
+  .rows--lab > .row > .row-b > .row-l { grid-column: 1; grid-row: 1 / span 12; float: none; position: static; margin: 0; white-space: normal;
+    line-height: var(--lh-small); padding-top: calc(var(--cap-item) - var(--cap-small)); }
+  .rows--lab > .row > .row-b > .row-l + * { margin-top: 0; }
+  .rows--lab > .row > .row-b > .row-t:first-child { margin-top: 0; }
+  .rows--lab > .row > .row-b > .row-p { max-width: calc(var(--read) + 160px); }
+  /* the CV's and Publications' text without a label (the Research profile, the count line) on the same edge as the rows' text */
+  .page-cv .sec > .sec-b, .page-publications .sec > .sec-b { margin-left: calc((100% - 3 * var(--col-gap)) / 4 + var(--col-gap)); }
+}
+/* the abstract: justified, one column at a long measure. Where a browser does not hyphenate English, justified lines of
+   about 55 characters open wide gaps; at about 95 characters the gaps stay even without hyphenation (where a browser
+   hyphenates, it does) */
+.abs-b p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; text-wrap: wrap; max-width: 800px; }
+/* an abstract is text as published: its compounds may break at their hyphen, so justified lines need not open wide gaps; below
+   700 px the measure is too short to justify, so the lines are left aligned */
+.abs-b .nw { white-space: normal; }
+@media (max-width: 699px) { .abs-b p { text-align: left; } }
+
+/* ── Research: two parts, Themes and Projects; each part's h2 over a 2 px ink rule, its items (h3) between hairlines, so
+   Projects reads as a new part ── */
+.sec.part::before { height: 2px; background: var(--ink); }
+.sec.part > .part-t { margin-bottom: var(--sec-below); }
+
+/* ── Privacy: each part's heading in column 1, its text in columns 2-3 at the reading measure ── */
+.priv-b > * + * { margin-top: var(--para); }
+.privacy-sec .priv-h { margin: 0; }
+@media (min-width: 1000px) {
+  .rows--lab > .priv-row > .row-b > .priv-h { grid-column: 1; grid-row: 1; margin: 0; padding-top: calc(var(--cap-body) - var(--cap-item)); }
+  .rows--lab > .priv-row > .row-b > .priv-b { grid-column: 2 / 4; grid-row: 1; max-width: var(--read); margin: 0; }
+}
+@media (max-width: 999px) { .privacy-sec .priv-b { margin-top: var(--inner); } }
+
+/* ── Home, Latest: two entries side by side, each the whole picture on a 12 px mat with a hairline; the heading row and
+   Selected publications on the full width ── */
+.sec--home .sec-h { max-width: none; }
+.latest { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--col-gap);
+  row-gap: 48px; align-items: start; }
+.latest-item { min-width: 0; }
+.latest-mat { margin: 0; padding: 12px; background: var(--mat); border: 1px solid var(--rule); }
+.latest-mat img { display: block; width: 100%; height: auto; aspect-ratio: var(--ar, auto); }
+.latest-b { margin-top: 16px; max-width: var(--read); }
+.latest-b > * + * { margin-top: var(--inner); }
+.latest-b .row-l { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.latest-b .row-p { color: var(--ink); }
+.latest-credit { font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+@media (max-width: 999px) { .latest { grid-template-columns: minmax(0, 1fr); row-gap: 32px; } }
+
+/* ── The explorer's mini visual (Tools list) and its figure (Tools page): the distribution in the accent (the probability
+   color), its walls and the dashed Gaussian in ink, the Gaussian's spill past capacity a light ink wash ── */
+.fx-glyph, .fx-figure { display: block; overflow: visible; }
+.fx-glyph .fx-mass, .fx-figure .fx-mass { fill: var(--accent); fill-opacity: 0.24; stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
+.fx-glyph .fx-base, .fx-figure .fx-base { fill: none; stroke: var(--rule-2); stroke-width: 1; }
+.fx-glyph .fx-wall, .fx-figure .fx-wall { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.fx-figure .fx-gauss { fill: none; stroke: var(--ink); stroke-width: 1.25; stroke-dasharray: 5 4; }
+.fx-figure .fx-spill { fill: var(--ink); fill-opacity: 0.14; stroke: none; }
+.fx-figure { width: 100%; height: auto; }
+.fx-fig { margin: 0; }
+/* beside the text the figure takes 88 % of its column; the explorer's one link heads the right column, its cap line on the
+   h2's, and the figure under it keeps the column's gap (.fx-fig's margin 0 above would cancel it) */
+.sec-x > .fx-open + .fx-fig { margin-top: var(--sec-below); }
+@media (min-width: 1000px) {
+  .fx-fig { max-width: 88%; }
+  .sec--split > .sec-x:has(> .fx-open:first-child) { margin-top: calc(var(--cap-h2) - var(--cap-body)); }
+}
+.fx-ticks { position: relative; height: var(--lh-small); margin-top: 4px; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.fx-ticks span { position: absolute; top: 0; white-space: nowrap; }
+.fx-fig figcaption { margin-top: var(--inner); font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); text-wrap: pretty; }
+/* in the Tools list: the glyph at the explorer item's right, its top on the name's cap line */
+.site-header .nav-list .nl-explorer a { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 24px; align-items: start; }
+.site-header .nav-list .nl-explorer .nl-t, .site-header .nav-list .nl-explorer .nl-d { grid-column: 1; }
+.site-header .nav-list .nl-explorer .nl-fx { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+@media (max-width: 999px) { html.js .site-header .nav-list .nl-fx { display: none; } }
+
+/* ── The data's status light: green while the data are at most 48 h old, with a slow soft blink and a faint ring every
+   2.4 s (still under reduced motion); gray after that and without JavaScript (shell.js) ── */
+.fx-status { display: block; font: 400 var(--fs-small)/var(--lh-small) var(--sans); color: var(--ink-2); }
+.page-head .fx-status { margin-top: var(--para); }
+.fx-light { display: inline-block; position: relative; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--ink-3); vertical-align: 1px; }
+.fx-light::after { content: ""; position: absolute; inset: 0; border-radius: 50%; background: inherit; opacity: 0; pointer-events: none; }   /* the ring */
+.fx-status[data-feed="current"] .fx-light { background: var(--live); }
+.fx-src a { color: var(--ink); text-decoration-line: underline; text-decoration-color: var(--rule-2); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.fx-src a:focus-visible { text-decoration-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .fx-src a:hover { text-decoration-color: var(--ink); } }
+@media (prefers-reduced-motion: no-preference) {
+  .fx-status[data-feed="current"] .fx-light { animation: fx-blink 2.4s ease-in-out infinite; }
+  .fx-status[data-feed="current"] .fx-light::after { animation: fx-ring 2.4s ease-out infinite; }
+}
+@keyframes fx-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes fx-ring { 0% { opacity: 0.45; transform: scale(1); } 70%, 100% { opacity: 0; transform: scale(2.6); } }
+@media (forced-colors: active) { .fx-light { forced-color-adjust: none; background: CanvasText; } }
+
+/* ── The explorer's step buttons with their symbols ── */
+.forecast-section .fc-step { display: inline-flex; align-items: center; justify-content: center; gap: 4px; }
+.forecast-section .fc-ico { flex: none; display: block; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* News sets its rows as Publications does: the date and place in column 1, the title, text and links in columns 2-3 beside
+   the picture in column 4, or in columns 2-4 when the entry has no picture. */
+@media (min-width: 1000px) {
+  .rows--lab > .row:has(> .row-m) > .row-b > :not(.row-l) { grid-column: 2 / 4; }
+  .rows--lab > .row > .row-m { grid-column: 4; grid-row: 1 / span 12; }
+}
+/* 1000-1179 px: the two-zone rows and the labeled rows keep the four columns they have from 1180 px (on this range's
+   two-column grid their text would fall into the 240 px column) */
+@media (min-width: 1000px) and (max-width: 1179px) {
+  .row--split, .rows--lab > .row { grid-template-columns: repeat(4, minmax(0, 1fr)); column-gap: var(--col-gap); }
+}
+/* About: the portrait, 337 px wide at 1440, at the right edge of columns 3-4 */
+.about-photos--one { justify-content: flex-end; }
+.about-photos--one .about-portrait { flex: 0 1 337px; }
+@media (min-width: 1000px) and (max-width: 1179px) { .about-photos--one .about-portrait { flex: none; width: 100%; } }
+@media (max-width: 999px) { .about-photos--one { justify-content: flex-start; } .about-photos--one .about-portrait { flex: 0 1 auto; } }

@@ -1,0 +1,16 @@
+{%- comment -%}
+  An author list as escaped HTML: the list is split on ", ", each name keeps its words together
+  with U+00A0 between them, the names are joined by ", ", and then "K. Yurtseven" is set in
+  <strong lang="tr"> and "H. Çalık" in <span lang="tr"> (both with U+00A0). Hyphenated initials
+  ("J.-F.") get their span.nw from the no-wrap pass.
+  Parameter: a (the publications.yml authors string, "F. Lastname, F. Lastname").
+  The no-break spaces below are literal U+00A0 characters (five: one in the first replace and one
+  in each of the four name strings of the last line).
+{%- endcomment -%}
+{%- assign au_names = include.a | append: '' | split: ', ' -%}
+{%- capture au_s -%}
+  {%- for au_n in au_names -%}
+    {{- au_n | strip | replace: ' ', ' ' -}}{%- unless forloop.last %}, {% endunless -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{{- au_s | escape | replace: 'K. Yurtseven', '<strong lang="tr">K. Yurtseven</strong>' | replace: 'H. Çalık', '<span lang="tr">H. Çalık</span>' -}}

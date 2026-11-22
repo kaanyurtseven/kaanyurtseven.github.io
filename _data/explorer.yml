@@ -1,0 +1,105 @@
+# ============================================================
+# Forecast Error Uncertainty Explorer: copy and provenance.
+# The markup (ids, data-tech / data-forecast hooks, #show-gaussian) is
+# _includes/forecast-chart.html; assets/js/forecast.js reads it.
+# ============================================================
+
+name: "Forecast Error Uncertainty Explorer"   # its page's heading, the Tools heading, the 404 list, the links on Research and Privacy
+anchor: "forecast-explorer"        # the tool's section id on its page
+url: "/tools/forecast-explorer/"   # its own page (_pages/forecast-explorer.md). Research, Privacy, Tools, the 404 list and head.html's #forecast-explorer redirect link it through this key; home.yml, nav.yml and tools.yml repeat the path
+
+# The explorer page's lead: the subtitle's first sentence, repeated as the page's meta
+# description (_pages/forecast-explorer.md) and its line in the Tools list (nav.yml).
+lead: "The latest seven days of Belgian wind and solar forecasts, with their error distributions from three years of Elia open data."
+
+# Section subtitle (_includes/forecast-chart.html).
+subtitle: >-
+  The latest seven days of Belgian wind and solar forecasts, with their error distributions
+  from three years of Elia open data. Select a time on the 7-day trajectory to see the
+  conditioned error distribution at that operating point.
+
+# Longer description for the Tools page, two paragraphs of at most 60 words.
+description:
+  - >-
+    An interactive tool that shows the latest seven days of Belgian wind and solar generation,
+    forecast and measured, in 15-minute steps. Pick any quarter-hour to see the distribution of
+    its forecast error, and how the shape changes near zero output and near installed capacity,
+    where a Gaussian no longer fits.
+  - >-
+    Each distribution is built from three years of Elia open data around that forecast level. The
+    tool fits Beta and Gaussian approximations in the browser and computes quantiles and CVaR
+    exactly from the conditioned distribution.
+
+# Provenance. The Elia Open Data catalog API names the license "Elia Open Data Licence"
+# (license_url /pages/licence) with attribution "Elia Transmission Belgium SA". That page
+# states the data are governed by the Creative Commons Attribution 4.0 International Public
+# License ("CC BY 4.0").
+provenance:
+  label: "Elia Open Data"
+  url: "https://opendata.elia.be/"
+  licence: "Elia Open Data Licence"
+  licence_url: "https://opendata.elia.be/pages/licence/"
+  licence_terms: "CC BY 4.0"                                   # the license Elia's page names
+  licence_terms_url: "https://creativecommons.org/licenses/by/4.0/"
+  publisher: "Elia Transmission Belgium SA"
+
+# Datasets the pipeline reads (scripts/fetch_elia_data.rb). Titles are quoted from the
+# Elia catalog API. Elia froze ODS032 and discontinued ODS087 on 26 October 2026; solar
+# history continues in ODS209 and the near-real-time feed in ODS210.
+datasets:
+  - code: "ODS031"
+    tech: wind
+    use: history
+    title: "Wind power production estimation and forecast on Belgian grid (Historical)"
+    url: "https://opendata.elia.be/explore/dataset/ods031/"
+  - code: "ODS086"
+    tech: wind
+    use: recent
+    title: "Wind power production estimation and forecast on Belgian grid (Near real-time)"
+    url: "https://opendata.elia.be/explore/dataset/ods086/"
+  - code: "ODS032"
+    tech: solar
+    use: history
+    title: "Photovoltaic power production estimation and forecast on Belgian grid (Historical)"
+    url: "https://opendata.elia.be/explore/dataset/ods032/"
+    note: "History up to 25 October 2026."
+  - code: "ODS209"
+    tech: solar
+    use: history
+    title: "Photovoltaic power production estimation and forecast on Belgian grid (Historical)"
+    url: "https://opendata.elia.be/explore/dataset/ods209/"
+    note: "History from 26 October 2026."
+  - code: "ODS210"
+    tech: solar
+    use: recent
+    title: "Photovoltaic power production estimation and forecast on Belgian grid (Near real-time)"
+    url: "https://opendata.elia.be/explore/dataset/ods210/"
+
+# The sentences of the explorer's status line under its chart.
+status:
+  # Placeholders are filled by forecast.js from the data JSON.
+  as_of: "Data as of {generated} UTC."
+  history: "History {hist_start} to {hist_end}."
+  latest: "Latest measurement {latest}."
+
+controls:
+  gaussian_toggle: "Show Gaussian and Beta fits"
+
+guide:
+  heading: "Try this"
+  text: >-
+    Select a time on the trajectory below when the forecast is near full capacity or zero. Notice how the
+    Gaussian approximation extends beyond the physical bounds, while the Beta distribution
+    stays within them.
+  dismiss: "Dismiss tip"
+
+labels:
+  distribution: "Distribution at the selected point"
+  trajectory: "Last 7 days, with forecasts beyond the latest measurement. Select a time to see its distribution, and press Lock to keep it."
+  locked: "locked"
+
+metrics:
+  cvar05: "CVaR 5%"
+  cvar05_definition: "Mean of the lowest 5% of outcomes."
+  cvar95: "CVaR 95%"
+  cvar95_definition: "Mean of the highest 5% of outcomes."

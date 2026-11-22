@@ -1,0 +1,133 @@
+/* Home's model: its SVG classes. Tones (--t-*) and flat studio colors (--s-*) come from tones.css (light and dark). */
+
+.st-static, .st-still, .st-hl { overflow: visible; }
+.f { fill: var(--c); stroke: var(--c); stroke-width: 0.45; stroke-linejoin: round; }
+.l { fill: none; stroke: var(--c); stroke-linecap: round; stroke-linejoin: round; }
+/* the network: one wire per circuit, heavier on the backbone (EHV) than on the regional level (HV) */
+.l.w-ehv { stroke: var(--s-wire); stroke-width: 1.7; }      /* thinner wires read as hairlines at 1440 px */
+.l.w-hv { stroke: var(--s-wireHV); stroke-width: 1.15; }
+/* the watched line (D-I) glows softly in the line sheet's color, so the sheet and its line read as one */
+.l.watch { stroke: var(--s-acEdge); stroke-width: 5.5; opacity: calc(0.3 + var(--s-glow, 0) * 0.3); filter: blur(1.3px); }
+.l.bus { stroke: var(--s-bus); stroke-width: 1.05; }
+.l.drop { stroke: var(--s-wire); stroke-width: 0.75; opacity: 0.9; }
+.l.blade, .blade { stroke: var(--s-ink); stroke-width: 0.9; }
+.l.cable { stroke: var(--s-cable); stroke-width: 1.05; opacity: 0.85; }
+.l.array { stroke: var(--s-wire); stroke-width: 0.6; opacity: 0.3; }
+.l.feeder { stroke: var(--s-cable); stroke-width: 0.8; opacity: 0.45; }
+.l.fence { stroke: var(--t-mt-09); stroke-width: 0.7; stroke-dasharray: 2 1.6; }
+.l.road { stroke: var(--t-cd-10); stroke-width: 3.2; opacity: 0.55; }
+/* a switchable line: in service, or switched out at both ends; the page sets data-open on the figure (#studio) while
+   its breakers are open (it reaches both the static and the highlight copy). Switched out, it is the only conductor
+   without light, dashed in place with long dashes in the plinth's engraving tone, so it does not read as a yard's fence
+   (short dashes). The no-JS still shows it switched out: the figure carries data-open="L-AD" in the markup. */
+.sw-off { stroke: var(--s-off) !important; stroke-dasharray: 6 4; opacity: 0; }
+[data-open~="L-AD"] .sw-on[data-br="L-AD"] { opacity: 0; }
+[data-open~="L-AD"] .sw-off[data-br="L-AD"] { opacity: 0.9; }
+/* while the switching hover's corridor light is up, the page draws the opened spine itself (dashed, clear
+   of both gantries), so the static layers' dashed copy steps aside */
+[data-sw-act][data-open~="L-AD"] .sw-off[data-br="L-AD"] { opacity: 0; }
+/* a card's link is at its foot, so Tab would scroll the first one to the middle of the viewport and the model off
+   screen; a top scroll margin keeps the link in view and about 240 px of the model above the cards (at 1440 x 900),
+   and the camera fits that part. data-sw="s3" keeps the browser's own scrolling. */
+html:not([data-sw="s3"]) .theme .theme-link { scroll-margin-top: min(520px, 58vh); }
+/* with the story text on (data-story text or swap, on a device that can hover), site.js scrolls after Tab instead (the
+   card's bottom 24 px above the window's bottom), which keeps more of the model in view than the margin above does
+   with the card's reserved beat line */
+@media not all and (hover: none) { html[data-story="text"] .theme .theme-link, html[data-story="swap"] .theme .theme-link { scroll-margin-top: 0; } }
+.sph { fill: var(--c); stroke: var(--c); stroke-width: 0.5; }
+/* the components' details and night lights. Windows are dark glass by day; in dark a share
+   is lit, and the share follows the town's load: a window of tier wN is lit while #studio[data-load] >= N
+   (set by the page each frame; without JS tiers 1 and 2 are lit). winLit equals win in light. Night
+   lights carry a soft halo in dark (a wide translucent stroke; --s-nightGlow is 0 in light). */
+.fx-win, .fx-door { fill: var(--s-win); opacity: 0.9; }
+.fx-door { fill: var(--s-door); }
+.fx-win.w1, .studio:not([data-load]) .fx-win.w2, [data-load="2"] .fx-win.w2, [data-load="3"] .fx-win.w2, [data-load="3"] .fx-win.w3 {
+  fill: var(--s-winLit); stroke: var(--s-winLit); stroke-width: 0.9; stroke-opacity: calc(0.35 * var(--s-nightGlow, 0));
+}
+.fx-glaze { fill: var(--s-glaze); opacity: var(--s-glazeA); stroke: var(--s-glaze); stroke-width: 0.9; stroke-opacity: calc(0.3 * var(--s-nightGlow, 0)); }
+.fx-glaze.fx-dim { opacity: calc(var(--s-glazeA) * 0.8); }
+.fx-seam { fill: var(--s-seam); opacity: var(--s-seamA); stroke: var(--s-seam); stroke-width: 0.9; stroke-opacity: calc(0.35 * var(--s-nightGlow, 0)); }
+.fx-deck { fill: var(--s-deck); opacity: var(--s-deckA); }
+/* no transition: the windows of houses that the page redraws on its canvas (occluders) switch at once, so the SVG ones do too */
+.st-sh path, .st-sh rect { fill: var(--s-shadow); }
+.st-sh { opacity: var(--s-shadow-a); }
+.st-ao path { fill: var(--s-ao); }
+.st-ao { opacity: var(--s-ao-a); }
+.st-tint path { fill: var(--s-acShadow); }
+.st-tint { opacity: var(--s-pshadow-a); }
+.sea { stroke: none; }
+
+/* the acrylic panels: a sheet with thickness; the cut edges carry the accent; a soft glow of the
+   lit edges, scaled by the palette's --s-glow */
+.ac-glow { fill: none; stroke: var(--s-acEdge); stroke-width: 3; opacity: calc(var(--s-glow, 0) * 0.55); filter: blur(3px); }
+.ac-face { fill: var(--s-acFace); }
+.ac-tint { fill: var(--s-acTint); }
+.ac-sheen { opacity: 0.9; }
+.ac-edge { fill: none; stroke: var(--s-acEdge); stroke-width: 0.8; stroke-linejoin: round; opacity: 0.8; }
+.ac-hi { fill: none; stroke: var(--s-acHi); stroke-width: 1; }
+.ac-wall, .ac-base { fill: none; stroke: var(--s-wallLine); stroke-width: 0.8; }
+.rod { fill: none; stroke: var(--t-mt-06); stroke-width: 1.6; stroke-linecap: round; }
+
+/* moving parts in the no-JS still */
+.glint { fill: var(--s-glint); }
+.pv-grid { fill: none; stroke: var(--s-pvGrid); stroke-width: 0.35; }
+.bar-track { fill: var(--s-chargeTrack); }
+.bar-fill { fill: var(--s-charge); stroke: var(--s-charge); stroke-width: 1.2; stroke-opacity: calc(0.3 * var(--s-nightGlow, 0)); }
+.blade { fill: none; stroke-width: 1.1; stroke-linecap: round; }
+.lamp { fill: var(--s-lamp); }
+.lamp-halo { fill: var(--s-lamp); opacity: var(--s-lampHalo, 0.18); }
+
+/* the stage: static model, highlight layers, still, live canvas */
+.st-stage > svg, .st-stage > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.st-hl .hl { visibility: hidden; opacity: 0; }
+/* the HVDC hover's day (data-hv="day", the default) and a balancing hover with a sink set data-hl-sink: the page then sinks
+   the rest of the model on the canvas, as the switching push-in does, so the static layer stays lit and the hvdc highlight
+   copy stays hidden (the canvas keeps the converter sites lit and draws the links' own light, and under the balancing sink
+   keeps D-I, its field, the spine and the two units in full light); with data-hv="r8" the flat dim and the highlight layer
+   apply */
+[data-hl="renewables"] .st-hl .hl[data-hl="renewables"],
+[data-hl="hvdc"]:not([data-hl-sink]) .st-hl .hl[data-hl="hvdc"], [data-hl="balancing"] .st-hl .hl[data-hl="balancing"] { visibility: visible; opacity: 1; }
+/* "Transmission switching" dims nothing flatly; the page's follow-spot darkens the model around
+   the ladder instead (canvas) */
+[data-hl="renewables"] .st-static, [data-hl="hvdc"]:not([data-hl-sink]) .st-static, [data-hl="balancing"]:not([data-hl-sink]) .st-static { opacity: 0.38; }
+/* the balancing units' room: pools of light on the ground under the units, scaled and faded by the page */
+.pools { pointer-events: none; }
+.pool { opacity: 0; }
+.pool-rim { fill: none; stroke: var(--s-poolDear); stroke-width: 1.3; opacity: 0.5; }
+.st-on .st-still { visibility: hidden; }
+/* the no-JS still of view 1 (at local time 0): every particle a zero-length stroke with a
+   round cap; the outer 10% of ranks lighter on the source panels, the loading past the limit warm */
+.uf-d { fill: none; stroke: var(--uf-particle); stroke-linecap: round; opacity: var(--uf-alpha); }
+.uf-d.uf-tail { opacity: calc(var(--uf-alpha) * var(--s-tailA, 0.36)); }
+.uf-d.uf-warm { stroke: var(--s-warm); opacity: 1; }
+.ac-limit { fill: none; stroke: var(--s-limit); stroke-width: 1.25; }
+
+/* the panels: every layer carries three forms (.pv-vol light volumes, .pv-band the floating band, .pv-r4 the acrylic
+   sheets); html[data-panels] shows one. With "auto", or without the attribute: light volumes on wide screens, the band
+   on phones. */
+html[data-panels="volumes"] .pv:not(.pv-vol), html[data-panels="band"] .pv:not(.pv-band), html[data-panels="r4"] .pv:not(.pv-r4),
+html:not([data-panels]) [data-layout="wide"] .pv:not(.pv-vol), html[data-panels="auto"] [data-layout="wide"] .pv:not(.pv-vol),
+html:not([data-panels]) [data-layout="compact"] .pv:not(.pv-band), html[data-panels="auto"] [data-layout="compact"] .pv:not(.pv-band) { display: none; }
+/* light without a sheet: the column and the beam are gradients (defs, --s-volGlow); the white haze behind the dots in
+   light only (--s-haze); the puck and the threads in the rail's violet, softly glowing (more so in dark) */
+.pv-col, .pv-beam { stroke: none; }
+/* the line field's cone to D-I, lit 1.6 times as strongly as the source fields' beams */
+:root { --s-lineBeamK: 1.6; }
+.pv-haze { stroke: none; opacity: var(--s-haze, 0); }
+.pv-puck { fill: var(--s-rail); opacity: var(--s-puckA); }
+.pv-puck-glow { fill: var(--s-rail); opacity: calc(var(--s-puckA) * 0.55); filter: blur(2.6px); }
+.pv-thread { fill: none; stroke: var(--s-rail); stroke-width: 0.8; opacity: var(--s-threadA); }
+.pv-thread-glow { fill: none; stroke: var(--s-rail); stroke-width: 2.6; opacity: calc(0.35 * var(--s-nightGlow, 0)); filter: blur(1.6px); }
+.pv-pt { fill: var(--s-rail); }
+/* on phones the band's threads are the only link from a chart to its source: a little heavier there, so they are easy
+   to follow */
+[data-layout="compact"] .pv-thread { stroke-width: 1.35; opacity: min(1, calc(var(--s-threadA) + 0.25)); }
+[data-layout="compact"] .pv-pt { r: 2.4px; }
+.ac-rail { fill: none; stroke: var(--s-rail); stroke-width: 1.4; opacity: 0.95; }
+.ac-rail-fine { fill: none; stroke: var(--s-rail); stroke-width: 0.8; opacity: 0.55; }
+/* the gas-engine plant (its halls, stacks, bay, step-up transformer, duct, shadows and highlight copy) is drawn only
+   with data-bal="b6" */
+html:not([data-bal="b6"]) .gate-b6 { display: none; }
+/* the biomass power station (its tower, boiler house, chimney, hall, domes, conveyor, bay, step-up transformer, duct,
+   cable, shadows and highlight copy) is drawn with data-bal="b7" and without data-bal (the still shows it idle) */
+html[data-bal]:not([data-bal="b7"]) .gate-b7 { display: none; }

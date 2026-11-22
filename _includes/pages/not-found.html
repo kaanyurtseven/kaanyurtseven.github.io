@@ -1,0 +1,23 @@
+{%- comment -%}
+  404 (404.html, page_id not-found). The shell's words: the heading and lead in the page head,
+  then "Pages on this site": Home, each page of _data/nav.yml and, after the page the explorer
+  lives under (Tools), the explorer itself (explorer.yml name and url). GitHub Pages serves this
+  page at every missing path, so every link is root-relative.
+{%- endcomment -%}
+{%- assign nf_h1 = page.heading | escape -%}
+{%- assign nf_lead = page.lead | escape -%}
+{% include page-head.html h1=nf_h1 lead=nf_lead %}
+{%- assign nf_ex = site.data.explorer -%}
+{%- capture nf_body %}  <ul class="link-list">
+    <li><a href="{{ '/' | relative_url }}">{{ page.home_label | escape }}</a></li>
+{%- for nf_item in site.data.nav.main %}
+    <li><a href="{{ nf_item.url | relative_url }}">{{ nf_item.label | escape }}</a></li>
+{%- assign nf_pre = nf_ex.url | slice: 0, nf_item.url.size -%}
+{%- if nf_pre == nf_item.url %}
+    <li><a href="{{ nf_ex.url | relative_url }}">{{ nf_ex.name | escape }}</a></li>
+{%- endif -%}
+{%- endfor %}
+  </ul>{% endcapture -%}
+{%- assign nf_heading = page.links_heading | escape %}
+
+{% include section.html id="pages" heading=nf_heading body=nf_body %}

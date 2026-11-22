@@ -1,0 +1,59 @@
+{%- comment -%}
+  Publications. The head: the shell's title, the publication summary (_includes/pub-summary.html;
+  the journals with their counts, then the conference papers and theses), and the year index (the
+  papers' years, then theses_heading). One section per year of the papers (every type but thesis), newest first;
+  within a year month descending (no month counts as 0), ties in file order. Then the theses,
+  ordered the same way (T2, T1). Each entry one pub-row.html row with its label on its own line.
+  The page's no-wrap pass (_layouts/page.html) runs over the result.
+{%- endcomment -%}
+{%- assign pb_all = site.data.publications -%}
+{%- capture pb_sum %}{% include pub-summary.html %}{% endcapture -%}
+{%- assign pb_h1 = page.title | escape -%}
+{%- assign pb_th_h = page.theses_heading | escape -%}
+{%- assign pb_years = '' | split: '' -%}
+{%- assign pb_theses = '' | split: '' -%}
+{%- for pb_p in pb_all -%}
+  {%- if pb_p.type == 'thesis' -%}
+    {%- assign pb_theses = pb_theses | push: pb_p -%}
+  {%- else -%}
+    {%- assign pb_years = pb_years | push: pb_p.year -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign pb_years = pb_years | uniq | sort | reverse -%}
+{%- capture pb_index -%}
+  {%- for pb_y in pb_years -%}
+<li><a href="#y-{{ pb_y }}"><span class="num">{{ pb_y }}</span></a></li>
+        {% endfor -%}
+<li><a href="#theses">{{ pb_th_h }}</a></li>
+{%- endcapture -%}
+{% include page-head.html h1=pb_h1 extra=pb_sum index=pb_index index_label='Years' %}
+
+{% for pb_y in pb_years -%}
+{%- capture pb_rows %}  <div class="rows rows--lab">
+{%- for pb_m in (0..12) reversed -%}
+{%- for pb_p in pb_all -%}
+{%- assign pb_pm = pb_p.month | default: 0 -%}
+{%- if pb_p.type != 'thesis' and pb_p.year == pb_y and pb_pm == pb_m %}
+{% include pub-row.html p=pb_p tab=false %}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor %}
+  </div>{% endcapture -%}
+{%- assign pb_sid = 'y-' | append: pb_y -%}
+{%- capture pb_sh %}<span class="num">{{ pb_y }}</span>{% endcapture -%}
+{% include section.html id=pb_sid heading=pb_sh body=pb_rows %}
+{% endfor -%}
+{%- capture pb_rows %}  <div class="rows rows--lab">
+{%- assign pb_ty_years = pb_theses | map: 'year' | uniq | sort | reverse -%}
+{%- for pb_y in pb_ty_years -%}
+{%- for pb_m in (0..12) reversed -%}
+{%- for pb_p in pb_theses -%}
+{%- assign pb_pm = pb_p.month | default: 0 -%}
+{%- if pb_p.year == pb_y and pb_pm == pb_m %}
+{% include pub-row.html p=pb_p tab=false %}
+{%- endif -%}
+{%- endfor -%}
+{%- endfor -%}
+{%- endfor %}
+  </div>{% endcapture -%}
+{% include section.html id='theses' heading=pb_th_h body=pb_rows %}

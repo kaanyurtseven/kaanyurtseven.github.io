@@ -1,0 +1,546 @@
+{
+ "kaan-yurtseven": {
+  "px": [
+   1067,
+   1067
+  ],
+  "files": [
+   {
+    "file": "kaan-yurtseven-350.jpg",
+    "w": 350,
+    "h": 350
+   },
+   {
+    "file": "kaan-yurtseven-700.jpg",
+    "w": 700,
+    "h": 700
+   }
+  ],
+  "ar": "1.0000",
+  "media_sizes": "(min-width: 1180px) 223px, (min-width: 1000px) 180px, 180px"
+ },
+ "phd-defence-2026": {
+  "px": [
+   1600,
+   1200
+  ],
+  "files": [
+   {
+    "file": "phd-defence-2026-604.jpg",
+    "w": 604,
+    "h": 453
+   },
+   {
+    "file": "phd-defence-2026-1208.jpg",
+    "w": 1208,
+    "h": 906
+   }
+  ],
+  "ar": "1.3333",
+  "media_sizes": "(min-width: 1180px) 297px, (min-width: 1000px) 240px, 240px",
+  "crop": {
+   "files": [
+    {
+     "file": "phd-defence-2026-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "phd-defence-2026-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "phd-defence-2026-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "phd-defence-2026-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "phd-defence-2026-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "eu-parliament-breakfast-2026-group": {
+  "px": [
+   800,
+   600
+  ],
+  "files": [
+   {
+    "file": "eu-parliament-breakfast-2026-group-604.jpg",
+    "w": 604,
+    "h": 453
+   },
+   {
+    "file": "eu-parliament-breakfast-2026-group-800.jpg",
+    "w": 800,
+    "h": 600
+   }
+  ],
+  "ar": "1.3333",
+  "media_sizes": "(min-width: 1180px) 297px, (min-width: 1000px) 240px, 240px",
+  "crop": {
+   "files": [
+    {
+     "file": "eu-parliament-breakfast-2026-group-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "eu-parliament-breakfast-2026-group-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "eu-parliament-breakfast-2026-group-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "eu-parliament-breakfast-2026-group-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "eu-parliament-breakfast-2026-group-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "etch-workshop-2026": {
+  "crop": {
+   "files": [
+    {
+     "file": "etch-workshop-2026-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "etch-workshop-2026-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "etch-workshop-2026-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "etch-workshop-2026-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "etch-workshop-2026-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "pmaps-2026": {
+  "crop": {
+   "files": [
+    {
+     "file": "pmaps-2026-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "pmaps-2026-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "pmaps-2026-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "pmaps-2026-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "pmaps-2026-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "n-side-training-2026": {
+  "crop": {
+   "files": [
+    {
+     "file": "n-side-training-2026-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "n-side-training-2026-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "n-side-training-2026-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "n-side-training-2026-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "n-side-training-2026-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "risk-day-2026": {
+  "crop": {
+   "files": [
+    {
+     "file": "risk-day-2026-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "risk-day-2026-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "risk-day-2026-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "risk-day-2026-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "risk-day-2026-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "eera-gold-award": {
+  "crop": {
+   "files": [
+    {
+     "file": "eera-gold-award-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "eera-gold-award-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "eera-gold-award-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "eera-gold-award-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "eera-gold-award-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "ieee-kiel-powertech-2025": {
+  "crop": {
+   "files": [
+    {
+     "file": "ieee-kiel-powertech-2025-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "ieee-kiel-powertech-2025-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "ieee-kiel-powertech-2025-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "ieee-kiel-powertech-2025-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "ieee-kiel-powertech-2025-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "risk-day-2025": {
+  "crop": {
+   "files": [
+    {
+     "file": "risk-day-2025-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "risk-day-2025-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "risk-day-2025-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "risk-day-2025-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "risk-day-2025-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "lanl-winter-school-2025": {
+  "crop": {
+   "files": [
+    {
+     "file": "lanl-winter-school-2025-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "lanl-winter-school-2025-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "lanl-winter-school-2025-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "lanl-winter-school-2025-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "lanl-winter-school-2025-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "isgt-europe-2024": {
+  "crop": {
+   "files": [
+    {
+     "file": "isgt-europe-2024-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "isgt-europe-2024-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "isgt-europe-2024-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "isgt-europe-2024-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "isgt-europe-2024-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "pmaps-2024": {
+  "crop": {
+   "files": [
+    {
+     "file": "pmaps-2024-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "pmaps-2024-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "pmaps-2024-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "pmaps-2024-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "pmaps-2024-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "wind-farm-visit": {
+  "crop": {
+   "files": [
+    {
+     "file": "wind-farm-visit-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "wind-farm-visit-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "wind-farm-visit-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "wind-farm-visit-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "wind-farm-visit-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "hvdc-colloquium-2024": {
+  "crop": {
+   "files": [
+    {
+     "file": "hvdc-colloquium-2024-c240.jpg",
+     "w": 240,
+     "h": 160
+    },
+    {
+     "file": "hvdc-colloquium-2024-c297.jpg",
+     "w": 297,
+     "h": 198
+    },
+    {
+     "file": "hvdc-colloquium-2024-c480.jpg",
+     "w": 480,
+     "h": 320
+    },
+    {
+     "file": "hvdc-colloquium-2024-c594.jpg",
+     "w": 594,
+     "h": 396
+    }
+   ],
+   "w297": {
+    "file": "hvdc-colloquium-2024-c297.jpg",
+    "w": 297,
+    "h": 198
+   },
+   "ar": "1.5000"
+  }
+ },
+ "student-award-finalists": {
+  "px": [
+   1917,
+   1077
+  ],
+  "files": [
+   {
+    "file": "student-award-finalists-320.jpg",
+    "w": 320,
+    "h": 180
+   },
+   {
+    "file": "student-award-finalists-640.jpg",
+    "w": 640,
+    "h": 360
+   }
+  ],
+  "ar": "1.7799",
+  "media_sizes": "(min-width: 1180px) 297px, (min-width: 1000px) 240px, 320px"
+ },
+ "pv-magazine-article": {
+  "px": [
+   1042,
+   334
+  ],
+  "files": [
+   {
+    "file": "pv-magazine-article-350.jpg",
+    "w": 350,
+    "h": 112
+   },
+   {
+    "file": "pv-magazine-article-700.jpg",
+    "w": 700,
+    "h": 224
+   }
+  ],
+  "ar": "3.1198",
+  "media_sizes": "(min-width: 1180px) 297px, (min-width: 1000px) 240px, 350px"
+ }
+}

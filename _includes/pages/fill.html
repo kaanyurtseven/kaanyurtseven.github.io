@@ -1,0 +1,22 @@
+{%- comment -%}
+  Expands identity tokens in a _data string from _data/profile.yml, so role,
+  affiliation and date strings are never duplicated in copy.
+  Usage: capture the output of this include with the parameter text=<string>, then
+  print it as is (plain text) or through markdownify (prose with links).
+  Tokens: {display_name} {name} {role} {role_lc} {affiliations} {affiliations_units}
+          {since} {phd_defended} {email}
+  The token braces appear only inside Liquid tags here, never inside an output tag:
+  Liquid ends an output tag at the first closing brace.
+{%- endcomment -%}
+{%- assign fill_p = site.data.profile -%}
+{%- assign fill_role_lc = fill_p.role | downcase -%}
+{%- assign fill_since = fill_p.role_since | append: "-01" | date: "%B %Y" -%}
+{%- assign fill_defended = fill_p.phd.defended | date: "%-d %B %Y" -%}
+{%- capture fill_units -%}
+  {%- for a in fill_p.affiliations -%}
+    {%- if forloop.last and forloop.length > 1 %} and {% elsif forloop.index > 1 %}, {% endif -%}
+    {{- a.name -}}{%- if a.unit %} ({{ a.unit }}){% endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign fill_out = include.text | replace: "{display_name}", fill_p.display_name | replace: "{name}", fill_p.name | replace: "{role_lc}", fill_role_lc | replace: "{role}", fill_p.role | replace: "{affiliations_units}", fill_units | replace: "{affiliations}", fill_p.affiliation_line | replace: "{since}", fill_since | replace: "{phd_defended}", fill_defended | replace: "{email}", fill_p.email -%}
+{{- fill_out -}}

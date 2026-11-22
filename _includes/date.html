@@ -1,0 +1,26 @@
+{%- comment -%}
+  A date from _data as text, without the date filter (no time zone, and "2026-10" is not a date
+  to it). Parameters:
+    d     "yyyy", "yyyy-mm" or "yyyy-mm-dd" (a string, a number or a YAML date)
+    form  long (default): "15 October 2026", "October 2026", "2026"
+          short: "6 Oct 2026", "Mar 2026", "2026"
+  Month names: _data/typography.yml months, months_abbr. Text only; the caller writes <time>.
+{%- endcomment -%}
+{%- assign dt_s = include.d | append: '' -%}
+{%- assign dt_parts = dt_s | split: '-' -%}
+{%- if dt_parts.size < 2 -%}
+  {{- dt_parts[0] -}}
+{%- else -%}
+  {%- assign dt_mi = dt_parts[1] | plus: 0 | minus: 1 -%}
+  {%- if include.form == 'short' -%}
+    {%- assign dt_m = site.data.typography.months_abbr[dt_mi] -%}
+  {%- else -%}
+    {%- assign dt_m = site.data.typography.months[dt_mi] -%}
+  {%- endif -%}
+  {%- if dt_parts.size > 2 -%}
+    {%- assign dt_d = dt_parts[2] | plus: 0 -%}
+    {{- dt_d | append: ' ' | append: dt_m | append: ' ' | append: dt_parts[0] -}}
+  {%- else -%}
+    {{- dt_m | append: ' ' | append: dt_parts[0] -}}
+  {%- endif -%}
+{%- endif -%}

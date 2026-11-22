@@ -1,0 +1,18 @@
+# Jekyll and Bundler
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+/vendor/
+Gemfile.lock
+.bundle/
+
+# Python
+__pycache__/
+*.pyc
+
+# The data job keeps its accumulators on the elia-state branch, not on main.
+assets/data/wind_acc.json
+assets/data/solar_acc.json
+assets/data/wind_recent_acc.json
+assets/data/solar_recent_acc.json

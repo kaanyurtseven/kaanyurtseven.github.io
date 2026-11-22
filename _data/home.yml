@@ -1,0 +1,148 @@
+# ============================================================
+# Home page copy: the byline, the headline and its dek, the model's text alternative, the
+# four cards, Latest and Selected publications. Identity strings (name, role,
+# affiliations, email, links) come from profile.yml.
+# ============================================================
+
+hero:
+  # Byline above the headline: "Dr. Kaan Yurtseven · Postdoctoral Researcher · KU Leuven &
+  # EnergyVille". Parts in display order, each rendered through pages/fill.html; the
+  # separators are markup ([data-byline]). The name and role come from profile.yml
+  # (display_name, role); the affiliation part is written out here (not
+  # profile.affiliation_line).
+  byline:
+    - "{display_name}"
+    - "{role}"
+    - "KU Leuven & EnergyVille"
+  # The h1 in its two display lines (phones wrap freely) and the line under it, both
+  # without a period. profile.positioning is the <title>'s second part.
+  headline:
+    lines:
+      - "Risk-based grid decisions"
+      - "under uncertain forecasts"
+    dek: "Operational security at the lowest system cost"
+
+# The model's text alternative, the visually hidden figcaption: one paragraph per part in
+# this order, joined by spaces.
+model:
+  caption:
+    - id: model      # the model itself
+      text: >-
+        An illustration of a generic power system as a model on a plinth, not a real place. Wind
+        turbines stand at sea and on low hills, next to a field of solar panels, a battery park,
+        a gas-fired power plant with two chimneys, a factory and a town. Overhead lines on
+        towers join nine substations, and two HVDC links end in converter stations. The offshore
+        link carries what the wind farm produces, and the other, an interconnector, keeps the
+        exchange agreed for each hour.
+    - id: view      # the bands of possible output and the loading field
+      text: >-
+        Above the wind farms at sea and on the hills and above the solar field, points of light
+        show how much each could produce tomorrow, hour by hour, as a band between no output at
+        the bottom and full output at the top; 8 in 10 outcomes fall in the more strongly drawn
+        middle. Every ten seconds or so one band folds onto a single hour, and its points stack
+        into the spread of outcomes for that hour, which turns to stand as a distribution, with
+        no output on the left and full output on the right; sometimes it rises into a diagonal
+        band that shows how the outcome follows the forecast; then it folds back. Where points
+        press against no output or full output, that edge glows. A fourth field behind one line
+        of the grid shows how loaded that line could be against its limit, an upright rail. On a
+        windy day some points pass the rail and turn warm, and when another line is switched out
+        they move back below it.
+    - id: stories      # the two stories; the first, the switching story
+      text: >-
+        Two stories run in the model. In the first, which repeats every 48 seconds, the market
+        schedule for the next evening overloads one line in the middle of the grid. A decision
+        taken the day before relieves it. Another line is switched out at both ends, the power
+        takes the parallel lines and the overloaded line cools below its limit, and the battery
+        park and the gas-fired plant shift output against each other. The next evening the line
+        stays cool while the wind varies, and it is switched back in for the next, calmer hour.
+    - id: balancing      # the second story, balancing-aware congestion management
+      text: >-
+        The second appears when the research theme on balancing-aware congestion management is
+        highlighted, and a biomass power station with a cooling tower stands in front of the
+        overloaded line. On the same congested evening the
+        operator switches another line out and moves three units in one decision, the battery
+        park and the biomass power station up and the gas-fired plant down by as much, and the
+        line cools below its limit. A small chart shows the zone's balancing offers as steps,
+        cheapest first, and each unit's move adds or removes its own offers. The next day the
+        wind falls short; the battery park's cheap offers cover it, and the whole shortfall is
+        paid the price of the last offer used. Dashed, the cheapest redispatch would have used
+        up most of those offers, so the same shortfall would reach the gas-fired plant's offers
+        and settle at a higher price; two columns show that it pays less to move the units and
+        more in total.
+    - id: hvdc      # the HVDC theme: a day of market hours on the two links
+      text: >-
+        When the research theme on HVDC is highlighted, the rest of the model fades back and
+        only the two HVDC links stay lit, with their converter stations, in a color of their
+        own; light runs along each cable in the direction power flows. The model then plays one
+        day of market hours in about half a minute and repeats it while the theme stays
+        highlighted. The offshore link always carries the wind farm's output ashore; its light
+        runs faster and the link grows wider as the wind rises, and slower and thinner as it
+        falls. The interconnector to the neighboring grid keeps the exchange the market agreed
+        for each hour; at four of the hour changes its light slows, goes out and runs back the
+        other way, between export and import.
+    - id: flows      # the flow lights
+      text: >-
+        Light runs along the lines and cables in the direction power flows, brighter on more
+        loaded lines; a line that is switched out goes dark and the light takes the other paths.
+    - id: dc      # the HVDC links outside the HVDC theme: one even light per link
+      text: >-
+        Except while the research theme on HVDC is highlighted, the light on the two HVDC links
+        is even along the cable instead of running in streaks, because each link carries one
+        direct current, held by the converters at its ends, so its light changes only when their
+        set-point changes and stays the same when a line of the grid is switched.
+
+news:
+  heading: "Latest"
+  count: 2                 # the two newest held entries, each with its framed picture
+  all_label: "All news"
+  all_url: "/news/"
+
+# The four cards under the model, in this order. Each card plays its story in the model and
+# ends in one link: pub = a publications.yml key (the link goes to its DOI, else its url, and
+# names its venue and year after the label; its title is the link's tooltip), or url.
+themes:
+  heading: "Research focus"   # visually hidden h2
+  items:
+    - key: balancing
+      title: "Balancing-Aware Congestion Management"
+      text: >-
+        Combining advanced mathematics and AI to anticipate how congestion management affects
+        balancing energy availability and costs enables better-informed decisions that account
+        for system-wide economic impacts.
+      link:
+        label: "Read the thesis"
+        pub: T2
+    - key: renewables
+      title: "Renewables"
+      text: >-
+        Accounting for the variability and forecast uncertainty of wind and solar generation is
+        essential for their secure and cost-effective integration into power systems.
+      link:
+        label: "Open the Forecast Error Uncertainty Explorer"
+        url: "/tools/forecast-explorer/"
+    - key: switching
+      title: "Transmission Switching"
+      text: >-
+        Strategically changing the network topology allows power flows to be redistributed,
+        relieving congestion and making better use of existing transmission infrastructure.
+      link:
+        label: "Read the paper"
+        pub: J4
+    - key: hvdc
+      title: "HVDC"
+      text: >-
+        The controllability of HVDC transmission provides additional flexibility to steer power
+        flows, manage congestion, and integrate renewable generation across interconnected AC
+        and DC networks.
+      link:
+        label: "Read the paper"
+        pub: J3
+
+# Selected publications: publications.yml entries with featured: true, in file order, at
+# most limit. The thesis is not featured; Home links it from the first card.
+selected:
+  heading: "Selected publications"
+  link:
+    label: "All publications"
+    url: "/publications/"
+  limit: 3

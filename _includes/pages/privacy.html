@@ -1,0 +1,28 @@
+{%- comment -%}
+  Privacy. The words are the Markdown body of _pages/privacy.md, rendered by kramdown
+  ({{ content }}: smart quotes, heading ids, inline code with rouge's classes). The opening
+  paragraph is the head's sentence; each h2 with its text is a row on the full width: the heading
+  (h2 at the --fs-item size, kramdown's id kept) in column 1, its text in columns 2-3. The page's
+  no-wrap pass (_layouts/page.html) runs over the result.
+{%- endcomment -%}
+{%- assign pv_parts = content | split: '<h2 id="' -%}
+{%- assign pv_sent = pv_parts[0] | normalize_whitespace | remove_first: '<p>' | split: '</p>' | first -%}
+{%- assign pv_h1 = page.title | escape -%}
+{%- assign pv_lead = page.lead | escape -%}
+{% include page-head.html h1=pv_h1 lead=pv_lead sent=pv_sent %}
+<section class="sec privacy-sec">
+  <div class="rows rows--lab">
+{%- for pv_part in pv_parts offset: 1 %}
+{%- assign pv_hfull = pv_part | split: '</h2>' | first -%}
+{%- assign pv_id = pv_hfull | split: '">' | first -%}
+{%- assign pv_head = pv_hfull | remove_first: pv_id | remove_first: '">' -%}
+{%- assign pv_body = pv_part | remove_first: pv_hfull | remove_first: '</h2>' | normalize_whitespace %}
+    <div class="row priv-row">
+      <div class="row-b">
+        <h2 class="sub-t priv-h" id="{{ pv_id }}">{{ pv_head }}</h2>
+        <div class="priv-b">{{ pv_body }}</div>
+      </div>
+    </div>
+{%- endfor %}
+  </div>
+</section>

@@ -1,0 +1,94 @@
+# ============================================================
+# Tools page copy. Sections and anchors, in this order: #explorer, #code
+# (StochasticPowerModels.jl), #pv-fault-detection. Each section has the tool on the left
+# (name, maturity, description) and what supports it on the right. The explorer has its own
+# page, /tools/forecast-explorer/ (explorer.yml; its #data section is `data` below).
+# ============================================================
+
+title: "Decision Support Tools"
+lead: "Tools and implementations that make uncertainty visible and usable in power system decision-making."
+
+# The labels of the right-hand column.
+labels:
+  papers: "Papers"
+  paper: "Paper"                 # a tool with one paper
+  language_licence: "Language and license"
+
+explorer:
+  anchor: explorer               # not "forecast-explorer": that id is the tool's own section on its page
+  maturity: "Public demo"
+  # The one link to the explorer heads the right column, above the figure.
+  link:
+    label: "Open the explorer"
+    url: "/tools/forecast-explorer/"
+  # The figure under the link: what the explorer shows at one forecast level, drawn from the
+  # data by scripts/build_figures.rb into _data/figures/tools_fx.json (the scheduled data job
+  # reruns it). ticks: the words at its two walls; title: its SVG title, {level_pct} and
+  # {gauss_above_pct} filled from the data, each followed by a no-break space and "%".
+  figure:
+    ticks: ["0 MW", "Installed capacity"]
+    title: "What the explorer shows for offshore wind in Belgium when Elia’s 11:00 day-ahead forecast is {level_pct} % of installed capacity, built from the forecast errors around that level in three years of Elia open data. Most outcomes lie a little below installed capacity. A Gaussian with the same mean and spread, dashed, puts {gauss_above_pct} % of its outcomes above installed capacity."
+
+# ------------------------------------------------------------
+# #code. StochasticPowerModels.jl facts from its GitHub README: "An extension package of
+# PowerModels.jl for Stochastic Power System Optimization"; BSD-3-Clause; the README lists
+# the contribution described below as "SOPF, risk-based SOPF, and SOTS for AC/DC grids with
+# RES (IVR formulation)" and cites J3 and C5. J4 is the SOTS model.
+# ------------------------------------------------------------
+code:
+  anchor: code
+  items:
+    - id: stochasticpowermodels
+      name: "StochasticPowerModels.jl"
+      maturity: "Open source, research code"
+      language: "Julia"
+      license: "BSD-3-Clause"
+      url: "https://github.com/Electa-Git/StochasticPowerModels.jl"
+      link_label: "GitHub"
+      description: >-
+        An extension package of PowerModels.jl for stochastic power system optimization. It
+        implements stochastic optimal power flow for AC and hybrid AC/DC networks, with
+        polynomial chaos expansion for continuous uncertainty. I contributed the stochastic
+        optimal power flow, the risk-based stochastic optimal power flow and the stochastic
+        optimal transmission switching for AC/DC grids with renewables.
+      keys: [J3, C5, J4]
+
+# ------------------------------------------------------------
+# #pv-fault-detection. Source: J1's abstract (publications.yml), in the first person; two
+# paragraphs of at most 60 words.
+# ------------------------------------------------------------
+fault:
+  anchor: pv-fault-detection
+  name: "PV fault detection tool"
+  maturity: "Research tool, TÜBİTAK 1507 project"
+  description:
+    - >-
+      A method that distinguishes faults from the natural changes in a photovoltaic plant’s
+      output, using only the data its inverters already send, with no irradiance or
+      temperature sensors and no detailed model of the plant.
+    - >-
+      It detects abnormal operation even under low irradiance and cloudy skies, so that
+      operation and maintenance crews can find and fix problems. I developed it on several
+      large PV plants in Turkey and tested it on rooftop and ground-mounted plants.
+  keys: [J1]
+
+# ------------------------------------------------------------
+# #data, on the explorer page after the tool (not on Tools). Datasets, license and
+# provenance: explorer.yml.
+# ------------------------------------------------------------
+data:
+  anchor: data
+  heading: "Data and provenance"
+  # Sources: scripts/fetch_elia_data.rb (15-minute data, three-year history),
+  # assets/js/forecast.js (conditioning, fits and CVaR in the browser) and
+  # .github/workflows/update-elia-data.yml (scheduled job).
+  intro: >-
+    The explorer uses Elia’s open data on Belgian wind and solar generation, with the measured
+    output and Elia’s day-ahead and most recent forecasts in 15-minute steps over three years.
+    A scheduled GitHub Actions job fetches new records and commits the files the explorer
+    reads, and the conditioning, the fits and CVaR are computed in your browser.
+  datasets_heading: "Datasets"
+  # The last line, the license's credit for the explorer's data and for the distributions of renewable
+  # output in the homepage's model (assets/engine/hero-shapes.json): {label} links explorer.yml
+  # provenance.url, {licence} its licence_url, {terms} its licence_terms_url, {br} a line break.
+  source_line: "The explorer and the distributions in the model on the homepage are derived from {label},{br}published by {publisher} under the {licence} ({terms})."

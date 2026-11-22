@@ -1,0 +1,42 @@
+{%- comment -%}
+  A "Papers" list: papers by full title, each title linked (the DOI, else url) with its short venue
+  and year after it, under a label. Research's themes and projects, the Tools page. Parameters:
+    keys   publications.yml keys, in the order to list them (an array variable)
+    label  the label over the list (plain text: research.yml labels.papers, tools.yml labels.paper
+           or labels.papers)
+  The short venue: venue_short, plus the year unless it already ends with four digits; a thesis
+  reads "PhD thesis (KU Leuven 2026)" (its venue_short up to the first ", ", then the rest and the
+  year in parentheses). Titles and venues through tr.html. Output (the caller writes the line breaks
+  around it):
+        <div class="papers"> … </div>   (indented by 4 spaces, no trailing newline)
+{%- endcomment -%}
+{%- assign pl_keys = include.keys %}    <div class="papers">
+      <p class="row-x-k">{{ include.label | escape }}</p>
+      <ul class="paper-list">
+{%- for pl_k in pl_keys -%}
+  {%- assign pl_p = site.data.publications | where: 'key', pl_k | first -%}
+  {%- if pl_p.doi -%}
+    {%- assign pl_href = 'https://doi.org/' | append: pl_p.doi -%}
+  {%- else -%}
+    {%- assign pl_href = pl_p.url | default: '' -%}
+  {%- endif -%}
+  {%- assign pl_vs = pl_p.venue_short | append: '' -%}
+  {%- if pl_p.type == 'thesis' -%}
+    {%- assign pl_parts = pl_vs | split: ', ' -%}
+    {%- assign pl_rest = pl_vs | remove_first: pl_parts[0] | remove_first: ', ' -%}
+    {%- capture pl_v %}{{ pl_parts[0] }} ({{ pl_rest }} {{ pl_p.year }}){% endcapture -%}
+  {%- else -%}
+    {%- assign pl_tail = pl_vs | slice: -4, 4 | remove: '0' | remove: '1' | remove: '2' | remove: '3' | remove: '4' | remove: '5' | remove: '6' | remove: '7' | remove: '8' | remove: '9' -%}
+    {%- if pl_vs.size >= 4 and pl_tail == '' -%}
+      {%- assign pl_v = pl_vs -%}
+    {%- else -%}
+      {%- capture pl_v %}{{ pl_vs }} {{ pl_p.year }}{% endcapture -%}
+    {%- endif -%}
+  {%- endif -%}
+  {%- assign pl_t = pl_p.title | escape -%}
+  {%- assign pl_v = pl_v | escape %}
+        <li><a href="{{ pl_href | escape }}">{% include tr.html t=pl_t %}</a> <span class="pl-v">{% include tr.html t=pl_v %}</span></li>
+{%- endfor %}
+      </ul>
+    </div>
+{%- comment -%} end {%- endcomment -%}

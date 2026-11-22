@@ -1,0 +1,267 @@
+{%- comment -%}
+  CV body. The head: h1, the print-only contact line (the name, then the email and the four profile
+  URLs as the footer's data-print gives them, each kept whole in span.nw), the link that downloads
+  the PDF (profile.yml cv_pdf; not printed), the contents row of the ten sections. Then the ten
+  sections; a dated entry is a row with its period, date or year as the short label at the end of
+  its title's first line (tab=true): Current position (the experience item
+  with current: true); Professional profile; Education (the thesis linked when publications.yml gives a
+  url, the supervisors, the defense date); Research and professional experience (the PhD item's row
+  id is cv-phd-research); Teaching; Grants, awards and achievements; Given talks; Professional
+  service; Software; Publications (the publication summary, _includes/pub-summary.html, and its
+  link). A row
+  with a News entry links its title to that entry; quoted titles hang their opening quote.
+  Copy: _data/cv.yml; identity: _data/profile.yml; thesis titles: _data/publications.yml.
+{%- endcomment -%}
+{%- assign cv = site.data.cv -%}
+{%- assign cv_p = site.data.profile -%}
+{%- assign cv_lb = cv.labels -%}
+{%- assign cv_news = '/news/' | relative_url -%}
+{%- capture cv_nl %}
+    {% endcapture -%}
+
+{%- comment -%} The print line: the name, then the footer's five links in its order {%- endcomment -%}
+{%- assign cv_keys = "email,linkedin,scholar,github,orcid" | split: "," -%}
+{%- capture cv_print -%}
+<span lang="{{ cv_p.name_lang | escape }}">{{ cv_p.name | escape }}</span>,
+{%- for cv_k in cv_keys -%}
+  {%- assign cv_l = cv_p.links | where: "key", cv_k | first -%}
+  {%- if cv_k == 'email' -%}
+    {%- assign cv_v = cv_p.email -%}
+  {%- else -%}
+    {%- assign cv_v = cv_l.url -%}
+    {%- assign cv_s = cv_v | slice: 0, 8 -%}{%- if cv_s == 'https://' -%}{%- assign cv_v = cv_v | slice: 8, 4096 -%}{%- endif -%}
+    {%- assign cv_s = cv_v | slice: 0, 7 -%}{%- if cv_s == 'http://' -%}{%- assign cv_v = cv_v | slice: 7, 4096 -%}{%- endif -%}
+    {%- assign cv_s = cv_v | slice: 0, 4 -%}{%- if cv_s == 'www.' -%}{%- assign cv_v = cv_v | slice: 4, 4096 -%}{%- endif -%}
+    {%- assign cv_s = cv_v | slice: -1, 1 -%}{%- if cv_s == '/' -%}{%- assign cv_n = cv_v | size | minus: 1 -%}{%- assign cv_v = cv_v | slice: 0, cv_n -%}{%- endif -%}
+  {%- endif -%}
+  {%- unless forloop.first %},{% endunless %} <span class="nw">{{ cv_v | escape }}</span>
+{%- endfor -%}
+{%- endcapture -%}
+
+{%- comment -%} The ten sections in page order: headings (cv.yml) and ids {%- endcomment -%}
+{%- capture cv_heads -%}
+{{ cv.current_heading }}|{{ cv.profile.heading }}|{{ cv.education.heading }}|{{ cv.experience.heading }}|{{ cv.teaching.heading }}|{{ cv.awards.heading }}|{{ cv.talks.heading }}|{{ cv.service.heading }}|{{ cv.software.heading }}|{{ cv.publications.heading }}
+{%- endcapture -%}
+{%- assign cv_heads = cv_heads | split: '|' -%}
+{%- assign cv_ids = "cv-current,cv-profile,cv-education,cv-experience,cv-teaching,cv-awards,cv-talks,cv-service,cv-software,cv-pubs" | split: "," -%}
+{%- capture cv_index -%}
+{%- for cv_id in cv_ids -%}
+<li><a href="#{{ cv_id }}">{{ cv_heads[forloop.index0] | escape }}</a></li>
+{% endfor -%}
+{%- endcapture -%}
+{%- assign cv_h1 = cv.title | escape -%}
+{%- capture cv_pdf %}<p class="cv-pdf"><a href="{{ cv_p.cv_pdf | relative_url }}" download><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M2.5 13.5h11"/></svg>{{ cv_lb.pdf | escape }}</a></p>{% endcapture -%}
+{% include page-head.html h1=cv_h1 print_line=cv_print extra=cv_pdf index=cv_index index_label="On this page" %}
+
+{% comment %} ── Current position ── {% endcomment -%}
+{%- for cv_x in cv.experience.items -%}{%- if cv_x.current -%}{%- assign cv_cur = cv_x -%}{%- endif -%}{%- endfor -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% assign cv_id = 'cv-' | append: cv_cur.id -%}
+{%- assign cv_label = cv_cur.period | escape -%}
+{%- capture cv_t %}{% include pages/fill.html text=cv_cur.title %}{% endcapture -%}
+{%- assign cv_title = cv_t | escape -%}
+{%- capture cv_t %}{% include pages/fill.html text=cv_cur.org %}{% endcapture -%}
+{%- assign cv_place = cv_cur.place | escape -%}
+{%- capture cv_place %}{% include tr.html t=cv_place %}{% endcapture -%}
+{%- capture cv_d %}<p class="row-d">{{ cv_t | escape }}, {{ cv_place }}</p>{% endcapture -%}
+{%- capture cv_b %}<p class="row-p">{{ cv_cur.desc | normalize_whitespace | escape }}</p>{% endcapture -%}
+{% include row.html id=cv_id label=cv_label tab=true title=cv_title details=cv_d body=cv_b %}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.current_heading | escape -%}
+{% include section.html id="cv-current" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Professional profile ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="sec-b">
+{% for cv_para in cv.profile.paragraphs -%}
+{%- capture cv_t %}{% include pages/fill.html text=cv_para %}{% endcapture %}    <p>{{ cv_t | normalize_whitespace | escape }}</p>
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.profile.heading | escape -%}
+{% include section.html id="cv-profile" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Education ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_e in cv.education.items -%}
+  {%- assign cv_th = nil -%}
+  {%- if cv_e.thesis_key -%}{%- assign cv_th = site.data.publications | where: "key", cv_e.thesis_key | first -%}{%- endif -%}
+  {%- if cv_e.institution_lang -%}
+    {%- capture cv_inst %}<span lang="{{ cv_e.institution_lang | escape }}">{{ cv_e.institution | escape }}</span>{% endcapture -%}
+  {%- else -%}
+    {%- assign cv_inst = cv_e.institution | escape -%}
+  {%- endif -%}
+  {%- assign cv_place = cv_e.place | escape -%}
+  {%- capture cv_place %}{% include tr.html t=cv_place %}{% endcapture -%}
+  {%- capture cv_d %}<p class="row-d">{{ cv_inst }}, {{ cv_place }}</p>{% endcapture -%}
+  {%- capture cv_thesis -%}
+    {%- if cv_th -%}
+      {%- if cv_th.url -%}
+{{ cv_lb.thesis | escape }} <a href="{{ cv_th.url | escape }}"><em>{{ cv_th.title | escape }}</em></a>
+      {%- else -%}
+{{ cv_lb.thesis | escape }} <em>{{ cv_th.title | escape }}</em>
+      {%- endif -%}
+    {%- elsif cv_e.thesis -%}
+{{ cv_lb.thesis | escape }} <em>{{ cv_e.thesis | escape }}</em>
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- capture cv_rest -%}
+    {%- if cv_e.supervisor -%}
+{{ cv_lb.supervisor | escape }} {{ cv_e.supervisor | escape }}{% if cv_e.co_supervisor %}, {{ cv_lb.co_supervisor | escape }} {{ cv_e.co_supervisor | escape }}{% endif %}.
+    {%- endif -%}
+    {%- if cv_e.defended -%}
+      {%- capture cv_dd %}{% include date.html d=cv_e.defended %}{% endcapture -%}
+      {%- if cv_e.supervisor %}{{ ' ' }}{% endif -%}
+{{ cv_lb.defended | escape }} {{ cv_dd }}.
+    {%- endif -%}
+    {%- for cv_note in cv_e.notes -%}
+      {%- if cv_e.supervisor or cv_e.defended or forloop.index > 1 %}{{ ' ' }}{% endif -%}
+{{ cv_note | escape }}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- capture cv_b -%}
+    {%- if cv_thesis != '' %}<p class="row-p">{{ cv_thesis }}</p>{% endif -%}
+    {%- if cv_thesis != '' and cv_rest != '' %}{{ cv_nl }}{% endif -%}
+    {%- if cv_rest != '' %}<p class="row-p">{{ cv_rest }}</p>{% endif -%}
+  {%- endcapture -%}
+  {%- assign cv_id = 'cv-' | append: cv_e.id -%}
+  {%- assign cv_label = cv_e.period | escape -%}
+  {%- assign cv_title = cv_e.degree | escape -%}
+{% include row.html id=cv_id label=cv_label tab=true title=cv_title details=cv_d body=cv_b %}
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.education.heading | escape -%}
+{% include section.html id="cv-education" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Research and professional experience (the current position is above) ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_x in cv.experience.items -%}
+{%- unless cv_x.current -%}
+  {%- capture cv_t %}{% include pages/fill.html text=cv_x.org %}{% endcapture -%}
+  {%- if cv_x.org_lang -%}
+    {%- capture cv_org %}<span lang="{{ cv_x.org_lang | escape }}">{{ cv_t | escape }}</span>{% endcapture -%}
+  {%- else -%}
+    {%- assign cv_org = cv_t | escape -%}
+  {%- endif -%}
+  {%- assign cv_place = cv_x.place | escape -%}
+  {%- capture cv_place %}{% include tr.html t=cv_place %}{% endcapture -%}
+  {%- capture cv_d -%}
+<p class="row-d">{{ cv_org }}, {{ cv_place }}</p>
+    {%- if cv_x.project %}{{ cv_nl }}<p class="row-d">{{ cv_lb.project | escape }} “{{ cv_x.project | escape }}”</p>{% endif -%}
+  {%- endcapture -%}
+  {%- capture cv_t %}{% include pages/fill.html text=cv_x.title %}{% endcapture -%}
+  {%- assign cv_t = cv_t | escape -%}
+  {%- capture cv_title %}{% include tr.html t=cv_t %}{% endcapture -%}
+  {%- capture cv_b %}<p class="row-p">{{ cv_x.desc | normalize_whitespace | escape }}</p>{% endcapture -%}
+  {%- if cv_x.id == 'phd' -%}{%- assign cv_id = 'cv-phd-research' -%}{%- else -%}{%- assign cv_id = 'cv-' | append: cv_x.id -%}{%- endif -%}
+  {%- assign cv_label = cv_x.period | escape -%}
+{% include row.html id=cv_id label=cv_label tab=true title=cv_title details=cv_d body=cv_b %}
+{% endunless -%}
+{%- endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.experience.heading | escape -%}
+{% include section.html id="cv-experience" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Teaching (the detail line begins with the kind) ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_t in cv.teaching.items -%}
+  {%- assign cv_ds = cv_t.date | append: '' -%}
+  {%- capture cv_dd %}{% include date.html d=cv_ds form="short" %}{% endcapture -%}
+  {%- capture cv_label %}<time datetime="{{ cv_ds | escape }}">{{ cv_dd | escape }}</time>{% endcapture -%}
+  {%- capture cv_title %}<span class="hang">“</span>{{ cv_t.title | escape }}”{% endcapture -%}
+  {%- if cv_t.news -%}{%- assign cv_href = cv_news | append: '#' | append: cv_t.news -%}{%- else -%}{%- assign cv_href = '' -%}{%- endif -%}
+  {%- capture cv_d %}<p class="row-d">{{ cv_t.kind | escape }}, {{ cv_t.course | escape }}, {{ cv_t.org | escape }}</p>{% endcapture -%}
+{% include row.html label=cv_label tab=true title=cv_title href=cv_href details=cv_d %}
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.teaching.heading | escape -%}
+{% include section.html id="cv-teaching" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Grants, awards and achievements ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_a in cv.awards.items -%}
+  {%- capture cv_label %}<span class="num">{{ cv_a.year | escape }}</span>{% endcapture -%}
+  {%- assign cv_title = cv_a.title | escape -%}
+  {%- if cv_a.news -%}{%- assign cv_href = cv_news | append: '#' | append: cv_a.news -%}{%- else -%}{%- assign cv_href = '' -%}{%- endif -%}
+{% include row.html label=cv_label tab=true title=cv_title href=cv_href %}
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.awards.heading | escape -%}
+{% include section.html id="cv-awards" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Given talks (newest first, as cv.yml lists them) ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_t in cv.talks.items -%}
+  {%- assign cv_ds = cv_t.date | append: '' -%}
+  {%- capture cv_dd %}{% include date.html d=cv_ds form="short" %}{% endcapture -%}
+  {%- capture cv_label %}<time datetime="{{ cv_ds | escape }}">{{ cv_dd | escape }}</time>{% endcapture -%}
+  {%- if cv_t.title -%}
+    {%- capture cv_title %}<span class="hang">“</span>{{ cv_t.title | escape }}”{% endcapture -%}
+  {%- else -%}
+    {%- assign cv_title = cv_t.topic | escape -%}
+  {%- endif -%}
+  {%- if cv_t.news -%}
+    {%- assign cv_href = cv_news | append: '#' | append: cv_t.news -%}
+    {%- capture cv_attrs %} data-news="{{ cv_t.news | escape }}"{% endcapture -%}
+  {%- else -%}
+    {%- assign cv_href = '' -%}{%- assign cv_attrs = '' -%}
+  {%- endif -%}
+  {%- capture cv_t2 %}{{ cv_t.kind | escape }}, {{ cv_t.event | escape }}, {{ cv_t.place | escape }}{% endcapture -%}
+  {%- capture cv_t2 %}{% include tr.html t=cv_t2 %}{% endcapture -%}
+  {%- capture cv_d %}<p class="row-d">{{ cv_t2 }}</p>{% endcapture -%}
+{% include row.html cls="row--talk" attrs=cv_attrs label=cv_label tab=true title=cv_title href=cv_href details=cv_d %}
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.talks.heading | escape -%}
+{% include section.html id="cv-talks" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Professional service ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_s in cv.service.items -%}
+  {%- assign cv_title = cv_s.label | escape -%}
+  {%- capture cv_b %}<p class="row-p">{{ cv_s.text | escape }}</p>{% endcapture -%}
+{% include row.html title=cv_title body=cv_b %}
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.service.heading | escape -%}
+{% include section.html id="cv-service" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Software ── {% endcomment -%}
+{%- capture cv_rows -%}
+  <div class="rows rows--lab">
+{% for cv_s in cv.software.items -%}
+  {%- assign cv_title = cv_s.name | escape -%}
+  {%- capture cv_d %}<p class="row-d">{{ cv_s.language | escape }}</p>{% endcapture -%}
+  {%- capture cv_b %}<p class="row-p">{{ cv_s.text | escape }}</p>{% endcapture -%}
+{% include row.html title=cv_title href=cv_s.url details=cv_d body=cv_b %}
+{% endfor -%}
+{{ '  </div>' }}
+{%- endcapture -%}
+{%- assign cv_heading = cv.software.heading | escape -%}
+{% include section.html id="cv-software" heading=cv_heading body=cv_rows %}
+
+{% comment %} ── Publications: the publication summary (_includes/pub-summary.html) and the link ── {% endcomment -%}
+{%- assign cv_pb = cv.publications -%}
+{%- assign cv_link = cv_pb.link.url | relative_url -%}
+{%- capture cv_rows -%}
+  <div class="sec-b">
+    {% include pub-summary.html %}
+    <p class="row-a"><a href="{{ cv_link | escape }}">{{ cv_pb.link.label | escape }}</a></p>
+  </div>
+{%- endcapture -%}
+{%- assign cv_heading = cv_pb.heading | escape -%}
+{% include section.html id="cv-pubs" heading=cv_heading body=cv_rows %}

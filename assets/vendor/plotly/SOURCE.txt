@@ -1,0 +1,18 @@
+plotly.js 2.35.2, cartesian partial bundle (minified), vendored unmodified.
+
+plotly-cartesian-2.35.2.min.js
+  Downloaded from https://cdn.plot.ly/plotly-cartesian-2.35.2.min.js
+  1,358,851 bytes
+  SHA-256 72409fd95b505d17772f2dd9bb81a8672ce6d5b61dcf61ba1fd8442c9ea3e180
+  Identical to plotly-cartesian.min.js in the npm package
+  plotly.js-cartesian-dist-min@2.35.2 (jsDelivr hash ckCf2VtQXRd3Ly3Zu4GoZyzm1bYdz2G6H9hELJ6j4YA=).
+  Trace types: bar, box, contour, heatmap, histogram, histogram2d,
+  histogram2dcontour, image, pie, scatter, scatterternary, violin.
+
+LICENSE
+  plotly.js MIT license, from https://raw.githubusercontent.com/plotly/plotly.js/v2.35.2/LICENSE
+  (identical to the LICENSE file in the npm package above).
+
+plotly-cartesian-2.35.2.min.js.LICENSE.txt
+  License notices of bundled third-party code, from
+  https://cdn.plot.ly/plotly-cartesian-2.35.2.min.js.LICENSE.txt

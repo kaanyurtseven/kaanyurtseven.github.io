@@ -1,0 +1,40 @@
+/* Home's cards (Home only): the model's stories play from the four cards under it. A soft light follows the pointer, and
+   within it the cards' frames and a faint glow appear, so the cards answer the pointer before it reaches them; a card pointed
+   at or focused shows its whole frame. hint.js inserts the frames (aria-hidden) and moves the light. Only for a fine pointer
+   that can hover (a touch screen cannot point), and only on screen: on paper the masked frame would cover the cards' text. */
+.hc-spot { display: none; }
+@media screen and (hover: hover) and (pointer: fine) {
+  .hc-spot { display: block; position: absolute; inset: -16px -10px -14px -10px; pointer-events: none; border: 1px solid var(--ink-3);
+    background: radial-gradient(260px circle at var(--x, -999px) var(--y, -999px), color-mix(in srgb, var(--ink) 8%, transparent), transparent 70%);
+    -webkit-mask-image: radial-gradient(340px circle at var(--x, -999px) var(--y, -999px), #000 0, rgba(0, 0, 0, 0.7) 45%, transparent 78%);
+    mask-image: radial-gradient(340px circle at var(--x, -999px) var(--y, -999px), #000 0, rgba(0, 0, 0, 0.7) 45%, transparent 78%); }
+  .theme:is(.is-hl, :focus-within) .hc-spot { -webkit-mask-image: none; mask-image: none; }
+}
+@media (forced-colors: active) { .hc-spot { border-color: CanvasText; } }
+
+/* Above 1440 px the byline, the h1 and the second line start on the 1440 px box's text edge, with the header (base.css), the cards
+   and every inner page; the model's stage stays full width, and Pause keeps to the box's right text edge */
+.hero-top { width: 100%; max-width: 1440px; margin-inline: auto; }
+.pause { right: max(var(--gutter), calc((100% - 1440px) / 2 + var(--gutter))); }
+
+/* The byline on phones: a line never ends or starts on a middle dot, and the role and the place never break inside. Where the line
+   would wrap (below 600 px) the second dot is the line break; where the name and the role do not fit one line either (below
+   384 px) both dots are. The widths are this byline's at 15.5 px (name and role 337 px, the whole line 529 px) */
+@media (max-width: 599px) {
+  .byline > span[aria-hidden="true"] ~ span[aria-hidden="true"] { display: block; height: 0; overflow: hidden; }
+}
+@media (max-width: 383px) {
+  .byline > span[aria-hidden="true"] { display: block; height: 0; overflow: hidden; }
+}
+
+/* Print: dark ink on white paper in every theme (site.css's unlayered dark tokens beat base.css's layered print values on Home);
+   the model as its whole still picture (the live canvas would print in fragments); no Pause on paper */
+@media print {
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    color-scheme: light; --wall: #fff; --wall-2: #fff; --hero-wall-2: #fff; --mat: #fff; --ink: #15171a; --ink-2: #41464c; --ink-3: #565c62;
+    --rule: #c5c7ca; --rule-2: #9ea2a7; --accent: #4b35d4; --pool: transparent; --vignette: transparent;
+  }
+  html, body { background: #fff; color: #15171a; }
+  .st-on .st-still { visibility: visible; }
+  .st-live, .pause { display: none !important; }
+}

@@ -1,0 +1,128 @@
+name: Fetch Elia Data
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Runs queue instead of overlapping. The checkout takes the branch tip when the
+# job starts (ref below), so a run that waited commits on top of the previous
+# run's data commit.
+concurrency:
+  group: update-elia-data
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      # The pipeline state (the four *_acc.json files) lives on the orphan branch
+      # elia-state, one parentless commit holding the current copy. Each file is
+      # taken from elia-state, else from the checkout, else the fetch script
+      # rebuilds it. If elia-state exists but cannot be read, the step fails, so
+      # the fetch is skipped and the state is not overwritten.
+      - name: Restore pipeline state
+        id: restore
+        run: |
+          state="assets/data/wind_acc.json assets/data/solar_acc.json assets/data/wind_recent_acc.json assets/data/solar_recent_acc.json"
+          mkdir -p assets/data
+          rc=0
+          git ls-remote --exit-code origin refs/heads/elia-state > /dev/null || rc=$?
+          if [ "$rc" -eq 2 ]; then
+            echo "No elia-state branch: using the copies in the checkout, else a full rebuild."
+            echo "base=" >> "$GITHUB_OUTPUT"
+            exit 0
+          elif [ "$rc" -ne 0 ]; then
+            echo "::error title=Pipeline state not restored::git ls-remote failed with exit code $rc"
+            exit 1
+          fi
+          if ! git fetch --no-tags --depth=1 origin refs/heads/elia-state; then
+            echo "::error title=Pipeline state not restored::git fetch of elia-state failed"
+            exit 1
+          fi
+          base=$(git rev-parse FETCH_HEAD)
+          for f in $state; do
+            if git cat-file -e "$base:$f" 2> /dev/null; then
+              git cat-file blob "$base:$f" > "$f.tmp"
+              mv "$f.tmp" "$f"
+              echo "$f restored from elia-state"
+            elif [ -f "$f" ]; then
+              echo "$f is not on elia-state: using the checkout copy"
+            else
+              echo "$f is not on elia-state: the fetch script rebuilds it"
+            fi
+          done
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+
+      # Wind and solar are fetched independently: a technology that fails keeps
+      # its previous files and is reported as an error annotation. The step
+      # fails when a technology failed and its output is older than 6 hours
+      # (STALE_FAIL_HOURS in the script) or of unknown age, else it stays green;
+      # the steps below still run, so the technology that succeeded is committed.
+      - name: Fetch Elia data
+        run: ruby scripts/fetch_elia_data.rb
+
+      - name: Build figures
+        if: always()
+        run: |
+          if [ -f scripts/build_figures.rb ]; then
+            ruby scripts/build_figures.rb
+          else
+            echo "::notice title=Build figures skipped::scripts/build_figures.rb not found"
+          fi
+
+      # This step commits only the files the site reads; the state files go to elia-state in the step below.
+      - name: Commit and push
+        if: always()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/data/wind.json assets/data/solar.json
+          if [ -d _data/figures ]; then git add _data/figures/; fi
+          git diff --cached --quiet || git commit -m "chore: refresh Elia forecast data ($(date -u '+%Y-%m-%dT%H:%M'))"
+          git push
+
+      # Replaces elia-state with one parentless commit of the current state
+      # files, built in a temporary index. The lease refuses the push if
+      # elia-state moved since the restore.
+      - name: Save pipeline state
+        if: always() && steps.restore.outcome == 'success'
+        env:
+          STATE_BASE: ${{ steps.restore.outputs.base }}
+        run: |
+          files=""
+          for f in assets/data/wind_acc.json assets/data/solar_acc.json assets/data/wind_recent_acc.json assets/data/solar_recent_acc.json; do
+            if [ -f "$f" ]; then files="$files $f"; fi
+          done
+          if [ -z "$files" ]; then
+            echo "::warning title=Pipeline state not saved::no state file to save"
+            exit 0
+          fi
+          export GIT_INDEX_FILE="$RUNNER_TEMP/elia-state.index"
+          rm -f "$GIT_INDEX_FILE"
+          git update-index --add -- $files
+          tree=$(git write-tree)
+          rm -f "$GIT_INDEX_FILE"
+          unset GIT_INDEX_FILE
+          if [ -n "$STATE_BASE" ] && [ "$(git rev-parse "$STATE_BASE^{tree}")" = "$tree" ]; then
+            echo "Pipeline state unchanged: elia-state left as it is."
+            exit 0
+          fi
+          commit=$(git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
+                   commit-tree "$tree" -m "Elia pipeline state ($(date -u '+%Y-%m-%dT%H:%M') UTC)")
+          git push --force-with-lease="refs/heads/elia-state:$STATE_BASE" origin "$commit:refs/heads/elia-state"

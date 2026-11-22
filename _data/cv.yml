@@ -1,0 +1,264 @@
+# ============================================================
+# Curriculum vitae: the CV page (_includes/pages/cv.html).
+# Place names use Turkish orthography (Dokuz Eylül, İzmir).
+# Dates: start/end are "YYYY" or "YYYY-MM" (end: null = present);
+# `period` is the display string: a range of two bare years takes a closed en dash
+# ("2020–2021"), a range beside a month or a word a spaced one ("Oct 2026 – present").
+# Strings may carry {tokens} (_includes/pages/fill.html).
+# ============================================================
+
+title: "Curriculum Vitae"
+
+# Words of the rows' detail lines: "Thesis <title>", "Supervisor X, co-supervisor Y.",
+# "Defended on 15 October 2026.", 'Project "<name>"' (no colon after a label). The
+# supervisor words also make the thesis line on Publications.
+labels:
+  thesis: "Thesis"
+  supervisor: "Supervisor"
+  co_supervisor: "co-supervisor"
+  defended: "Defended on"
+  project: "Project"
+  pdf: "Download as PDF"        # the link under the h1 to profile.yml cv_pdf
+
+profile:
+  heading: "Professional profile"   # the text of the CV PDF's Professional Profile
+  paragraphs:
+    - >-
+      My research focuses on one of the fundamental challenges in power systems, making decisions
+      under uncertainty while keeping the grid secure and efficient. I combine advanced mathematics
+      and AI to develop better approaches to power system operation and planning, making the costs
+      and risks of different decisions explicit. What motivates me is not just developing new
+      methods, but making them useful in practice. Ultimately, I want to see these methods move
+      beyond academic research and into the control rooms where decisions are made.
+
+current_heading: "Current position"   # the experience item with current: true
+
+experience:
+  heading: "Research and professional experience"
+  items:
+    - id: postdoc
+      current: true
+      title: "{role}"                       # profile.role
+      org: "{affiliations_units}"           # from profile.affiliations
+      place: "Leuven & Genk, Belgium"
+      start: "2026-10"
+      end: null
+      period: "Oct 2026 – present"
+      desc: >-
+        Developing stochastic optimization frameworks for risk-aware congestion management
+        and balancing in hybrid AC/DC grids.
+    - id: phd
+      title: "Ph.D. researcher"
+      org: "KU Leuven / Etch by EnergyVille"
+      place: "Leuven & Genk, Belgium"
+      start: "2022"
+      end: "2026-10"
+      period: "2022 – Oct 2026"
+      desc: >-
+        Developed stochastic and risk-aware optimization frameworks for operational planning
+        of hybrid AC/DC grids.
+    - id: tubitak
+      title: "Researcher (TÜBİTAK 1507 Project)"
+      org: "TÜBİTAK (Scientific and Technological Research Council of Turkey)"
+      org_lang: "tr"
+      place: "İzmir, Turkey"
+      start: "2020"
+      end: "2021"
+      period: "2020–2021"
+      project: "Solar Power Plants Monitoring and Fault Diagnosis"
+      desc: "Developed intelligent fault detection methods for photovoltaic systems."
+    - id: entegro
+      title: "R&D Engineer"
+      org: "Entegro Energy Systems GmbH"
+      place: "Germany & Turkey"
+      start: "2019"
+      end: "2022"
+      period: "2019–2022"
+      desc: "Designed PV system projects, conducted technical analyses, and managed R&D documentation."
+
+education:
+  heading: "Education"
+  items:
+    - id: phd
+      degree: "Ph.D. in Electrical Engineering"
+      institution: "KU Leuven"
+      place: "Leuven, Belgium"
+      start: "2022"
+      end: "2026-10"
+      period: "2022–2026"
+      thesis_key: T2                    # title and Lirias link: publications.yml
+      supervisor: "Prof. Dirk Van Hertem"
+      co_supervisor: "Prof. Hakan Ergun"
+      defended: "2026-10-15"
+    - id: msc
+      degree: "M.Sc. in Electrical and Electronics Engineering"
+      institution: "Dokuz Eylül University"
+      institution_lang: "tr"
+      place: "İzmir, Turkey"
+      start: "2019"
+      end: "2021"
+      period: "2019–2021"
+      thesis_key: T1
+      supervisor: "Prof. Engin Karatepe"
+      notes:
+        - "Graduated with High Honors, GPA 3.79/4.00."
+    - id: exchange
+      degree: "B.Sc. in Electrical and Electronics Engineering"
+      institution: "Kyungpook National University"
+      place: "Daegu, South Korea"
+      start: "2017"
+      end: "2017"
+      period: "2017 Spring"
+      notes:
+        - "Exchange Student"
+    - id: bsc
+      degree: "B.Sc. in Electrical and Electronics Engineering (EUR-ACE®)"
+      institution: "Dokuz Eylül University"
+      institution_lang: "tr"
+      place: "İzmir, Turkey"
+      start: "2014"
+      end: "2019"
+      period: "2014–2019"
+      thesis: "Probabilistic Power Flow Considering Load and Wind Power"
+      notes:
+        - "Graduated with Honors."
+
+# Teaching: the detail line reads "<kind>, <course>, <org>".
+teaching:
+  heading: "Teaching"
+  items:
+    - date: "2026-11-17"
+      kind: "Guest lecture"
+      title: "Optimization Under Uncertainty"
+      course: "Optimization Problems in Energy Systems (B-KUL-H0P08A)"
+      org: "KU Leuven"
+
+awards:
+  heading: "Grants, awards and achievements"
+  items:
+    - year: "2026"
+      title: "Gold Award, EERA Joint Programme on Smart Grids PhD Candidate Award"
+      news: eera-gold-award-2026
+    - year: "2026"
+      title: "FWO travel grant for participation in PMAPS 2026"
+      news: pmaps-2026
+    - year: "2024"
+      title: "FWO travel grant for participation in PMAPS 2024"
+    - year: "2021"
+      title: "Finalist, EU PVSEC 2021 Student Award"
+      news: eupvsec-award-2021
+
+# ------------------------------------------------------------
+# Given talks: talks, posters and paper presentations, newest first (the page keeps the
+# file order). `title` is a quoted talk title; `topic` is used when no title is known. An
+# event's own subtitle is set in quotes, never after a colon.
+# ------------------------------------------------------------
+talks:
+  heading: "Given talks"
+  items:
+    - date: "2026-10-06"
+      kind: "Talk"
+      title: "Risk-Based Congestion Management Under Non-Gaussian Uncertainty in Hybrid AC/DC Grids"
+      event: "Third Annual Belgian Energy Transition Workshop “Shaping the Future Grid”, Etch"
+      place: "Genk, Belgium"
+      news: etch-workshop-2026
+    - date: "2026-09-22"
+      kind: "Oral presentation"
+      title: "How Does HVDC Transmission Reduce Congestion Management Costs and Balancing Risks Under Continuous Non-Gaussian Uncertainty?"
+      event: "PMAPS 2026"
+      place: "Salt Lake City, United States"
+      key: C8
+      news: pmaps-2026
+    - date: "2026-09-03"
+      kind: "Talk"
+      title: "Risk-Based Congestion Management Under Non-Gaussian Uncertainty in Hybrid AC/DC Grids"
+      event: "DISCRETE final webinar “Managing Uncertainty in Renewable-Dominated Power Systems”"
+      place: "Online"
+      news: discrete-webinar-2026
+    - date: "2026-03"
+      kind: "Poster"
+      title: "Risk-based Balancing-aware Congestion Management in Hybrid AC/DC Grids Under Continuous Non-Gaussian Uncertainty"
+      event: "Risk and Resilience Day 2026, EPSRC Supergen Energy Networks Hub"
+      place: "Edinburgh, United Kingdom"
+      news: risk-day-2026
+    - date: "2025-09-16"
+      kind: "Talk"
+      title: "Operational Planning in Power Systems Under Uncertainty"
+      event: "Second Annual Belgian Energy Transition Workshop, Etch"
+      place: "Genk, Belgium"
+      news: etch-workshop-2025
+    - date: "2025-06"
+      kind: "Paper presentation"
+      title: "Security-Constrained Stochastic Optimal Power Flow For Hybrid AC/DC Grids Considering Non-Gaussian Uncertainty"
+      event: "IEEE Kiel PowerTech 2025"
+      place: "Kiel, Germany"
+      key: C6
+      news: powertech-2025
+    - date: "2025-03"
+      kind: "Talk"
+      title: "Balancing-aware Redispatch Actions Under Uncertainty"
+      event: "Risk and Resilience Day 2025, EPSRC Supergen Energy Networks Hub"
+      place: "Birmingham, United Kingdom"
+      news: risk-day-2025
+    - date: "2025-01"
+      kind: "Poster"
+      topic: "Non-Gaussian uncertainty quantification in hybrid AC/DC grids"
+      event: "LANL Grid Science Winter School and Conference 2025"
+      place: "Santa Fe, United States"
+      news: lanl-winter-school-2025
+    - date: "2024-10"
+      kind: "Oral presentation"
+      title: "Risk-based Stochastic Optimal Power Flow for AC/DC Grids Using Polynomial Chaos Expansion"
+      event: "IEEE PES ISGT Europe 2024"
+      place: "Dubrovnik, Croatia"
+      key: C5
+      news: isgt-europe-2024
+    - date: "2024-06"
+      kind: "Oral presentation"
+      title: "Robust and Security-Constrained Optimisation of Converter Droop Gains in Meshed HVDC Grids"
+      event: "PMAPS 2024"
+      place: "Auckland, New Zealand"
+      key: C4
+      news: pmaps-2024
+    - date: "2024-03"
+      kind: "Invited talk"
+      topic: "Stochastic optimization tools for hybrid AC/DC grids and the role of HVDC controllability"
+      event: "HVDC Colloquium, CITCEA-UPC"
+      place: "Barcelona, Spain"
+      news: hvdc-colloquium-2024
+    - date: "2021-09"
+      kind: "Oral presentation"
+      title: "Data-Driven Assessment of Soiling Loss in Photovoltaic Plants"
+      event: "EU PVSEC 2021"
+      place: "Online"
+      key: C2
+      news: eupvsec-2021
+    - date: "2021-03"
+      kind: "Paper presentation"
+      title: "Distribution Substation Expansion Planning Considering Different Geographical Configurations"
+      event: "ATEE 2021"
+      place: "Online"
+      key: C1
+
+service:
+  heading: "Professional service"
+  items:
+    - label: "Reviewer"
+      text: "IEEE Transactions on Power Systems, Applied Energy, Electric Power Systems Research"
+    - label: "Memberships"
+      text: "IEEE, IEEE Power & Energy Society, International Solar Energy Society"
+
+software:
+  heading: "Software"
+  items:
+    - name: "StochasticPowerModels.jl"
+      language: "Julia"
+      text: "I contributed the stochastic optimal power flow, the risk-based stochastic optimal power flow and the stochastic optimal transmission switching for AC/DC grids."
+      url: "https://github.com/Electa-Git/StochasticPowerModels.jl"
+
+# The section's sentence is the count sentence of _pages/publications.md (count_sentence).
+publications:
+  heading: "Publications"
+  link:
+    label: "View publications"
+    url: "/publications/"

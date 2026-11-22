@@ -1,0 +1,83 @@
+/* The grid drawings: the header's bays and each inner page's mesh. No text in the drawings; every stroke at rest 1 px on a
+   pixel's middle, the buses 2 px and the substation's busbar 3 px on whole pixels, so nothing blurs.
+   The header: every menu item's bus under its label and its bay (the bus-side stub, the breaker, the load side); the hairline is
+   masked between the buses. Colors carry state, as on a control-room display: live parts in ink-3, dead parts in rule-2. A bay
+   out of service has its breaker open (hollow) and its load side dead. The page you are on: its bay in ink, the breaker filled
+   (the menu's own underline goes). Pointing at another item (skin.js): its breaker closes (100 ms) and its load side goes live.
+   Pointing at the page's own item keeps its bay as it is and draws the flows that serve it.
+   On Home and below 1180 px, where no grid feeds the buses, the load sides stay in the buses' tone: only the breakers carry state.
+   The mesh (each inner page's head band, under the header at the head's top right): the lines, the substation's busbar with its
+   closed breakers, the power station; one quiet tone, about 2.3:1 on the wall in light and dark. While an item is pointed at,
+   every line, busbar section and feeder whose flow changes (for the page's own item, that serves it) is drawn in ink over its
+   line, its width proportional to the change (skin.js sets --w), from its upstream end, all at once (300 ms), with its
+   arrowhead (from 150 ms); breakers on a lit line turn ink. Nothing moves at rest; under reduced motion the lit state just
+   appears. The mesh shows from 1180 px; the header's bays from 1000 px; on phones the Menu button is the one bay. */
+.site-header .bar > .bar-fig { position: absolute; z-index: 0; top: 0; right: 0; pointer-events: none; overflow: visible; color: var(--ink-3); }
+.site-header .bar > .wordmark, .site-header .bar > .site-nav, .site-header .bar > .theme-pick { position: relative; z-index: 1; }
+@media (min-width: 1000px) {
+  .site-header .site-nav .nav-a[aria-current]::after { display: none; }
+  /* the links' boxes end above the breakers, so a focus ring never reads as a bay in service */
+  .site-header .site-nav .nav-items > li > .nav-a, .site-header .site-nav .nav-list-btn { align-self: center; height: 34px; }
+}
+.bar-fig .g-bus { fill: none; stroke: var(--ink-3); stroke-width: 2; }
+.bar-fig .g-stub { fill: none; stroke: var(--ink-3); stroke-width: 1; }
+.bar-fig .g-load { fill: none; stroke: var(--rule-2); stroke-width: 1; }
+.bar-fig .g-brk { fill: var(--wall); stroke: var(--ink-3); stroke-width: 1; }
+.bar-fig .g-gap { fill: none; stroke: var(--wall); stroke-width: 1; }
+.bar-fig .g-bay.is-on .g-brk { fill: var(--ink-3); }
+.bar-fig .g-bay.is-on .g-load { stroke: var(--ink-3); }
+.bar-fig .g-bay.is-live .g-stub, .bar-fig .g-bay.is-live .g-load { stroke: var(--ink); }
+.bar-fig .g-bay.is-live .g-brk { fill: var(--ink); stroke: var(--ink); }
+.is-home .bar-fig .g-load { stroke: var(--ink-3); }
+@media (max-width: 1179px) { .bar-fig .g-load { stroke: var(--ink-3); } }
+@media (prefers-reduced-motion: no-preference) {
+  .bar-fig .g-brk { transition: fill 100ms linear; }
+  .bar-fig .g-load { transition: stroke 100ms linear 80ms; }
+}
+@media (max-width: 999px) { .site-header .bar > .bar-fig { display: none; } }
+/* phones: the Menu button is the one bay, hanging from the bar's hairline; its breaker closes while the menu is open */
+@media (max-width: 999px) {
+  html.js .site-header .nav-toggle { position: relative; }
+  html.js .site-header .nav-toggle::before { content: ""; position: absolute; left: 50%; bottom: -5px; width: 1px; height: 12px; background: var(--ink-3); }
+  html.js .site-header .nav-toggle::after { content: ""; position: absolute; left: calc(50% - 3.5px); bottom: 0; width: 8px; height: 8px;
+    box-sizing: border-box; border: 1px solid var(--ink-3); background: var(--wall); }
+  html.js .site-header .nav-toggle[aria-expanded="true"]::before { background: var(--ink); }
+  html.js .site-header .nav-toggle[aria-expanded="true"]::after { border-color: var(--ink); background: var(--ink); }
+}
+/* the mesh */
+.page-head > .head-band.g-mesh { --g-sup: color-mix(in srgb, var(--ink-3) 55%, var(--wall)); top: 0; right: var(--gutter); color: var(--g-sup); overflow: visible; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .page-head > .head-band.g-mesh { --g-sup: color-mix(in srgb, var(--ink-3) 45%, var(--wall)); } }
+:root[data-theme="dark"] .page-head > .head-band.g-mesh { --g-sup: color-mix(in srgb, var(--ink-3) 45%, var(--wall)); }
+.g-mesh .g-ln, .g-mesh .g-sym { fill: none; stroke: currentColor; stroke-width: 1; }
+.g-mesh .g-hub { fill: none; stroke: currentColor; stroke-width: 3; }
+.g-mesh .g-cb { fill: currentColor; stroke: currentColor; stroke-width: 1; }
+.g-mesh .g-arr { fill: var(--ink); stroke: none; opacity: 0; }
+/* the runs, in both drawings */
+.bar-fig .g-run, .g-mesh .g-run { fill: none; stroke: var(--ink); stroke-width: var(--w, 3.5px); stroke-dasharray: 1; stroke-dashoffset: 1; }
+.bar-fig .is-rev:not(.is-flow).g-run, .g-mesh .is-rev:not(.is-flow) .g-run, .g-mesh .is-rev:not(.is-flow).g-run { stroke-dashoffset: -1; }
+.bar-fig .g-run.is-flow, .g-mesh .is-flow .g-run, .g-mesh .g-run.is-flow { stroke-dashoffset: 0; }
+.g-mesh .g-edge.is-flow:not(.is-rev) .g-fwd, .g-mesh .g-edge.is-flow.is-rev .g-rev { opacity: 1; }
+.g-mesh .g-edge.is-flow .g-cb, .g-mesh .g-src:has(.is-flow) .g-sym { fill: var(--ink); stroke: var(--ink); }
+.g-mesh .g-src:has(.is-flow) .g-sym { fill: none; }
+@media (prefers-reduced-motion: no-preference) {
+  .bar-fig .g-run.is-flow, .g-mesh .is-flow .g-run, .g-mesh .g-run.is-flow { transition: stroke-dashoffset 300ms cubic-bezier(0.25, 0.1, 0.25, 1); }
+  .g-mesh .g-edge.is-flow .g-arr { transition: opacity 80ms linear 150ms; }
+}
+@media (min-width: 1180px) {
+  .page-about { --g-under: 52px; }   /* the busbar's depth below the h1's cap line: About's portrait starts under it */
+  .page-head { min-height: 150px; }
+  .page-about .page-head > .about-photos { margin-top: var(--g-under); }
+}
+@media (max-width: 1179px) { .page-head > .head-band.g-mesh { display: none; } }
+@media (forced-colors: active) {
+  .bar-fig .g-bus, .bar-fig .g-stub, .bar-fig .g-load { stroke: GrayText; }
+  .bar-fig .g-brk { fill: Canvas; stroke: GrayText; }
+  .bar-fig .g-gap { stroke: Canvas; }
+  .bar-fig .g-bay.is-live .g-stub, .bar-fig .g-bay.is-live .g-load { stroke: CanvasText; }
+  .bar-fig .g-bay.is-live .g-brk, .bar-fig .g-bay.is-on .g-brk { fill: CanvasText; stroke: CanvasText; }
+  .g-mesh .g-ln, .g-mesh .g-sym, .g-mesh .g-hub { stroke: GrayText; }
+  .g-mesh .g-cb { fill: GrayText; stroke: GrayText; }
+  .bar-fig .g-run, .g-mesh .g-run { stroke: CanvasText; }
+  .g-mesh .g-arr { fill: CanvasText; }
+}
+@media print { .bar-fig, .head-band { display: none !important; } }

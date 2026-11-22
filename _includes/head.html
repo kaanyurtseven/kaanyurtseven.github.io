@@ -1,0 +1,97 @@
+{%- comment -%}
+  <head> of every page, written by hand instead of jekyll-seo-tag: About's og:title is the display
+  name, not "About". canonical and og:url are left out on the 404 page, which GitHub Pages serves
+  at any missing path. Home carries Person JSON-LD. Share card: og:image is the square portrait of
+  profile.yml photo; twitter:card summary shows it uncropped.
+  Title: Home "<display_name> | <positioning>"; every other page "<page.title> | <display_name>".
+  og:title: Home and About the display name, every other page its title.
+  Description: the shell's, else profile.meta_description (the 404 page).
+  Then the pre-paint script (theme before the first paint, html.js, data-scene), the two hash
+  redirects (Home #forecast-explorer to the explorer page, Research #research-footprint to About),
+  the font preload and the stylesheets (Home: site, tones, model, base, skin, hint; every other
+  page base, skin; the explorer page also explorer.css). CSS and JS carry ?v=assets_version; the
+  preload equals the @font-face URL.
+{%- endcomment -%}
+{%- assign hd_p = site.data.profile -%}
+{%- assign hd_home = false -%}{%- if page.page_id == 'home' -%}{%- assign hd_home = true -%}{%- endif -%}
+{%- if hd_home -%}
+  {%- capture hd_title %}{{ hd_p.display_name }} | {{ hd_p.positioning }}{% endcapture -%}
+{%- else -%}
+  {%- capture hd_title %}{{ page.title }} | {{ hd_p.display_name }}{% endcapture -%}
+{%- endif -%}
+{%- if hd_home or page.page_id == 'about' -%}{%- assign hd_og = hd_p.display_name -%}{%- else -%}{%- assign hd_og = page.title -%}{%- endif -%}
+{%- assign hd_desc = page.description | default: hd_p.meta_description | normalize_whitespace -%}
+{%- assign hd_url = page.url | replace: '/index.html', '/' | absolute_url -%}
+{%- assign hd_v = site.assets_version -%}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ hd_title | escape }}</title>
+<meta name="description" content="{{ hd_desc | escape }}">
+<meta property="og:title" content="{{ hd_og | escape }}">
+<meta property="og:description" content="{{ hd_desc | escape }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ hd_p.display_name | escape }}">
+{%- if hd_p.photo.src %}
+<meta property="og:image" content="{{ hd_p.photo.src | absolute_url }}">
+<meta property="og:image:width" content="{{ hd_p.photo.width }}">
+<meta property="og:image:height" content="{{ hd_p.photo.height }}">
+<meta property="og:image:alt" content="{{ hd_p.photo.alt | escape }}">
+{%- endif %}
+<meta name="twitter:card" content="summary">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="{{ '/assets/icon.svg' | relative_url }}" type="image/svg+xml">
+{%- unless page.page_id == 'not-found' %}
+<link rel="canonical" href="{{ hd_url }}">
+<meta property="og:url" content="{{ hd_url }}">
+{%- endunless %}
+{%- if hd_home %}
+{%- capture hd_person -%}
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": {{ '/#person' | absolute_url | jsonify }},
+  "name": {{ hd_p.name | jsonify }}
+  {%- if hd_p.honorific %},
+  "honorificPrefix": {{ hd_p.honorific | jsonify }}{% endif %}
+  {%- if hd_p.role %},
+  "jobTitle": {{ hd_p.role | jsonify }}{% endif %}
+  {%- if hd_p.works_for %},
+  "worksFor": [{% for org in hd_p.works_for %}{ "@type": "Organization", "name": {{ org | jsonify }} }{% unless forloop.last %}, {% endunless %}{% endfor %}]{% endif %}
+  {%- if hd_p.alumni_of %},
+  "alumniOf": [{% for org in hd_p.alumni_of %}{ "@type": "CollegeOrUniversity", "name": {{ org | jsonify }} }{% unless forloop.last %}, {% endunless %}{% endfor %}]{% endif %}
+  {%- if hd_p.email %},
+  "email": {{ hd_p.email | jsonify }}{% endif %},
+  "url": {{ '/' | absolute_url | jsonify }}
+  {%- if hd_p.photo.src %},
+  "image": {{ hd_p.photo.src | absolute_url | jsonify }}{% endif %}
+  {%- assign hd_same = hd_p.links | where_exp: "l", "l.key != 'email'" | map: "url" %}
+  {%- if hd_same.size > 0 %},
+  "sameAs": {{ hd_same | jsonify }}{% endif %}
+  {%- if hd_p.meta_description %},
+  "description": {{ hd_p.meta_description | normalize_whitespace | jsonify }}{% endif %}
+}
+{%- endcapture %}
+<script type="application/ld+json">
+{{ hd_person | replace: '</', '<\/' }}
+</script>
+{%- endif %}
+<script>(function(){var r=document.documentElement;r.className+=' js';try{var t=localStorage.getItem('ky-theme');if(t==='light'||t==='dark')r.setAttribute('data-theme',t)}catch(e){}
+window.__scene=function(){var t=r.getAttribute('data-theme'),dk=t?t==='dark':!!(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-scene',dk?'dark':'a')};window.__scene()})();</script>
+{%- if hd_home %}
+<script>if(location.hash==='#forecast-explorer')location.replace('{{ site.data.explorer.url | relative_url }}')</script>
+{%- elsif page.page_id == 'research' %}
+<script>if(location.hash==='#research-footprint')location.replace('{{ '/about/' | relative_url }}#research-footprint')</script>
+{%- endif %}
+<link rel="preload" href="{{ '/assets/fonts/schibsted-grotesk-latin.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+{%- if hd_home %}
+<link rel="stylesheet" href="{{ '/assets/site.css' | relative_url }}?v={{ hd_v }}">
+<link rel="stylesheet" href="{{ '/assets/tones.css' | relative_url }}?v={{ hd_v }}">
+<link rel="stylesheet" href="{{ '/assets/model.css' | relative_url }}?v={{ hd_v }}">
+{%- endif %}
+<link rel="stylesheet" href="{{ '/assets/base.css' | relative_url }}?v={{ hd_v }}">
+<link rel="stylesheet" href="{{ '/assets/skin.css' | relative_url }}?v={{ hd_v }}">
+{%- if hd_home %}
+<link rel="stylesheet" href="{{ '/assets/hint.css' | relative_url }}?v={{ hd_v }}">
+{%- elsif page.page_id == 'explorer' %}
+<link rel="stylesheet" href="{{ '/assets/explorer.css' | relative_url }}?v={{ hd_v }}">
+{%- endif -%}

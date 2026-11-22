@@ -1,0 +1,36 @@
+{%- comment -%}
+  The explorer's own page (_pages/forecast-explorer.md, page_id explorer). The page head:
+  explorer.yml name and lead, then the data's status light (_includes/status-line.html). The tool:
+  _includes/forecast-chart.html (its section #forecast-explorer; explorer.css hides its header
+  visually on this page), outside the no-wrap pass.
+  Then #data "Data and provenance" (tools.yml data; explorer.yml datasets and provenance): the
+  intro, the datasets (the code linked, the title, the note) and the source line.
+{%- endcomment -%}
+{%- assign xp_ex = site.data.explorer -%}
+{%- assign xp_da = site.data.tools.data -%}
+{%- assign xp_pv = xp_ex.provenance -%}
+{%- assign xp_h1 = xp_ex.name | escape -%}
+{%- assign xp_lead = xp_ex.lead | escape -%}
+{%- capture xp_status %}{% include status-line.html %}{% endcapture -%}
+{% include page-head.html h1=xp_h1 lead=xp_lead extra=xp_status %}
+
+<div class="fx-tool">
+<!--nowrap:off-->{% include forecast-chart.html %}<!--nowrap:on-->
+</div>
+{%- capture xp_lbl %}<a href="{{ xp_pv.url | escape }}">{{ xp_pv.label | escape }}</a>{% endcapture -%}
+{%- capture xp_lic %}<a href="{{ xp_pv.licence_url | escape }}">{{ xp_pv.licence | escape }}</a>{% endcapture -%}
+{%- capture xp_terms %}<a href="{{ xp_pv.licence_terms_url | escape }}">{{ xp_pv.licence_terms | escape }}</a>{% endcapture -%}
+{%- assign xp_pub = xp_pv.publisher | escape -%}
+{%- assign xp_src = xp_da.source_line | escape | replace: '{label}', xp_lbl | replace: '{publisher}', xp_pub | replace: '{licence}', xp_lic | replace: '{terms}', xp_terms | replace: '{br}', '<br>' -%}
+{%- capture xp_body %}  <div class="sec-b sec-b--wide">
+    <p>{{ xp_da.intro | normalize_whitespace | escape }}</p>
+    <h3 class="sub-t">{{ xp_da.datasets_heading | escape }}</h3>
+    <ul class="datasets">
+{%- for xp_d in xp_ex.datasets %}
+      <li><a class="ds-code" href="{{ xp_d.url | escape }}">{{ xp_d.code | escape }}</a> {{ xp_d.title | escape }}{% if xp_d.note %}. <span class="ds-n">{{ xp_d.note | escape }}</span>{% endif %}</li>
+{%- endfor %}
+    </ul>
+    <p class="note">{{ xp_src }}</p>
+  </div>{% endcapture -%}
+{%- assign xp_heading = xp_da.heading | escape %}
+{% include section.html id=xp_da.anchor heading=xp_heading body=xp_body %}

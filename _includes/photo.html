@@ -1,0 +1,61 @@
+{%- comment -%}
+  A picture from assets/photos/, sized from _data/photos.json (keyed by the file stem). Parameters:
+    src      the data's /assets/images/<stem>.jpg path (only the stem is used)
+    alt      plain text
+    mode     latest    Home's Latest picture: the <img> only (the caller writes figure.latest-mat)
+             row       a row's picture: <figure class="row-m"> with the 297 px crop when the data
+                       has one, else the whole picture; the caption as figcaption
+             portrait  About's portrait: the <img> only (the caller writes figure.about-portrait)
+    caption  plain text (row only; the credit), optional
+  Loading: Home's pictures are lazy. On an inner page the first picture (and the portrait) loads at
+  once and is fetched first, the second loads at once, later ones are lazy; photo_seen counts them
+  (reset per page by _layouts/page.html).
+{%- endcomment -%}
+{%- assign ph_stem = include.src | split: '/' | last | split: '.' | first -%}
+{%- assign ph_rec = site.data.photos[ph_stem] -%}
+{%- assign ph_dir = '/assets/photos/' | relative_url -%}
+{%- if page.page_id == 'home' -%}
+  {%- assign ph_load = 'loading="lazy" decoding="async"' -%}
+{%- else -%}
+  {%- assign photo_seen = photo_seen | plus: 1 -%}
+  {%- if include.mode == 'portrait' or photo_seen == 1 -%}
+    {%- assign ph_load = 'decoding="async" fetchpriority="high"' -%}
+  {%- elsif photo_seen == 2 -%}
+    {%- assign ph_load = 'decoding="async"' -%}
+  {%- else -%}
+    {%- assign ph_load = 'loading="lazy" decoding="async"' -%}
+  {%- endif -%}
+{%- endif -%}
+{%- assign ph_style = '' -%}
+{%- if include.mode == 'row' and ph_rec.crop -%}
+  {%- assign ph_files = ph_rec.crop.files -%}
+  {%- assign ph_src = ph_rec.crop.w297.file -%}
+  {%- assign ph_w = ph_rec.crop.w297.w -%}{%- assign ph_h = ph_rec.crop.w297.h -%}
+  {%- assign ph_sizes = '(min-width: 1440px) 297px, (min-width: 1180px) calc(22.5vw - 27px), 240px' -%}
+  {%- capture ph_style %} style="--ar: {{ ph_rec.crop.ar }}"{% endcapture -%}
+{%- else -%}
+  {%- assign ph_files = ph_rec.files -%}
+  {%- assign ph_src = ph_rec.files.first.file -%}
+  {%- assign ph_w = ph_rec.px[0] -%}{%- assign ph_h = ph_rec.px[1] -%}
+  {%- if include.mode == 'latest' -%}
+    {%- assign ph_sizes = '(min-width: 1180px) 604px, (min-width: 1000px) calc(50vw - 110px), calc(100vw - 2 * clamp(20px, 5vw, 72px) - 26px)' -%}
+    {%- capture ph_style %} style="--ar: {{ ph_rec.ar }}"{% endcapture -%}
+  {%- elsif include.mode == 'portrait' -%}
+    {%- assign ph_sizes = '(min-width: 1180px) 337px, (min-width: 1000px) 240px, 50vw' -%}
+  {%- else -%}
+    {%- assign ph_sizes = ph_rec.media_sizes -%}
+    {%- capture ph_style %} style="--ar: {{ ph_rec.ar }}"{% endcapture -%}
+  {%- endif -%}
+{%- endif -%}
+{%- capture ph_set -%}
+  {%- for ph_f in ph_files -%}{{ ph_dir }}{{ ph_f.file }} {{ ph_f.w }}w{% unless forloop.last %}, {% endunless %}{%- endfor -%}
+{%- endcapture -%}
+{%- capture ph_img -%}
+<img src="{{ ph_dir | append: ph_src | escape }}" srcset="{{ ph_set | escape }}" sizes="{{ ph_sizes | escape }}" width="{{ ph_w }}" height="{{ ph_h }}"{{ ph_style }} alt="{{ include.alt | escape }}" {{ ph_load }}>
+{%- endcapture -%}
+{%- if include.mode == 'row' -%}
+  {%- assign ph_cap = include.caption | default: '' -%}
+<figure class="row-m">{{ ph_img }}{% if ph_cap != '' %}<figcaption>{{ ph_cap | escape }}</figcaption>{% endif %}</figure>
+{%- else -%}
+{{ ph_img }}
+{%- endif -%}

@@ -1,0 +1,19 @@
+{%- comment -%}
+  The section pattern of the inner pages: a section.sec labeled by its h2.sec-t, then its content
+  (div.rows / div.rows.rows--lab of rows, div.sec-b prose, a list). Output:
+    <section class="sec[ cls]" id="ID" aria-labelledby="ID-h">
+      <h2 class="sec-t[ h_cls]" id="ID-h">HEADING</h2>
+    BODY
+    </section>
+  Parameters: id (plain text), cls (extra classes on the section, e.g. "part", "contact"), h_cls (extra
+  classes on the h2, e.g. "part-t"), heading (HTML the caller escaped), body (HTML, printed as given;
+  callers indent its first level by two spaces, "  <div class=\"rows\">" … "  </div>").
+  Sections of another shape (Tools' sec--split sections, the map, Home's) have their own markup.
+{%- endcomment -%}
+{%- assign se_cls = include.cls | default: '' -%}
+{%- assign se_hcls = include.h_cls | default: '' -%}
+<section class="sec{% if se_cls != '' %} {{ se_cls }}{% endif %}" id="{{ include.id | escape }}" aria-labelledby="{{ include.id | escape }}-h">
+  <h2 class="sec-t{% if se_hcls != '' %} {{ se_hcls }}{% endif %}" id="{{ include.id | escape }}-h">{{ include.heading }}</h2>
+{{ include.body }}
+</section>
+{%- comment -%} end {%- endcomment -%}

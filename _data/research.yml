@@ -1,0 +1,133 @@
+# ============================================================
+# Research page copy. Paper keys (T1-T2, J1-J5, C1-C8) refer to publications.yml.
+# The page: the h1, the lead and one sentence; then two parts, each an h2 with items (h3)
+# under it: Themes and Projects. Each item has its text on the left and, on the right, its
+# papers by full title (or, for a project without papers, its links).
+# ============================================================
+
+title: "Research"
+lead: "Optimization under uncertainty and risk-aware decision support for power system operation and planning."
+# The head's sentence under the lead.
+sentence: >-
+  I develop stochastic optimization frameworks that capture uncertainty continuously and
+  quantify its impact on operational decisions, such as how probabilistic forecasts
+  influence congestion patterns, redispatch actions and balancing requirements.
+
+# The PhD thesis (key T2; title, Lirias url, defense date and venue: publications.yml T2).
+# Publications prints the supervisors under it as one line, "Supervisor X, co-supervisor Y."
+# (the label words: cv.yml labels).
+thesis:
+  key: T2
+  supervisor: "Prof. Dirk Van Hertem"      # CV PDF; news.yml phd-defence-2026
+  co_supervisor: "Prof. Hakan Ergun"
+
+# The label over the right-hand column of a theme or a project.
+labels:
+  papers: "Papers"
+  links: "Links"
+
+# ------------------------------------------------------------
+# Themes. Fields:
+#   id        the theme's anchor (h3 id: <id>-h)
+#   title     the h3
+#   anchors   further ids, kept as empty anchors at the theme's top so links to them resolve
+#   text      paragraphs; {explorer} is a link to the explorer page (explorer.yml url),
+#             its text explorer.yml name
+#   keys      papers listed by full title, in this order. Two papers are listed under two
+#             themes: the thesis (T2), under Congestion management and Balancing markets, and
+#             the IJEPES paper (J3), under Congestion management and Uncertainty
+#   direction true: a direction of the research rather than a body of papers
+# ------------------------------------------------------------
+themes:
+  heading: "Themes"
+  items:
+    - id: congestion-management
+      title: "Congestion management"
+      anchors: [risk, coupling, thesis, remedial-actions]
+      text:
+        - >-
+          Operators relieve congestion with remedial actions. Costly ones, such as generation
+          redispatch and RES curtailment, can be partly replaced by non-costly ones, such as
+          changing the switching state of AC and DC lines or the set-points of HVDC
+          converters. I treat these actions as decisions under uncertainty, with chance
+          constraints and risk measures such as CVaR, so that an operator can choose how much
+          risk to accept for a given cost.
+        - >-
+          Congestion management and balancing are traditionally addressed independently. My
+          frameworks model their interaction explicitly, so that operational planning avoids
+          the cost increases and risk exposure caused by decoupled decisions.
+      keys: [J4, J3, C6, T2]
+
+    - id: uncertainty
+      title: "Uncertainty"
+      anchors: [non-gaussian, pce]
+      text:
+        - >-
+          Renewable output is bounded by zero and by installed capacity, so its forecast
+          errors are skewed and change shape with the forecast level. The approaches I develop
+          operate in continuous uncertainty spaces without relying on Gaussian assumptions, and
+          propagate the uncertainty through nonlinear AC/DC power flow models without large sets
+          of discrete scenarios. The {explorer} shows the
+          effect on three years of Belgian wind and solar data.
+      keys: [J2, J3]
+
+    - id: balancing-markets
+      title: "Balancing markets"
+      anchors: []
+      direction: true
+      text:
+        - >-
+          In my models so far, balancing enters as a risk. Imbalance prices are uncertain
+          inputs, and a congestion management decision is weighed against the balancing cost
+          it may cause. Next, I want to work on the markets themselves, on how balancing and
+          reserve markets and the grid constraints behind them should handle forecast errors
+          that are bounded and far from Gaussian.
+      keys: [T2]
+
+    - id: hybrid-ac-dc
+      title: "Hybrid AC/DC grids"
+      anchors: [hvdc-switching]
+      text:
+        - >-
+          I study how HVDC technologies influence congestion management strategies and
+          operational flexibility. In my models the set-points of HVDC converters are decision
+          variables, next to generator dispatch and RES curtailment. The security of the DC grid
+          is part of the problem too, so converter droop gains are chosen to keep the AC/DC grid
+          feasible after DC grid contingencies.
+      keys: [C8, C4]
+
+# ------------------------------------------------------------
+# Projects. Each item's anchor is project-<id>. Fields: name (h3), full_name, meta (one
+# line: funding, partners, period), text, keys (papers by full title) or, without papers,
+# link and news (the right column lists the link, then news_label linking /news/#<news>).
+# DISCRETE sources: EnergyVille news "Six new projects launched in the framework of the
+# Energy transition fund" (2021) for the full name, partners and July 2021 launch;
+# news.yml discrete-webinar-2026.
+# TÜBİTAK 1507 sources: cv.yml experience tubitak; the abstracts of J1 (fault
+# detection from inverter data, no irradiance or temperature sensors) and C2 (soiling loss
+# from the inverters' DC currents, no environmental sensors).
+# ------------------------------------------------------------
+projects:
+  heading: "Projects"
+  items:
+    - id: discrete
+      name: "DISCRETE"
+      full_name: "Data-driven optimisation models for safe real-time operation of renewable-dominated energy systems"
+      meta: "Funded by the Belgian Energy Transition Fund, with EnergyVille (KU Leuven) and UMONS as partners. Launched in July 2021."
+      text: >-
+        I worked within DISCRETE on risk-based congestion management under non-Gaussian
+        uncertainty and presented this work at the project’s final webinar, “Managing
+        Uncertainty in Renewable-Dominated Power Systems”, on 3 September 2026.
+      link:
+        label: "Final webinar"
+        url: "https://energyville.be/en/events/discrete-final-webinar-managing-uncertainty-renewable-dominated-power-systems"
+      news: discrete-webinar-2026
+      news_label: "News entry"
+    - id: tubitak
+      name: "TÜBİTAK 1507 project"
+      full_name: "Solar Power Plants Monitoring and Fault Diagnosis"
+      meta: "TÜBİTAK (Scientific and Technological Research Council of Turkey). Carried out in İzmir, Turkey, 2020–2021."
+      text: >-
+        I worked in this project as a researcher on fault detection and soiling assessment in
+        photovoltaic plants, from the inverters’ own data and without environmental sensors.
+      keys: [J1, C2]

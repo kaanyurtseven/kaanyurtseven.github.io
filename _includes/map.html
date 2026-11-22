@@ -1,0 +1,169 @@
+{%- comment -%}
+  Research Footprint Map, inside the inner pages' section pattern: section.sec.map-section, the
+  h2.sec-t title and the subtitle, the map, the key (glyph and word, award first; a kind is listed
+  only when a pin has it), the hint, and the list of places, which stays the keyboard and no-JS
+  path. Parameters, all optional:
+    header=false        omit the eyebrow, title and subtitle (the caller renders its own)
+    title / eyebrow / subtitle   override the header copy (no eyebrow unless one is passed)
+    labelledby="id"     aria-labelledby for the section when header=false
+    legend=false        omit the key under the map
+    list="open"         render the list of places expanded; list=false omits it
+  Leaflet, markercluster and map.js are loaded lazily by map-loader.js, from this
+  site. The basemap is Natural Earth GeoJSON from assets/data/basemap/ (data-basemap,
+  {scale} = 110m | 50m), drawn by map.js as SVG paths styled in CSS
+  (.map-land, .map-lake, .map-border, .map-coast; water is the container background).
+  window.MAP_PINS carries _data/map_pins.yml as it is (map.js reads it).
+{%- endcomment -%}
+{%- assign map_pins = site.data.map_pins -%}
+{%- assign map_header = true -%}{%- if include.header == false -%}{%- assign map_header = false -%}{%- endif -%}
+{%- assign map_legend = true -%}{%- if include.legend == false -%}{%- assign map_legend = false -%}{%- endif -%}
+{%- assign map_list = true -%}{%- if include.list == false -%}{%- assign map_list = false -%}{%- endif -%}
+{%- if site.assets_version -%}{%- assign map_v = site.assets_version -%}{%- else -%}{%- assign map_v = site.time | date: '%s' -%}{%- endif -%}
+{%- assign map_news = '/news/' | relative_url -%}
+{%- assign map_basemap = '/assets/data/basemap/' | relative_url -%}
+<section class="sec map-section" id="research-footprint"{% if map_header %} aria-labelledby="map-heading"{% elsif include.labelledby %} aria-labelledby="{{ include.labelledby }}"{% endif %}>
+{%- if map_header %}
+  <div class="map-section__header">
+  {%- if include.eyebrow %}
+    <p class="map-section__eyebrow">{{ include.eyebrow }}</p>
+  {%- endif %}
+    <h2 class="sec-t map-section__title" id="map-heading">{{ include.title | default: "Global footprint of my research" }}</h2>
+    <p class="map-section__subtitle">{{ include.subtitle | default: "Education, conference papers, talks, field visits, training, and awards connected to this research." }}</p>
+  </div>
+{%- endif %}
+
+  <div class="map-wrap">
+{%- if map_list %}
+    <a class="map-skip" href="#map-places">Skip the map</a>
+{%- endif %}
+    <div class="map-container" id="research-map"
+         role="application" aria-label="Interactive map of research contributions"
+         data-vendor="{{ '/assets/vendor/leaflet/' | relative_url }}"
+         data-map-src="{{ '/assets/js/map.js' | relative_url }}?v={{ map_v }}"
+         data-basemap="{{ map_basemap }}world-{scale}.json?v={{ map_v }}"
+         data-news-url="{{ map_news }}">
+      <noscript><p class="map-fallback">The map needs JavaScript. Every place is in the list below the map.</p></noscript>
+    </div>
+
+    <div class="map-preview" id="map-preview" hidden aria-hidden="true">
+      <span class="map-preview__type" id="mp-type"></span>
+      <p class="map-preview__label" id="mp-label"></p>
+      <p class="map-preview__summary" id="mp-summary"></p>
+      <span class="map-preview__photo" id="mp-photo" hidden>photo</span>
+    </div>
+
+    <div class="map-detail" id="map-detail" role="region" aria-labelledby="md-label" hidden inert>
+      <button type="button" class="map-detail__close" id="map-detail-close" aria-label="Close detail panel">&times;</button>
+      <div class="map-detail__inner">
+        <div class="map-detail__head">
+          <span class="map-detail__badge" id="md-type"></span>
+          <span class="map-detail__year" id="md-year"></span>
+        </div>
+        <h3 class="map-detail__label" id="md-label"></h3>
+        <p class="map-detail__location" id="md-location"></p>
+        <p class="map-detail__venue" id="md-venue"></p>
+        <p class="map-detail__paper" id="md-paper"></p>
+        <p class="map-detail__desc" id="md-desc"></p>
+        <img class="map-detail__image" id="md-image" alt="" hidden>
+        <div class="map-detail__tags" id="md-tags"></div>
+        <div class="map-detail__actions" id="md-actions"></div>
+      </div>
+    </div>
+
+    <div class="map-hint" id="map-hint" aria-hidden="true">
+      <span>Click the map to interact</span>
+    </div>
+{%- if map_legend %}
+
+    <div class="map-legend">
+      <ul class="map-legend__list" aria-label="Map key">
+        {%- assign map_legend_order = "award,publication,training,talk,visit,education,home,data" | split: "," -%}
+        {%- for t in map_legend_order -%}
+          {%- assign map_n = map_pins | where: "type", t | size -%}
+          {%- if map_n > 0 -%}
+            {%- case t -%}
+              {%- when "award" -%}{%- assign map_word = "Award" -%}
+              {%- when "publication" -%}{%- assign map_word = "Conference" -%}
+              {%- when "training" -%}{%- assign map_word = "Training" -%}
+              {%- when "talk" -%}{%- assign map_word = "Talk / Poster" -%}
+              {%- when "visit" -%}{%- assign map_word = "Visit" -%}
+              {%- when "education" -%}{%- assign map_word = "Education" -%}
+              {%- when "home" -%}{%- assign map_word = "Research Base" -%}
+              {%- when "data" -%}{%- assign map_word = "Data source" -%}
+            {%- endcase %}
+        <li class="map-legend__item map-legend__item--{{ t }}"><span class="map-legend__slot" aria-hidden="true"><span class="map-glyph map-glyph--{{ t }}"></span></span>{{ map_word | escape }}</li>
+          {%- endif -%}
+        {%- endfor %}
+      </ul>
+      <p class="map-legend__hint">Select a pin for details.</p>
+    </div>
+{%- endif %}
+  </div>
+{%- if map_list %}
+  {%- comment -%} Newest first: by the latest year in `year` ("present" first), then by the date of the pin's
+       News entry when it falls in that year, ties in file order. Each key is "YYYY-MM-DD~NNN" with NNN = 999
+       minus the pin's index, so one descending sort gives that order. {%- endcomment -%}
+  {%- assign map_keys = "" -%}
+  {%- for pin in map_pins -%}
+    {%- assign map_ys = pin.year | append: "" -%}
+    {%- if map_ys contains "present" -%}{%- assign map_ky = "9999" -%}{%- else -%}{%- assign map_ky = map_ys | slice: -4, 4 -%}{%- endif -%}
+    {%- assign map_kd = "00-00" -%}
+    {%- if pin.news -%}
+      {%- assign map_ne = site.data.news | where: "id", pin.news | first -%}
+      {%- assign map_nd = map_ne.date | append: "" -%}
+      {%- assign map_ndy = map_nd | slice: 0, 4 -%}
+      {%- if map_ndy == map_ky -%}{%- assign map_kd = map_nd | slice: 5, 5 | append: "-00" | slice: 0, 5 -%}{%- endif -%}
+    {%- endif -%}
+    {%- assign map_ki = 999 | minus: forloop.index0 | prepend: "00" | slice: -3, 3 -%}
+    {%- assign map_keys = map_keys | append: map_ky | append: "-" | append: map_kd | append: "~" | append: map_ki | append: "," -%}
+  {%- endfor -%}
+  {%- assign map_order = map_keys | split: "," | sort | reverse %}
+
+  <details class="map-places" id="map-places"{% if include.list == "open" %} open{% endif %}>
+    <summary class="map-places__summary">All places as a list</summary>
+    <ol class="map-places__list">
+      {%- for map_k in map_order -%}
+            {%- assign map_i = map_k | split: "~" | last | plus: 0 -%}
+            {%- assign map_i = 999 | minus: map_i -%}
+            {%- assign pin = map_pins[map_i] -%}
+            {%- case pin.type -%}
+              {%- when "award" -%}{%- assign map_word = "Award" -%}
+              {%- when "publication" -%}{%- assign map_word = "Conference" -%}
+              {%- when "training" -%}{%- assign map_word = "Training" -%}
+              {%- when "talk" -%}{%- assign map_word = "Talk / Poster" -%}
+              {%- when "visit" -%}{%- assign map_word = "Visit" -%}
+              {%- when "education" -%}{%- assign map_word = "Education" -%}
+              {%- when "home" -%}{%- assign map_word = "Research Base" -%}
+              {%- when "data" -%}{%- assign map_word = "Data source" -%}
+              {%- else -%}{%- assign map_word = pin.type -%}
+            {%- endcase -%}
+            {%- assign map_yparts = pin.year | append: "" | escape | split: ", " -%}
+            {%- assign map_label = pin.label | escape -%}
+            {%- capture map_label %}{% include tr.html t=map_label %}{% endcapture -%}
+            {%- if pin.country == "Turkey" or pin.country == "Türkiye" -%}
+              {%- capture map_where %}<span lang="tr">{{ pin.city | escape }}</span>{% endcapture -%}
+            {%- else -%}
+              {%- assign map_where = pin.city | escape -%}
+            {%- endif -%}
+            {%- if pin.country -%}
+              {%- assign map_country = pin.country | escape -%}
+              {%- assign map_where = map_where | append: ", " | append: map_country -%}
+            {%- endif %}
+      <li class="map-places__item"{% if pin.id %} data-pin="{{ pin.id | escape }}"{% endif %}>
+        <span class="map-places__year">{% for map_yp in map_yparts %}<span class="num">{{ map_yp }}</span>{% unless forloop.last %}, {% endunless %}{% endfor %}</span>
+        <span class="map-places__main">
+          {% if pin.news %}<a class="map-places__label" href="{{ map_news }}#{{ pin.news | escape }}">{{ map_label }}</a>{% else %}<span class="map-places__label">{{ map_label }}</span>{% endif %}
+          <span class="map-places__where">{{ map_where }}</span>
+        </span>
+        <span class="map-places__type"><span class="map-legend__slot" aria-hidden="true"><span class="map-glyph map-glyph--{{ pin.type | escape }}"></span></span>{{ map_word | escape }}</span>
+      </li>
+      {%- endfor %}
+    </ol>
+  </details>
+{%- endif %}
+</section>
+
+<script>
+window.MAP_PINS = {{ map_pins | jsonify }};
+</script>
+<script src="{{ '/assets/js/map-loader.js' | relative_url }}?v={{ map_v }}" defer></script>

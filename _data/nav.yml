@@ -1,0 +1,33 @@
+# Site navigation: the header's main menu (_includes/header.html) and the 404 page's list.
+# The wordmark links Home; contact details sit in the footer and at /about/#contact.
+main:
+  - label: Research
+    url: /research/
+  - label: Tools
+    url: /tools/
+    # The Tools list, a disclosure under "Tools" on every page: the explorer first, then the
+    # two other tools, then "All tools". Each line repeats explorer.yml lead or the tool's
+    # maturity in tools.yml; list_label names the button that opens it.
+    list_label: "Tools list"
+    all_label: "All tools"
+    list:
+      - key: explorer
+        name: "Forecast Error Uncertainty Explorer"
+        line: "The latest seven days of Belgian wind and solar forecasts, with their error distributions from three years of Elia open data."
+        url: /tools/forecast-explorer/
+      - key: spm
+        name: "StochasticPowerModels.jl"
+        line: "Open source, research code"
+        url: "/tools/#stochasticpowermodels"
+      - key: fault
+        name: "PV fault detection tool"
+        line: "Research tool, TÜBİTAK 1507 project"
+        url: "/tools/#pv-fault-detection"
+  - label: Publications
+    url: /publications/
+  - label: News
+    url: /news/
+  - label: About
+    url: /about/
+  - label: CV
+    url: /cv/

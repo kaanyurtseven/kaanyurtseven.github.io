@@ -1,0 +1,51 @@
+{%- comment -%}
+  The header of every page: skip link, wordmark (Home marks it as the current page), the phone
+  Menu button (site.js and shell.js drive it), the main nav from _data/nav.yml `main` (the Tools
+  item, the one with a `list`, is _includes/tools-list.html), the color theme control, and the
+  grid drawing as the bar's last child. aria-current: "page" on the link to the current page,
+  "true" on the item above it (Tools on the explorer page); Home, Privacy and 404 mark no item.
+  The drawing lights the current page's bay (is-live), so it shows without JavaScript; the
+  explorer page lights the Tools bay.
+{%- endcomment -%}
+{%- assign hd_p = site.data.profile -%}
+{%- assign hd_nav = site.data.nav.main -%}
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header is-ruled">
+  <div class="bar">
+    <a class="wordmark" href="{{ '/' | relative_url }}" lang="{{ hd_p.name_lang }}"{% if page.url == '/' %} aria-current="page"{% endif %}>{{ hd_p.name | escape }}</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" data-js-only>Menu</button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul class="nav-items">
+{%- for hd_item in hd_nav %}
+{%- assign hd_cur = '' -%}
+{%- if page.url == hd_item.url -%}
+  {%- assign hd_cur = ' aria-current="page"' -%}
+{%- else -%}
+  {%- assign hd_n = hd_item.url | size -%}
+  {%- assign hd_pre = page.url | slice: 0, hd_n -%}
+  {%- if hd_pre == hd_item.url -%}{%- assign hd_cur = ' aria-current="true"' -%}{%- endif -%}
+{%- endif -%}
+{%- if hd_item.list %}
+{% include tools-list.html item=hd_item cur=hd_cur %}
+{%- else %}
+        <li><a class="nav-a" href="{{ hd_item.url | relative_url }}"{{ hd_cur }}>{{ hd_item.label | escape }}</a></li>
+{%- endif %}
+{%- endfor %}
+      </ul>
+    </nav>
+    <div class="theme-pick" data-js-only>
+      <button type="button" class="theme-btn" aria-expanded="false" aria-controls="theme-menu"><span class="visually-hidden">Color theme</span><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.25"/><path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z"/></svg></button>
+      <div class="theme-menu" id="theme-menu" role="group" aria-label="Color theme" hidden>
+        <button type="button" data-theme-choice="system" aria-pressed="true">System</button>
+        <button type="button" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+    </div>
+{%- capture hd_g %}{% include grid/header.svg %}{% endcapture -%}
+{%- assign hd_key = page.page_id | default: '' -%}
+{%- if hd_key == 'explorer' -%}{%- assign hd_key = 'tools' -%}{%- endif -%}
+{%- capture hd_bay %}<g class="g-bay" data-feed="{{ hd_key }}">{% endcapture -%}
+{%- capture hd_live %}<g class="g-bay is-live" data-feed="{{ hd_key }}">{% endcapture %}
+{{ hd_g | strip | replace: hd_bay, hd_live }}
+  </div>
+</header>

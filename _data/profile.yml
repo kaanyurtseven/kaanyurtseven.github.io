@@ -1,0 +1,79 @@
+# ============================================================
+# Profile: the single source for identity strings.
+# Every layout reads names, roles, affiliations and links from here.
+# ============================================================
+
+name: "Kaan Yurtseven"            # wordmark, footer, About h1 (after the honorific)
+honorific: "Dr."
+display_name: "Dr. Kaan Yurtseven" # Home byline, <title>, OG
+citation_name: "K. Yurtseven"
+name_lang: "tr"                   # the name is Turkish; mark it lang="tr" where it stands alone
+
+role: "Postdoctoral Researcher"
+role_since: "2026-10"             # YYYY-MM; {since} in copy (pages/fill.html)
+role_line: "Postdoctoral Researcher at KU Leuven and Etch by EnergyVille"
+
+phd:
+  degree: "Ph.D. in Electrical Engineering"   # as on the CV
+  institution: "KU Leuven"
+  period: "2022–2026"
+  defended: "2026-10-15"
+  thesis_key: T2
+
+affiliations:
+  - key: kuleuven
+    name: "KU Leuven"
+    unit: "ESAT-ELECTA"
+    unit_long: "Department of Electrical Engineering (ESAT), ELECTA"
+    city: "Leuven"
+    country: "Belgium"
+    url: "https://www.esat.kuleuven.be/electa"
+  - key: etch
+    name: "Etch by EnergyVille"
+    unit_long: "Etch, the Energy Transmission Competence Hub at EnergyVille"
+    city: "Genk"
+    country: "Belgium"
+    url: "https://etch.be/en"
+affiliation_line: "KU Leuven and Etch by EnergyVille"
+
+positioning: "Risk-based decision tools for power systems"
+summary: >
+  I develop stochastic optimization methods that make the uncertainty of renewable generation
+  usable in congestion management and balancing decisions for hybrid AC/DC grids.
+meta_description: >
+  Dr. Kaan Yurtseven, postdoctoral researcher at KU Leuven and Etch by EnergyVille, develops
+  stochastic optimization methods for risk-aware congestion management and balancing in hybrid AC/DC grids.
+
+email: "kaan.yurtseven@kuleuven.be"
+orcid_id: "0000-0002-1384-8452"
+links:
+  - key: email
+    label: "Email"
+    url: "mailto:kaan.yurtseven@kuleuven.be"
+  - key: linkedin
+    label: "LinkedIn"
+    url: "https://www.linkedin.com/in/kaanyurtseven/"
+  - key: scholar
+    label: "Google Scholar"
+    url: "https://scholar.google.com/citations?user=M4bo2DMAAAAJ"
+  - key: github
+    label: "GitHub"
+    url: "https://github.com/kaanyurtseven"
+  - key: orcid
+    label: "ORCID"
+    url: "https://orcid.org/0000-0002-1384-8452"
+cv_pdf: "/assets/kaan-yurtseven-cv.pdf"
+
+photo:
+  src: "/assets/images/kaan-yurtseven.jpg"
+  width: 1067
+  height: 1067
+  alt: "Portrait of Kaan Yurtseven"
+
+# schema.org Person (JSON-LD on the homepage)
+alumni_of:
+  - "KU Leuven"
+  - "Dokuz Eylül University"
+works_for:
+  - "KU Leuven"
+  - "EnergyVille"

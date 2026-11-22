@@ -1,0 +1,396 @@
+# ============================================================
+# News: chronological professional log
+# ============================================================
+# Fields:
+#   id          stable slug, used as the anchor /news/#<id> and by map pins (news:)
+#   date        "YYYY-MM" or "YYYY-MM-DD". Sorted as a string, so give entries in the
+#               same month a day-precise date when their order matters.
+#   status      held (default) | scheduled. Only held entries are shown; set an
+#               entry to held after the event.
+#   category    milestone | award | publication | conference | talk | policy |
+#               visit | training | media
+#   title       Short, specific headline (no place; use `place`)
+#   place       "City, Country" or "Online" (optional)
+#   body        One or two sentences, first person.
+#   link        Primary URL (optional), with link_label (optional)
+#   links       Extra links: [{label, url}] (optional)
+#   images      [{src, width, height, alt}] (optional); the first is shown
+#   credit      Photo credit, e.g. "Photo by DCforEU" (optional)
+#   pub         Publication key from publications.yml, e.g. C8 (optional)
+#   pin         Map pin id from map_pins.yml (optional)
+# ============================================================
+
+- id: phd-defence-2026
+  date: "2026-10-15"
+  category: milestone
+  title: "PhD defended at KU Leuven"
+  place: "Leuven, Belgium"
+  body: >
+    I publicly defended my doctoral thesis, “Risk-based Congestion Management Under Non-Gaussian
+    Uncertainty in Hybrid AC/DC Grids”, supervised by Prof. Dirk Van Hertem and Prof. Hakan Ergun.
+    I continue at KU Leuven and Etch by EnergyVille as a postdoctoral researcher.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7517886797356351488/"
+  link_label: "LinkedIn post"
+  links:
+    - label: "Thesis record"
+      url: "https://lirias.kuleuven.be/handle/20.500.12942/795495"
+  images:
+    - src: "/assets/images/phd-defence-2026.jpg"
+      width: 1600
+      height: 1200
+      alt: "Kaan presenting at the public PhD defense, a slide on balancing-aware congestion management on the screen"
+  pub: T2
+  pin: home
+  banner: true
+
+- id: dcforeu-breakfast-2026
+  date: "2026-10-13"
+  category: policy
+  title: "DCforEU policy breakfast at the European Parliament"
+  place: "Brussels, Belgium"
+  body: >
+    Attended the DCforEU policy breakfast “DC technology for critical grid infrastructure and an
+    efficient energy transition”, hosted by MEP Andi Cristea, on the investment, manufacturing and
+    policy conditions for deploying DC technologies in Europe.
+  link: "https://www.linkedin.com/posts/euregionsweek-dcforeu-directcurrent-ugcPost-7521897170946412545-x16a/"
+  link_label: "LinkedIn post by DCforEU"
+  credit: "Photo by DCforEU"
+  images:
+    - src: "/assets/images/eu-parliament-breakfast-2026-group.jpg"
+      width: 800
+      height: 600
+      alt: "Participants of the DCforEU policy breakfast in front of the European Parliament backdrop"
+  pin: dcforeu-breakfast-2026
+
+- id: etch-workshop-2026
+  date: "2026-10-06"
+  category: talk
+  title: "Talk at the Third Annual Belgian Energy Transition Workshop"
+  place: "Genk, Belgium"
+  body: >
+    Presented “Risk-Based Congestion Management Under Non-Gaussian Uncertainty in Hybrid AC/DC Grids”
+    in the uncertainty session of Etch’s workshop “Shaping the Future Grid”, on how HVDC flexibility and
+    topology reconfiguration can reduce reliance on redispatch and RES curtailment and what that asks
+    of optimization tools.
+  link: "https://etch.be/en/third-annual-belgian-energy-transition-workshop-shaping-future-grid"
+  link_label: "Workshop program"
+  images:
+    - src: "/assets/images/etch-workshop-2026.jpg"
+      width: 1200
+      height: 1600
+      alt: "Kaan presenting a slide on costly versus non-costly congestion management in Genk"
+  pin: etch-workshops
+
+- id: pmaps-2026
+  date: "2026-09-22"
+  category: conference
+  title: "Presented at PMAPS 2026"
+  place: "Salt Lake City, United States"
+  body: >
+    Presented our paper “How Does HVDC Transmission Reduce Congestion Management Costs and Balancing
+    Risks Under Continuous Non-Gaussian Uncertainty?” at the 19th International Conference on
+    Probabilistic Methods Applied to Power Systems. My participation was supported by an FWO travel grant.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7510259707643645953/"
+  link_label: "LinkedIn post"
+  links:
+    - label: "Paper"
+      url: "https://doi.org/10.1109/PMAPS70385.2026.11762279"
+  images:
+    - src: "/assets/images/pmaps-2026.jpg"
+      width: 1600
+      height: 1200
+      alt: "Kaan presenting the title slide of the PMAPS 2026 paper in Salt Lake City"
+  pub: C8
+  pin: pmaps-2026
+
+- id: discrete-webinar-2026
+  date: "2026-09-03"
+  category: talk
+  title: "Talk at the DISCRETE final webinar"
+  place: "Online"
+  body: >
+    Presented my work on risk-based congestion management under non-Gaussian uncertainty at the
+    final webinar of DISCRETE, “Managing Uncertainty in Renewable-Dominated Power Systems”, a project of
+    EnergyVille and UMONS funded by the Belgian Energy Transition Fund.
+  link: "https://energyville.be/en/events/discrete-final-webinar-managing-uncertainty-renewable-dominated-power-systems"
+  link_label: "Webinar page"
+
+- id: n-side-training-2026
+  date: "2026-03"
+  category: training
+  title: "N-SIDE Energy training on power market optimization"
+  place: "Brussels, Belgium"
+  body: >
+    Attended a three-day intensive training by N-SIDE Energy covering day-ahead and intraday market
+    coupling mechanics, cross-border balancing cooperation, and cross-zonal capacity sharing between
+    balancing and wholesale markets.
+  link: "https://www.linkedin.com/posts/what-a-week-in-brussels-n-side-energy-wrapped-ugcPost-7442216772503580672-KwTe"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/n-side-training-2026.jpg"
+      width: 1280
+      height: 853
+      alt: "Group photo of the training participants on a terrace in Brussels"
+
+- id: risk-day-2026
+  date: "2026-03"
+  category: conference
+  title: "Poster at Risk and Resilience Day 2026"
+  place: "Edinburgh, United Kingdom"
+  body: >
+    Presented my poster on “Risk-based Balancing-aware Congestion Management in Hybrid AC/DC Grids
+    Under Continuous Non-Gaussian Uncertainty” at the EPSRC Supergen Energy Networks Hub event.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7441811445157122049/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/risk-day-2026.jpg"
+      width: 1280
+      height: 1600
+      alt: "Kaan standing beside the poster on risk-based balancing-aware congestion management in hybrid AC/DC grids"
+  pin: risk-day-2026
+
+- id: eera-gold-award-2026
+  date: "2026-03"
+  category: award
+  title: "Gold Award from the EERA Joint Programme on Smart Grids"
+  place: "Milan, Italy"
+  body: >
+    Received the Gold Award from the European Energy Research Alliance Joint Programme on Smart Grids
+    for my research on stochastic optimization for power systems.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7435269663875293185/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/eera-gold-award.jpg"
+      width: 1600
+      height: 1067
+      alt: "Kaan holding the EERA Gold Award certificate and trophy, with one person on each side"
+  pin: eera-gold-award
+  banner: true
+
+- id: tpwrs-sots-2025
+  date: "2025-12"
+  category: publication
+  title: "New paper on stochastic optimal transmission switching in hybrid AC/DC grids"
+  body: >
+    Our paper on congestion management through stochastic optimal transmission switching, using
+    polynomial chaos expansion to handle continuous non-Gaussian uncertainty, was published in
+    IEEE Transactions on Power Systems.
+  link: "https://doi.org/10.1109/TPWRS.2025.3648549"
+  link_label: "Paper"
+  pub: J4
+
+- id: etch-workshop-2025
+  date: "2025-09-16"
+  category: talk
+  title: "Talk at the Second Annual Belgian Energy Transition Workshop"
+  place: "Genk, Belgium"
+  body: >
+    Presented “Operational Planning in Power Systems Under Uncertainty” in the “Planning a resilient
+    grid” track of Etch’s workshop at Thor Central.
+  link: "https://etch.be/en/second-annual-belgian-energy-transition-workshop-shaping-future-grid-challenges-control-security"
+  link_label: "Workshop program"
+  pin: etch-workshops
+
+- id: ijepes-sopf-2025
+  date: "2025-09"
+  category: publication
+  title: "New paper on stochastic optimal power flow for hybrid AC/DC grids"
+  body: >
+    Our paper introducing a chance-constrained stochastic optimal power flow framework for
+    hybrid AC/DC grids under continuous non-Gaussian uncertainty was published in the
+    International Journal of Electrical Power & Energy Systems.
+  link: "https://doi.org/10.1016/j.ijepes.2025.110828"
+  link_label: "Paper"
+  pub: J3
+
+- id: powertech-2025
+  date: "2025-06"
+  category: conference
+  title: "Presented at IEEE PowerTech 2025"
+  place: "Kiel, Germany"
+  body: >
+    Presented my paper on security-constrained stochastic optimal power flow for hybrid AC/DC grids
+    considering non-Gaussian uncertainty.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7346531047041380355/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/ieee-kiel-powertech-2025.jpg"
+      width: 1280
+      height: 1055
+      alt: "Kaan presenting a slide on polynomial chaos expansion and the curse of dimensionality in Kiel"
+  pub: C6
+  pin: powertech-2025
+
+- id: risk-day-2025
+  date: "2025-03"
+  category: talk
+  title: "Talk at Risk and Resilience Day 2025"
+  place: "Birmingham, United Kingdom"
+  body: >
+    Presented “Balancing-aware Redispatch Actions Under Uncertainty” at the EPSRC Supergen
+    Energy Networks Hub event, focusing on risk-aware operational planning under renewable uncertainty.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7307370857327149057/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/risk-day-2025.jpg"
+      width: 2048
+      height: 1153
+      alt: "Kaan presenting the title slide of the talk on balancing-aware redispatch under uncertainty to a seated audience"
+  pin: risk-day-2025
+
+- id: lanl-winter-school-2025
+  date: "2025-01"
+  category: training
+  title: "LANL Grid Science Winter School and Conference 2025"
+  place: "Santa Fe, United States"
+  body: >
+    Presented a poster on non-Gaussian uncertainty quantification in hybrid AC/DC grids at
+    Los Alamos National Laboratory’s Grid Science Winter School and Conference.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_hvdc-renewable-stochastic-activity-7283722306034536448-YF8N/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/lanl-winter-school-2025.jpg"
+      width: 1280
+      height: 1600
+      alt: "Kaan standing beside the poster on stochastic optimal power flow for hybrid AC/DC grids using polynomial chaos expansion"
+  pin: lanl-winter-school-2025
+
+- id: isgt-europe-2024
+  date: "2024-10"
+  category: conference
+  title: "Oral presentation at IEEE ISGT Europe 2024"
+  place: "Dubrovnik, Croatia"
+  body: >
+    Delivered an oral presentation on risk-based stochastic optimal power flow for AC/DC grids
+    using polynomial chaos expansion, covering a Value-at-Risk term for the operating cost and the benefits
+    of HVDC flexibility.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_isgt2024-renewableenergy-hvdc-activity-7252622917727850496-gFve/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/isgt-europe-2024.jpg"
+      width: 1536
+      height: 1536
+      alt: "Kaan at the lectern in Dubrovnik, presenting a slide on uncertain inputs"
+  pub: C5
+  pin: isgt-europe-2024
+
+- id: pmaps-2024
+  date: "2024-06"
+  category: conference
+  title: "Two papers at PMAPS 2024"
+  place: "Auckland, New Zealand"
+  body: >
+    Contributed to two papers at the 18th International Conference on Probabilistic Methods Applied
+    to Power Systems, one on robust HVDC converter droop gain optimization and one on bi-objective
+    power system restoration with renewable participation.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_pmaps2024-powersystemoptimization-renewableenergy-activity-7213418096617795585-5IGJ/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/pmaps-2024.jpg"
+      width: 1934
+      height: 1536
+      alt: "Kaan presenting a slide on scenario-based uncertainty modeling in Auckland"
+  pin: pmaps-2024
+
+- id: thorntonbank-visit-2024
+  date: "2024-04"
+  category: visit
+  title: "Field visit to the Thorntonbank offshore wind farm"
+  place: "Belgian North Sea"
+  body: >
+    Joined a technical visit, organized by the PhairywinD research project, to the Thorntonbank
+    offshore wind installation, located 30 km off the Belgian coast.
+  link: "https://www.linkedin.com/posts/kaanyurtseven_offshorewind-renewableenergy-stochasticoptimization-activity-7199746406046121984-RBTZ/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/wind-farm-visit.jpg"
+      width: 2048
+      height: 1536
+      alt: "Kaan with a group on the deck of a boat, the Thorntonbank wind turbines on the horizon"
+  pin: thorntonbank-visit
+
+- id: hvdc-colloquium-2024
+  date: "2024-03"
+  category: talk
+  title: "Invited talk at the HVDC Colloquium, CITCEA-UPC"
+  place: "Barcelona, Spain"
+  body: >
+    Presented stochastic optimization tools for hybrid AC/DC grids and the role of HVDC
+    controllability in managing uncertainty from high renewable penetration.
+  link: "https://www.linkedin.com/feed/update/urn:li:activity:7175470075569696769/"
+  link_label: "LinkedIn post"
+  images:
+    - src: "/assets/images/hvdc-colloquium-2024.jpg"
+      width: 1417
+      height: 797
+      alt: "Kaan presenting in Barcelona, with the title slide on stochastic optimal power flow in hybrid AC/DC grids on the screen"
+  pin: hvdc-colloquium-2024
+
+- id: eupvsec-award-2021
+  date: "2021-09"
+  category: award
+  title: "Student Award finalist at EU PVSEC 2021"
+  place: "Online"
+  body: >
+    My paper on a data-driven soiling loss assessment method for PV plants was selected as one of the
+    finalists for the conference’s Student Award.
+  images:
+    - src: "/assets/images/student-award-finalists.jpg"
+      width: 1917
+      height: 1077
+      alt: "EU PVSEC 2021 slide listing the Student Award finalists, Kaan among them"
+  pub: C2
+  pin: eupvsec-2021
+
+- id: eupvsec-2021
+  date: "2021-09"
+  category: conference
+  title: "Oral presentation at EU PVSEC 2021"
+  place: "Online"
+  body: >
+    Presented our data-driven soiling detection method for PV plants, which uses only available
+    inverter data, with no environmental sensors, to determine optimal cleaning schedules.
+  link: "https://twitter.com/EUPVSEC/status/1418479959048400896"
+  link_label: "X post by EU PVSEC"
+  pub: C2
+  pin: eupvsec-2021
+
+- id: tpwrs-sep-2021
+  date: "2021-08"
+  category: publication
+  title: "New paper on stochastic dynamic substation expansion planning"
+  body: >
+    Our paper on risk-based stochastic dynamic substation expansion planning under a MILP framework,
+    incorporating the inherent characteristics of PV plants, was published in
+    IEEE Transactions on Power Systems.
+  link: "https://doi.org/10.1109/TPWRS.2021.3095266"
+  link_label: "Paper"
+  pub: J2
+
+- id: solar-energy-2021
+  date: "2021-02"
+  category: publication
+  title: "New paper on sensorless fault detection for PV systems"
+  body: >
+    Our paper presenting a sensorless fault detection method for photovoltaic systems, which uses only
+    available inverter data to distinguish faulty from natural outputs, was published in Solar Energy.
+  link: "https://doi.org/10.1016/j.solener.2021.01.011"
+  link_label: "Paper"
+  pub: J1
+
+- id: pv-magazine-2021
+  date: "2021-02"
+  category: media
+  title: "Sensorless fault detection for PV systems featured in pv magazine"
+  body: >
+    pv magazine published a feature on our sensorless fault detection method, which identifies
+    performance faults in photovoltaic systems using only available inverter data, with no
+    environmental sensors required.
+  link: "https://www.pv-magazine.com/2021/02/26/sensorless-fault-detection-method-for-rooftop-large-scale-solar/"
+  link_label: "Article"
+  images:
+    - src: "/assets/images/pv-magazine-article.jpg"
+      width: 1042
+      height: 334
+      alt: "Screenshot of the pv magazine article on sensorless fault detection"
+  pub: J1

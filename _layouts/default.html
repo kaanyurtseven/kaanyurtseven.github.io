@@ -1,0 +1,22 @@
+{%- comment -%}
+  The document of every page: head, header, <main id="main"> with the page, footer, scripts.
+  Body class: Home "is-home"; every other page "inner page-<page_id>" (research, tools, explorer,
+  publications, news, about, cv, privacy, not-found).
+  Home's <html> data attributes set the model's display modes, which studio.js and Home's
+  stylesheets read (site.js reads data-story). data-scene and the js class come from the
+  pre-paint script.
+{%- endcomment -%}
+<!doctype html>
+<html lang="en"{% if page.page_id == 'home' %} data-flows="on" data-beam="stream" data-panels="auto" data-hybrid="turn" data-wash="1" data-sw="pushloop" data-bal="b7" data-pace="r8" data-veil="1" data-story="none" data-dc="pair" data-herocue="1" data-hv="day"{% endif %}>
+<head>
+{% include head.html %}
+</head>
+<body class="{% if page.page_id == 'home' %}is-home{% else %}inner page-{{ page.page_id }}{% endif %}">
+{% include header.html %}
+<main id="main">
+{{ content }}
+</main>
+{% include footer.html %}
+{% include scripts.html %}
+</body>
+</html>

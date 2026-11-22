@@ -1,0 +1,29 @@
+{%- comment -%}
+  A News row: article.row.row--news with the entry's id; the label (date in full and place) on its
+  own line, the title, the body, the links line (link with link_label first, then links), and the
+  entry's first picture in the media place with the credit as its caption (_includes/photo.html
+  mode=row).
+  Parameter: n (a _data/news.yml entry).
+{%- endcomment -%}
+{%- assign nr_n = include.n -%}
+{%- capture nr_label %}{% include news-label.html n=nr_n %}{% endcapture -%}
+{%- assign nr_title = nr_n.title | escape -%}
+{%- capture nr_body %}<p class="row-p">{{ nr_n.body | normalize_whitespace | escape }}</p>{% endcapture -%}
+{%- assign nr_links = '' -%}
+{%- if nr_n.link or nr_n.links -%}
+  {%- capture nr_links -%}
+<p class="row-a">
+    {%- if nr_n.link %}<a href="{{ nr_n.link | escape }}">{{ nr_n.link_label | escape }}</a>{% endif -%}
+    {%- for nr_l in nr_n.links -%}
+      {%- if nr_n.link or forloop.index > 1 %}{{ ' ' }}{% endif -%}
+      <a href="{{ nr_l.url | escape }}">{{ nr_l.label | escape }}</a>
+    {%- endfor -%}
+</p>
+  {%- endcapture -%}
+{%- endif -%}
+{%- assign nr_media = '' -%}
+{%- assign nr_img = nr_n.images | first -%}
+{%- if nr_img -%}
+  {%- capture nr_media %}{% include photo.html src=nr_img.src alt=nr_img.alt caption=nr_n.credit mode="row" %}{% endcapture -%}
+{%- endif -%}
+{% include row.html id=nr_n.id cls="row--news" label=nr_label tab=false title=nr_title body=nr_body links=nr_links media=nr_media %}

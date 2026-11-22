@@ -1,0 +1,5 @@
+{%- comment -%}
+  Turkish names in escaped text marked lang="tr": each of "Dokuz Eylül", "İzmir", "TÜBİTAK" in
+  <span lang="tr">, in that order. Parameter: t (escaped text).
+{%- endcomment -%}
+{{- include.t | replace: 'Dokuz Eylül', '<span lang="tr">Dokuz Eylül</span>' | replace: 'İzmir', '<span lang="tr">İzmir</span>' | replace: 'TÜBİTAK', '<span lang="tr">TÜBİTAK</span>' -}}

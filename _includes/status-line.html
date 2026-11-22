@@ -1,0 +1,13 @@
+{%- comment -%}
+  The data's status light, on Tools under the explorer's figure and in the explorer page's head:
+  the light, the source linked, and the data's date. data-generated is the build time of the
+  explorer's data (_data/figures/tools_fx.json meta, written by scripts/build_figures.rb from
+  assets/data/wind.json); assets/shell.js rewrites the age at the reader's time ("updated N minutes
+  ago") and turns the light green (data at most 48 hours old) or gray. Without JavaScript the light
+  stays gray and the line names the data's date, which never wraps (span.nw written here, so the date needs no row in
+  _data/typography.yml; the markers keep the no-wrap pass from wrapping it twice). No parameters.
+{%- endcomment -%}
+{%- assign sl_m = site.data.figures.tools_fx.meta -%}
+{%- assign sl_pv = site.data.explorer.provenance -%}
+<p class="fx-status" data-generated="{{ sl_m.data_generated_iso | escape }}"><span class="fx-light" aria-hidden="true"></span><span class="fx-src"><a href="{{ sl_pv.url | escape }}">{{ sl_pv.label | escape }}</a></span><span class="fx-age">, data of <!--nowrap:off--><span class="nw">{% include date.html d=sl_m.data_date %}</span><!--nowrap:on--></span></p>
+{%- comment -%} end {%- endcomment -%}

@@ -1,0 +1,40 @@
+# ============================================================
+# About page copy. The page: the h1 (profile.honorific and profile.name), the portrait
+# (profile.photo) and the bio, the map at #research-footprint (_includes/map.html),
+# Affiliations and Contact (#contact). Bio strings may carry {tokens}, filled by
+# pages/fill.html.
+# ============================================================
+
+# First-person bio. Sources: profile.yml; news.yml eera-gold-award-2026.
+bio:
+  - >-
+    I am a {role_lc} at {affiliations}, working on risk-aware decision support for power
+    system operation under uncertainty.
+  - >-
+    My work focuses on how uncertainty in renewable generation and demand affects congestion
+    management and balancing, and on methods that make this uncertainty directly usable in operational
+    decision-making. My doctoral work on these methods received the Gold Award of the European
+    Energy Research Alliance Joint Programme on Smart Grids.
+
+affiliations:
+  heading: "Affiliations"
+  # Items: profile.affiliations (key, name, unit_long, city, url).
+  note: >-
+    Etch focuses on research and development for future electricity transmission systems.
+
+# ------------------------------------------------------------
+# Contact (#contact). Links: profile.links.
+# ------------------------------------------------------------
+contact:
+  anchor: contact
+  heading: "Contact"
+  intro: >-
+    The best way to reach me is by email.
+  open_to:
+    heading: "Open to"
+    items:
+      - "Research collaboration in power systems and stochastic optimization"
+      - "Industry engagement around congestion management and balancing risk"
+      - "Conversations with TSOs and planners working on operational decision support"
+      - "Speaking at seminars, workshops, or industry events"
+      - "Innovation and commercialization discussions in the energy sector"

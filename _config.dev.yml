@@ -1,0 +1,26 @@
+# Local development overlay. GitHub Pages never reads this file.
+# Usage: jekyll serve --config _config.yml,_config.dev.yml
+#
+# `exclude` replaces the base list (Jekyll does not merge arrays),
+# so the base entries are repeated here. Keep both lists identical
+# unless an entry is meant to differ between production and local builds.
+
+# Root-relative absolute_url in local builds, so the jekyll-redirect-from stubs
+# and canonical links point at the local server, not at https://kaanyurtseven.com.
+# `jekyll serve` sets url to http://localhost:<port> itself.
+url: ""
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - LICENSE
+  - .git
+  - vendor
+  - scripts
+  - _config.dev.yml
+  - assets/data/wind_acc.json
+  - assets/data/solar_acc.json
+  - assets/data/wind_recent_acc.json
+  - assets/data/solar_recent_acc.json
+  - assets/data/basemap/README.md

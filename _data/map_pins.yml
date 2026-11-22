@@ -1,0 +1,317 @@
+# ============================================================
+# Research Footprint Map: pin data
+# ============================================================
+# id:            stable slug (used by news.yml `pin:` and publications.yml `pin:`)
+# type:          home | education | publication | talk | training | visit | data | award
+# lat/lng:       decimal degrees (positive = North / East)
+# label:         event or institution name
+# city, country
+# year:          string, e.g. "2025" or "2025, 2026"
+# description:   1-2 sentences (use | to keep line breaks)
+# virtual:       true for events held online (optional; the glyph gets data-virtual). Every pin but
+#                `home` has an arc from the research base, held online or not.
+# paper_title / paper_doi / venue   (optional)
+# papers:        [{doi, label}] one link per paper when a pin has several (optional; DOIs from publications.yml)
+# news:          id of the matching news.yml entry (optional; adds a "Read the news entry" link)
+# link:          external URL (optional)
+# image / image_alt   photo shown in the detail panel at its natural aspect ratio (optional)
+# ============================================================
+
+- id: home
+  type: home
+  label: KU Leuven / Etch by EnergyVille
+  city: Leuven & Genk
+  country: Belgium
+  lat: 50.882
+  lng: 4.700
+  year: "2022–present"
+  description: >-
+    Research base since 2022; postdoctoral researcher since October 2026. Developing stochastic
+    optimization frameworks for risk-aware congestion management and balancing in hybrid AC/DC grids.
+  news: phd-defence-2026
+  link: "https://www.esat.kuleuven.be/electa"
+
+- id: dokuz-eylul
+  type: education
+  label: Dokuz Eylül University
+  city: İzmir
+  country: Turkey
+  lat: 38.377
+  lng: 27.044
+  year: "2014–2021"
+  description: |
+    B.Sc. in Electrical and Electronics Engineering (2014–2019, Honors).
+    M.Sc. in Electrical and Electronics Engineering (2019–2021, High Honors).
+    Research on substation expansion planning.
+
+- id: kyungpook
+  type: education
+  label: Kyungpook National University
+  city: Daegu
+  country: South Korea
+  lat: 35.889
+  lng: 128.610
+  year: "2017"
+  description: >
+    Exchange student in Electrical Engineering during undergraduate studies.
+  image: "/assets/images/south-korea.jpg"
+  image_alt: "Photo from the exchange semester in Daegu, South Korea"
+
+- id: pmaps-2026
+  type: publication
+  label: PMAPS 2026
+  city: Salt Lake City
+  country: United States
+  lat: 40.761
+  lng: -111.851
+  year: "2026"
+  description: >
+    Presented how HVDC transmission reduces congestion management costs and balancing
+    risks under continuous non-Gaussian uncertainty, at the University of Utah.
+  paper_title: "How Does HVDC Transmission Reduce Congestion Management Costs and Balancing Risks Under Continuous Non-Gaussian Uncertainty?"
+  paper_doi: "10.1109/PMAPS70385.2026.11762279"
+  venue: "19th International Conference on Probabilistic Methods Applied to Power Systems"
+  news: pmaps-2026
+  image: "/assets/images/pmaps-2026.jpg"
+  image_alt: "Kaan presenting the title slide of the PMAPS 2026 paper in Salt Lake City"
+
+- id: dcforeu-breakfast-2026
+  type: visit
+  label: DCforEU Policy Breakfast, European Parliament
+  city: Brussels
+  country: Belgium
+  lat: 50.839
+  lng: 4.376
+  year: "2026"
+  description: >
+    Attended the DCforEU policy breakfast on DC technology for critical grid infrastructure
+    and an efficient energy transition, hosted by MEP Andi Cristea.
+  news: dcforeu-breakfast-2026
+  image: "/assets/images/eu-parliament-breakfast-2026-group.jpg"
+  image_alt: "Participants of the DCforEU policy breakfast in front of the European Parliament backdrop"
+
+- id: etch-workshops
+  type: talk
+  label: Belgian Energy Transition Workshop
+  city: Genk
+  country: Belgium
+  lat: 50.995
+  lng: 5.537
+  year: "2025, 2026"
+  description: |
+    Talks at Etch’s annual workshop at Thor Central.
+    In 2025, “Operational Planning in Power Systems Under Uncertainty”.
+    In 2026, “Risk-Based Congestion Management Under Non-Gaussian Uncertainty in Hybrid AC/DC Grids”.
+  venue: "Belgian Energy Transition Workshop “Shaping the Future Grid”"
+  news: etch-workshop-2026
+  link: "https://etch.be/en/third-annual-belgian-energy-transition-workshop-shaping-future-grid"
+  image: "/assets/images/etch-workshop-2026.jpg"
+  image_alt: "Kaan presenting a slide on costly versus non-costly congestion management in Genk"
+
+- id: powertech-2025
+  type: publication
+  label: IEEE Kiel PowerTech 2025
+  city: Kiel
+  country: Germany
+  lat: 54.323
+  lng: 10.123
+  year: "2025"
+  description: >
+    Presented security-constrained stochastic OPF for hybrid AC/DC grids,
+    extending the PCE framework to N-1 contingency analysis.
+  paper_title: "Security-Constrained Stochastic Optimal Power Flow For Hybrid AC/DC Grids Considering Non-Gaussian Uncertainty"
+  paper_doi: "10.1109/PowerTech59965.2025.11180443"
+  venue: IEEE Kiel PowerTech 2025
+  news: powertech-2025
+  image: "/assets/images/ieee-kiel-powertech-2025.jpg"
+  image_alt: "Kaan presenting a slide on polynomial chaos expansion and the curse of dimensionality in Kiel"
+
+- id: risk-day-2025
+  type: talk
+  label: Risk and Resilience Day 2025
+  city: Birmingham
+  country: United Kingdom
+  lat: 52.480
+  lng: -1.898
+  year: "2025"
+  description: >
+    Presented “Balancing-aware Redispatch Actions Under Uncertainty” at the
+    EPSRC Supergen Energy Networks Hub event.
+  news: risk-day-2025
+  image: "/assets/images/risk-day-2025.jpg"
+  image_alt: "Kaan presenting the title slide of the talk on balancing-aware redispatch under uncertainty to a seated audience"
+
+- id: risk-day-2026
+  type: talk
+  label: Risk and Resilience Day 2026
+  city: Edinburgh
+  country: United Kingdom
+  lat: 55.953
+  lng: -3.189
+  year: "2026"
+  description: >
+    Presented a poster on risk-based balancing-aware congestion management in
+    hybrid AC/DC grids at the EPSRC Supergen Energy Networks Hub event.
+  news: risk-day-2026
+  image: "/assets/images/risk-day-2026.jpg"
+  image_alt: "Kaan standing beside the poster on risk-based balancing-aware congestion management in hybrid AC/DC grids"
+
+- id: lanl-winter-school-2025
+  type: training
+  label: LANL Grid Science 2025
+  city: Santa Fe
+  country: United States
+  lat: 35.687
+  lng: -105.938
+  year: "2025"
+  description: >
+    Presented a poster on non-Gaussian uncertainty quantification in hybrid AC/DC grids
+    at Los Alamos National Laboratory’s Grid Science Winter School and Conference.
+  news: lanl-winter-school-2025
+  image: "/assets/images/lanl-winter-school-2025.jpg"
+  image_alt: "Kaan standing beside the poster on stochastic optimal power flow for hybrid AC/DC grids using polynomial chaos expansion"
+
+- id: isgt-europe-2024
+  type: publication
+  label: IEEE ISGT Europe 2024
+  city: Dubrovnik
+  country: Croatia
+  lat: 42.650
+  lng: 18.094
+  year: "2024"
+  description: >
+    Oral presentation on risk-based stochastic OPF with a Value-at-Risk term,
+    demonstrating risk-averse decision-making under non-Gaussian uncertainty.
+  paper_title: "Risk-based Stochastic Optimal Power Flow for AC/DC Grids Using Polynomial Chaos Expansion"
+  paper_doi: "10.1109/ISGTEUROPE62998.2024.10863605"
+  venue: IEEE ISGT Europe 2024
+  news: isgt-europe-2024
+  image: "/assets/images/isgt-europe-2024.jpg"
+  image_alt: "Kaan at the lectern in Dubrovnik, presenting a slide on uncertain inputs"
+
+- id: pmaps-2024
+  type: publication
+  label: PMAPS 2024
+  city: Auckland
+  country: New Zealand
+  lat: -36.852
+  lng: 174.763
+  year: "2024"
+  description: >-
+    Two papers, one on robust HVDC droop gain optimization and one on bi-objective power
+    system restoration with renewable participation.
+  paper_doi: "10.1109/PMAPS61648.2024.10667176"
+  papers:
+    - doi: "10.1109/PMAPS61648.2024.10667176"
+      label: "Droop gain paper"
+    - doi: "10.1109/PMAPS61648.2024.10667142"
+      label: "Restoration paper"
+  venue: PMAPS 2024
+  news: pmaps-2024
+  image: "/assets/images/pmaps-2024.jpg"
+  image_alt: "Kaan presenting a slide on scenario-based uncertainty modeling in Auckland"
+
+- id: hvdc-colloquium-2024
+  type: talk
+  label: HVDC Colloquium
+  city: Barcelona
+  country: Spain
+  lat: 41.389
+  lng: 2.159
+  year: "2024"
+  description: >
+    Presentation at CITCEA-UPC on stochastic optimization tools for hybrid
+    AC/DC grids and HVDC controllability under high renewable penetration.
+  venue: HVDC Colloquium, CITCEA-UPC
+  news: hvdc-colloquium-2024
+  image: "/assets/images/hvdc-colloquium-2024.jpg"
+  image_alt: "Kaan presenting in Barcelona, the title slide on stochastic optimal power flow in hybrid AC/DC grids on the screen"
+
+- id: atee-2021
+  type: publication
+  label: ATEE 2021
+  city: Bucharest (held online)
+  country: Romania
+  lat: 44.426
+  lng: 26.102
+  year: "2021"
+  virtual: true
+  description: >
+    Presented substation expansion planning under different geographical
+    configurations within a mixed-integer linear programming framework.
+  paper_title: "Distribution Substation Expansion Planning Considering Different Geographical Configurations"
+  paper_doi: "10.1109/ATEE52255.2021.9425221"
+  venue: 12th International Symposium on Advanced Topics in Electrical Engineering
+
+- id: grand-canyon
+  type: visit
+  label: "Grand Canyon, a remote office"
+  city: Grand Canyon
+  country: United States
+  lat: 36.057
+  lng: -112.143
+  year: "2025"
+  description: >-
+    My most remote office so far. The laptop was mostly there for the photo.
+  image: "/assets/images/grand-canyon-office.jpg"
+  image_alt: "Kaan sitting at the edge of the Grand Canyon with an open laptop"
+
+- id: thorntonbank-visit
+  type: visit
+  label: Thorntonbank Offshore Wind Farm
+  city: Belgian North Sea
+  country: Belgium
+  lat: 51.54106
+  lng: 2.95514
+  year: "2024"
+  description: >-
+    Field visit to the Thorntonbank offshore wind installation, 30 km off the Belgian coast,
+    organized by the PhairywinD research project.
+  news: thorntonbank-visit-2024
+  image: "/assets/images/wind-farm-visit.jpg"
+  image_alt: "Kaan with a group on the deck of a boat, the Thorntonbank wind turbines on the horizon"
+
+- id: elia-presentation-2026
+  type: talk
+  label: Presentation at Elia
+  city: Brussels
+  country: Belgium
+  lat: 50.846
+  lng: 4.352
+  year: "2026"
+  description: >-
+    Presented my work on balancing-aware congestion management to the Belgian TSO Elia on
+    18 February 2026.
+
+- id: eera-gold-award
+  type: award
+  label: Gold Award Winner
+  city: Milan
+  country: Italy
+  lat: 45.464
+  lng: 9.190
+  year: "2026"
+  description: >
+    Gold Award from the European Energy Research Alliance Joint Programme
+    on Smart Grids for my research on stochastic optimization for power systems.
+  news: eera-gold-award-2026
+  image: "/assets/images/eera-gold-award.jpg"
+  image_alt: "Kaan holding the EERA Gold Award certificate and trophy, with one person on each side"
+
+- id: eupvsec-2021
+  type: award
+  label: Student Award finalist, EU PVSEC 2021
+  city: Lisbon (held online)
+  country: Portugal
+  lat: 38.722
+  lng: -9.139
+  year: "2021"
+  virtual: true
+  description: >
+    My paper on a data-driven soiling loss assessment method for photovoltaic plants was one of the
+    finalists for the conference’s Student Award. The conference was held online.
+  paper_doi: "10.4229/EUPVSEC20212021-5DO.4.3"
+  venue: 38th European Photovoltaic Solar Energy Conference and Exhibition
+  news: eupvsec-award-2021
+  image: "/assets/images/student-award-finalists.jpg"
+  image_alt: "EU PVSEC 2021 slide listing the Student Award finalists, Kaan among them"

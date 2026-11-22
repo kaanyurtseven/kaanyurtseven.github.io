@@ -1,0 +1,31 @@
+{%- comment -%}
+  The publication summary, at the head of Publications and in the CV's Publications section, three
+  parts in one style: the number of journal entries in _data/publications.yml and
+  _pages/publications.md journals_words; under it the journals, each on its own line after its
+  number of articles (most first, then in file order, newest first); then the number of
+  conference entries and rest_words, each {type} in it replaced by the number of entries of that
+  type. A screen reader hears "2 in IEEE Transactions on Power Systems". No parameters.
+{%- endcomment -%}
+{%- assign ps_shell = site.pages | where: "page_id", "publications" | first -%}
+{%- assign ps_all = site.data.publications -%}
+{%- assign ps_j = ps_all | where: "type", "journal" | group_by: "venue" -%}
+{%- assign ps_max = 0 -%}
+{%- for ps_g in ps_j -%}{%- if ps_g.size > ps_max -%}{%- assign ps_max = ps_g.size -%}{%- endif -%}{%- endfor -%}
+{%- assign ps_nj = ps_all | where: "type", "journal" | size -%}
+{%- assign ps_nc = ps_all | where: "type", "conference" | size -%}
+{%- assign ps_rest = ps_shell.rest_words -%}
+{%- assign ps_types = ps_all | map: "type" | uniq -%}
+{%- for ps_ty in ps_types -%}
+  {%- assign ps_n = ps_all | where: "type", ps_ty | size -%}
+  {%- assign ps_tok = '{' | append: ps_ty | append: '}' -%}
+  {%- assign ps_rest = ps_rest | replace: ps_tok, ps_n -%}
+{%- endfor -%}
+<div class="pub-sum">
+  <p id="pub-sum-k"><span class="num">{{ ps_nj }} </span>{{ ps_shell.journals_words | escape }}</p>
+  <ul class="pub-sum-j" aria-labelledby="pub-sum-k">
+{%- for ps_c in (1..ps_max) reversed -%}{%- for ps_g in ps_j -%}{%- if ps_g.size == ps_c %}
+    <li><span class="num">{{ ps_c }} </span><span class="visually-hidden">in </span>{{ ps_g.name | escape }}</li>
+{%- endif -%}{%- endfor -%}{%- endfor %}
+  </ul>
+  <p><span class="num">{{ ps_nc }} </span>{{ ps_rest | normalize_whitespace | escape }}</p>
+</div>
