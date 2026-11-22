@@ -1,26 +1,93 @@
 name: Fetch Elia Data
 
+# Fetches Elia's wind and solar data every 15 minutes and commits the files the
+# site reads. Elia publishes each wind quarter-hour about 5.5 minutes after it
+# ends, so every run starts in a 15-minute slot that begins 6.5 minutes past a
+# quarter-hour (minute 6, 21, 36 or 51 of the hour plus 30 s, UTC).
+#
+# The runs form a chain. The last job of each run starts the next run
+# (workflow_dispatch with chain=true). A chained run first waits in the
+# environment elia-wait, whose wait timer (12 minutes) delays the job before it
+# is sent to a runner, and then sleeps until its slot begins. The same job also
+# starts elia-data-watch.yml, which starts the chain again when no run has
+# moved it for 25 minutes; the scheduled elia-chain-restart.yml is the last
+# backup. A run started by hand runs at once when no chained run is active and
+# continues the chain; while one is active, the chain's next run takes its
+# place.
 on:
-  schedule:
-    - cron: '*/10 * * * *'
   workflow_dispatch:
+    inputs:
+      chain:
+        description: 'Wait for the next 15-minute slot (set by the chain)'
+        type: boolean
+        default: false
+      prev:
+        description: 'Start of the previous run, in seconds since 1970 (set by the chain)'
+        type: string
+        default: ''
+
+run-name: ${{ inputs.chain && 'Fetch Elia Data (chained)' || 'Fetch Elia Data' }}
 
 permissions:
   contents: write
 
-# Runs queue instead of overlapping. The checkout takes the branch tip when the
-# job starts (ref below), so a run that waited commits on top of the previous
-# run's data commit.
+# One run at a time and at most one waiting to start; a newer run takes the
+# waiting one's place. A chained run that waits on the timer holds the group,
+# so a run started meanwhile starts after it (and the chained run's successor
+# then takes its place). The checkout takes the branch tip when the job starts
+# (ref below), so a run that waited commits on top of the previous run's data
+# commit.
 concurrency:
   group: update-elia-data
   cancel-in-progress: false
 
 jobs:
-  update:
+  # Only chained runs wait here. deployment: false keeps the wait out of the
+  # deployment history.
+  wait:
+    if: inputs.chain
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
+    environment:
+      name: elia-wait
+      deployment: false
+    steps:
+      - run: echo "The elia-wait timer has passed."
+
+  update:
+    needs: wait
+    # elia-state holds the pipeline state of main; a run on another branch
+    # would overwrite it.
+    if: ${{ !cancelled() && needs.wait.result != 'failure' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      start: ${{ steps.slot.outputs.start }}
 
     steps:
+      # Slot k begins at k * 900 + 390 seconds since 1970. A chained run that
+      # is ready within the previous run's slot sleeps until the next slot
+      # begins (about a minute); a later one runs at once.
+      - name: Wait for the slot
+        id: slot
+        env:
+          CHAIN: ${{ inputs.chain }}
+          PREV: ${{ inputs.prev }}
+        run: |
+          case "$PREV" in ''|*[!0-9]*) PREV="" ;; esac
+          now=$(date -u +%s)
+          if [ "$CHAIN" = "true" ] && [ -n "$PREV" ]; then
+            k=$(( (PREV - 390) / 900 ))
+            if [ $(( (now - 390) / 900 )) -le "$k" ]; then
+              pause=$(( (k + 1) * 900 + 390 - now ))
+              if [ "$pause" -le 600 ]; then
+                echo "Sleeping $pause s until the next slot begins."
+                sleep "$pause"
+              fi
+            fi
+          fi
+          echo "start=$(date -u +%s)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout
         uses: actions/checkout@v7
         with:
@@ -74,11 +141,14 @@ jobs:
       # fails when a technology failed and its output is older than 6 hours
       # (STALE_FAIL_HOURS in the script) or of unknown age, else it stays green;
       # the steps below still run, so the technology that succeeded is committed.
+      # A stalled request ends the step as a failure at its time limit, so the
+      # steps below and the relay still run.
       - name: Fetch Elia data
+        timeout-minutes: 18
         run: ruby scripts/fetch_elia_data.rb
 
       - name: Build figures
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           if [ -f scripts/build_figures.rb ]; then
             ruby scripts/build_figures.rb
@@ -86,22 +156,43 @@ jobs:
             echo "::notice title=Build figures skipped::scripts/build_figures.rb not found"
           fi
 
-      # This step commits only the files the site reads; the state files go to elia-state in the step below.
+      # Commits only the files the site reads, and only when the data changed:
+      # when wind.json and solar.json differ from the branch tip in nothing but
+      # meta.generated, the run commits nothing (and starts no Pages build).
+      # The state files go to elia-state in the step below. A push that loses a
+      # race with another push to the branch is rebased and tried again.
       - name: Commit and push
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ruby scripts/data_status.rb same assets/data/wind.json assets/data/solar.json; then
+            echo "No new data: nothing to commit."
+            exit 0
+          fi
           git add assets/data/wind.json assets/data/solar.json
           if [ -d _data/figures ]; then git add _data/figures/; fi
-          git diff --cached --quiet || git commit -m "chore: refresh Elia forecast data ($(date -u '+%Y-%m-%dT%H:%M'))"
-          git push
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore: refresh Elia forecast data ($(date -u '+%Y-%m-%dT%H:%M'))"
+          for attempt in 1 2 3; do
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Push rejected: rebasing on the branch tip and trying again."
+              sleep 5
+              if ! git pull --rebase --autostash --no-tags origin "$GITHUB_REF_NAME"; then
+                git rebase --abort 2> /dev/null || true
+                break
+              fi
+            fi
+          done
+          echo "::error title=Data not pushed::git push to $GITHUB_REF_NAME failed"
+          exit 1
 
       # Replaces elia-state with one parentless commit of the current state
       # files, built in a temporary index. The lease refuses the push if
       # elia-state moved since the restore.
       - name: Save pipeline state
-        if: always() && steps.restore.outcome == 'success'
+        if: ${{ !cancelled() && steps.restore.outcome == 'success' }}
         env:
           STATE_BASE: ${{ steps.restore.outputs.base }}
         run: |
@@ -126,3 +217,57 @@ jobs:
           commit=$(git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
                    commit-tree "$tree" -m "Elia pipeline state ($(date -u '+%Y-%m-%dT%H:%M') UTC)")
           git push --force-with-lease="refs/heads/elia-state:$STATE_BASE" origin "$commit:refs/heads/elia-state"
+
+  # Starts the next run, whatever the update job's result, so a failed fetch
+  # does not stop the chain. The new run waits for this one to finish. The job
+  # first starts elia-data-watch.yml, which restarts the chain 25 minutes later
+  # if no newer run has started a watch by then. A chained run that began less
+  # than 10 minutes after the previous one was not held by the elia-wait timer
+  # (a missing environment or wait timer), so the chain stops there instead of
+  # starting runs back to back.
+  relay:
+    needs: update
+    if: ${{ !cancelled() && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      actions: write
+    steps:
+      - name: Start the watch and the next run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHAIN: ${{ inputs.chain }}
+          PREV: ${{ inputs.prev }}
+          START: ${{ needs.update.outputs.start }}
+        run: |
+          now=$(date -u +%s)
+          case "$PREV" in ''|*[!0-9]*) PREV="" ;; esac
+          case "$START" in ''|*[!0-9]*) START=$now ;; esac
+          watch=0
+          for attempt in 1 2 3; do
+            if timeout 45 gh workflow run elia-data-watch.yml --repo "$GITHUB_REPOSITORY" --ref main; then
+              watch=1
+              break
+            fi
+            if [ "$attempt" -lt 3 ]; then sleep 10; fi
+          done
+          if [ "$watch" -eq 0 ]; then
+            echo "::warning title=Watch not started::elia-data-watch.yml could not be started"
+          fi
+          if [ "$CHAIN" = "true" ] && [ -n "$PREV" ] && [ $(( START - PREV )) -lt 600 ]; then
+            echo "::error title=Chain stopped::this run began $(( START - PREV )) s after the previous one, so the elia-wait timer did not hold it"
+            exit 1
+          fi
+          # Retries for up to 20 minutes, for an incident at GitHub.
+          deadline=$(( now + 1200 ))
+          delay=15
+          until timeout 45 gh workflow run update-elia-data.yml --repo "$GITHUB_REPOSITORY" --ref main \
+                  -f chain=true -f prev="$START"; do
+            if [ $(( $(date -u +%s) + delay )) -ge "$deadline" ]; then
+              echo "::error title=Chain stopped::the next run could not be started (workflow_dispatch failed for 20 minutes)"
+              exit 1
+            fi
+            sleep "$delay"
+            if [ "$delay" -lt 120 ]; then delay=$(( delay * 2 )); fi
+          done
+          echo "Started the next run."

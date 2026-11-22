@@ -1,0 +1,46 @@
+name: Restart Elia data chain
+
+# The last backup for the chain of data runs in update-elia-data.yml (each run
+# starts the next) and its watch (elia-data-watch.yml). GitHub may start
+# scheduled runs late or skip them under load, often for hours, so this
+# repairs the chain only when GitHub runs it. Runs of this workflow are the
+# ones GitHub notifies the owner about: scripts/data_check.sh, in alert mode,
+# fails the first run that finds a problem with the chain or the site's data.
+on:
+  schedule:
+    - cron: '8,23,38,53 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: elia-chain-restart
+  cancel-in-progress: false
+
+jobs:
+  check:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            CNAME
+            scripts/data_check.sh
+            scripts/data_status.rb
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Check the chain and the site's data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/data_check.sh alert

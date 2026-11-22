@@ -226,7 +226,10 @@
   function loadData(tech, callback) {
     if (cache[tech]) { callback(cache[tech]); return; }
     showLoading(true);
-    fetch(baseUrl + '/assets/data/' + tech + '.json')
+    // no-cache: the browser checks its copy with the site (a conditional
+    // request) instead of reusing it for up to 10 minutes; the data changes
+    // every 15 minutes.
+    fetch(baseUrl + '/assets/data/' + tech + '.json', { cache: 'no-cache' })
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (d) { cache[tech] = d; callback(d); })
       .catch(function (e) {

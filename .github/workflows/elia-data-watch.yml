@@ -1,0 +1,57 @@
+name: Watch Elia data chain
+
+# Started by every run of update-elia-data.yml (its relay job), so it acts only
+# when the chain has stopped. A run first waits 25 minutes in the environment
+# elia-watch, whose wait timer delays the job before it is sent to a runner,
+# and a newer start cancels the waiting one. The check therefore runs only
+# when no data run has started a watch for 25 minutes; it then starts a data
+# run, which continues the chain (scripts/data_check.sh, repair mode).
+# Problems found here are written as warnings: GitHub sends no notification
+# for runs started by a workflow, so the scheduled elia-chain-restart.yml
+# reports them.
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: elia-data-watch
+  cancel-in-progress: true
+
+jobs:
+  hold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: elia-watch
+      deployment: false
+    steps:
+      - run: echo "The elia-watch timer has passed."
+
+  check:
+    needs: hold
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: |
+            CNAME
+            scripts/data_check.sh
+            scripts/data_status.rb
+          sparse-checkout-cone-mode: false
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Check the chain and the site's data
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/data_check.sh repair
