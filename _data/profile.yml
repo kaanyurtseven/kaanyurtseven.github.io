@@ -70,6 +70,14 @@ photo:
   height: 1067
   alt: "Portrait of Kaan Yurtseven"
 
+# The picture shown when a page is shared (og:image, 1.91 to 1 as LinkedIn and others crop it):
+# Home's model in light, rendered at 2400 by 1260
+share_image:
+  src: "/assets/images/share-model.jpg"
+  width: 2400
+  height: 1260
+  alt: "A model power system with offshore and onshore wind, solar, substations and transmission lines, with the spread of forecast outcomes drawn above the wind and solar plants"
+
 # schema.org Person (JSON-LD on the homepage)
 alumni_of:
   - "KU Leuven"

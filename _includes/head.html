@@ -1,8 +1,9 @@
 {%- comment -%}
   <head> of every page, written by hand instead of jekyll-seo-tag: About's og:title is the display
   name, not "About". canonical and og:url are left out on the 404 page, which GitHub Pages serves
-  at any missing path. Home carries Person JSON-LD. Share card: og:image is the square portrait of
-  profile.yml photo; twitter:card summary shows it uncropped.
+  at any missing path. Home carries Person JSON-LD. Share card: og:image is profile.yml share_image
+  (Home's model, 1.91 to 1) with twitter:card summary_large_image; without it, the portrait (photo)
+  with twitter:card summary.
   Title: Home "<display_name> | <positioning>"; every other page "<page.title> | <display_name>".
   og:title: Home and About the display name, every other page its title.
   Description: the shell's, else profile.meta_description (the 404 page).
@@ -31,13 +32,14 @@
 <meta property="og:description" content="{{ hd_desc | escape }}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="{{ hd_p.display_name | escape }}">
-{%- if hd_p.photo.src %}
-<meta property="og:image" content="{{ hd_p.photo.src | absolute_url }}">
-<meta property="og:image:width" content="{{ hd_p.photo.width }}">
-<meta property="og:image:height" content="{{ hd_p.photo.height }}">
-<meta property="og:image:alt" content="{{ hd_p.photo.alt | escape }}">
+{%- assign hd_img = hd_p.share_image | default: hd_p.photo -%}
+{%- if hd_img.src %}
+<meta property="og:image" content="{{ hd_img.src | absolute_url }}">
+<meta property="og:image:width" content="{{ hd_img.width }}">
+<meta property="og:image:height" content="{{ hd_img.height }}">
+<meta property="og:image:alt" content="{{ hd_img.alt | escape }}">
 {%- endif %}
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="{% if hd_p.share_image.src %}summary_large_image{% else %}summary{% endif %}">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="{{ '/assets/icon.svg' | relative_url }}" type="image/svg+xml">
 {%- unless page.page_id == 'not-found' %}
