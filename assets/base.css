@@ -645,7 +645,6 @@ html:not(.js) .map-legend__hint { display: none; }
   html.js .site-header .site-nav .nav-list a { display: flex; align-items: center; min-height: 44px; margin: 0 -4px; padding: 0 4px; }
   html.js .site-header .nav-list .nl-d { display: none; }
   html.js .site-header .nav-list .nl-t { font-weight: 400; }
-  html.js .site-header .nav-list .nl-explorer .nl-t { font-weight: 600; }
   /* without JS: the nav is a wrapped row of links under the wordmark */
   html:not(.js) .site-header .bar { flex-wrap: wrap; height: auto; padding: 4px 0 8px; }
   html:not(.js) .site-header .wordmark { min-height: 44px; }
