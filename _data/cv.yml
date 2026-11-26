@@ -24,15 +24,18 @@ profile:
   heading: "Professional profile"   # the text of the CV PDF's Professional Profile
   paragraphs:
     - >-
-      My research focuses on one of the fundamental challenges in power systems, making decisions
-      under uncertainty while keeping the grid secure and efficient. I combine advanced mathematics
-      and AI to develop better approaches to power system operation and planning, making the costs
-      and risks of different decisions explicit. What motivates me is not just developing new
-      methods, but making them useful in practice. Ultimately, I want to see these methods move
-      beyond academic research and into the control rooms where decisions are made.
+      I develop stochastic and risk-based optimization methods for one of the daily challenges of
+      transmission system operators, managing congestion and keeping the grid secure when wind and
+      solar forecasts are uncertain. These methods coordinate remedial actions such as redispatch,
+      topological actions and power flow control, and make the costs and risks of each operational
+      decision explicit. As an R&D engineer before my Ph.D., I developed models that turn large
+      volumes of photovoltaic monitoring data into operational decisions, implemented across
+      integrated systems in two countries. My goal is to build practical decision-support tools for
+      grid operation that make a real difference in the control room.
 
 current_heading: "Current position"   # the experience item with current: true
 
+# Each item's `points` are the CV PDF's bullet points, one paragraph each.
 experience:
   heading: "Research and professional experience"
   items:
@@ -44,43 +47,39 @@ experience:
       start: "2026-10"
       end: null
       period: "Oct 2026 – present"
-      desc: >-
-        Developing stochastic optimization frameworks for risk-aware congestion management
-        and balancing in hybrid AC/DC grids.
+      points:
+        - "Leading research on stochastic optimization for power system operation, planning, and markets."
     - id: phd
-      title: "Ph.D. researcher"
-      org: "KU Leuven / Etch by EnergyVille"
+      title: "Ph.D. Researcher"
+      org: "KU Leuven and Etch by EnergyVille"
       place: "Leuven & Genk, Belgium"
       start: "2022"
       end: "2026-10"
       period: "2022 – Oct 2026"
-      desc: >-
-        Developed stochastic and risk-aware optimization frameworks for operational planning
-        of hybrid AC/DC grids.
-    - id: tubitak
-      title: "Researcher (TÜBİTAK 1507 Project)"
-      org: "TÜBİTAK (Scientific and Technological Research Council of Turkey)"
-      org_lang: "tr"
-      place: "İzmir, Turkey"
-      start: "2020"
-      end: "2021"
-      period: "2020–2021"
-      project: "Solar Power Plants Monitoring and Fault Diagnosis"
-      desc: "Developed intelligent fault detection methods for photovoltaic systems."
+      points:
+        - "Developed stochastic optimization frameworks for risk-based congestion management in hybrid AC/DC grids."
+        - "Modeled redispatch, transmission switching and power flow control as remedial actions under continuous non-Gaussian forecast uncertainty from wind and solar."
+        - "Quantified how controllable HVDC links reduce congestion management costs and balancing risks."
+        - "Contributed to multi-partner R&D projects linking academic models with operational planning."
+        - "Supervised three master’s theses to successful completion."
     - id: entegro
-      title: "R&D Engineer"
-      org: "Entegro Energy Systems GmbH"
+      title: "R&D Engineer (full-time, alongside the M.Sc.)"
+      org: "Entegro Energy Systems"
       place: "Germany & Turkey"
       start: "2019"
       end: "2022"
       period: "2019–2022"
-      desc: "Designed PV system projects, conducted technical analyses, and managed R&D documentation."
+      points:
+        - "Developed data-driven algorithms that raise fault alarms for the maintenance team and set cleaning schedules across the company’s PV plant portfolio."
+        - "Co-developed the portal that monitors the whole portfolio in two countries; the algorithms run on a dedicated server for all monitored plants and handle many inverter types and data formats."
+        - "In the TÜBİTAK-funded project “Solar Power Plants Monitoring and Fault Diagnosis” (2020–2021), developed sensorless methods that detect faults even under cloudy conditions and quantify soiling losses from inverter data only."
+        - "Designed PV system projects up to multi-MW scale, carried out the tests and reports required before construction, and prepared monitoring reports for plants in operation."
 
 education:
   heading: "Education"
   items:
     - id: phd
-      degree: "Ph.D. in Electrical Engineering"
+      degree: "Doctor of Engineering Science (Ph.D.), Electrical Engineering"
       institution: "KU Leuven"
       place: "Leuven, Belgium"
       start: "2022"
@@ -145,7 +144,7 @@ awards:
     - year: "2024"
       title: "FWO travel grant for participation in PMAPS 2024"
     - year: "2021"
-      title: "Finalist, EU PVSEC 2021 Student Award"
+      title: "Finalist, EU PVSEC Student Award"
       news: eupvsec-award-2021
 
 # ------------------------------------------------------------

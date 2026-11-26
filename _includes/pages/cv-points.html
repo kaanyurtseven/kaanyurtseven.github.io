@@ -1,0 +1,10 @@
+{%- comment -%}
+  The body of a CV experience row: each of the item's points (cv.yml) as a paragraph, Turkish
+  names marked (tr.html). Usage: include pages/cv-points.html x=<experience item>
+{%- endcomment -%}
+{%- for cvp in include.x.points -%}
+  {%- assign cvp_t = cvp | normalize_whitespace | escape -%}
+  {%- unless forloop.first %}
+    {% endunless -%}
+<p class="row-p">{% include tr.html t=cvp_t %}</p>
+{%- endfor -%}

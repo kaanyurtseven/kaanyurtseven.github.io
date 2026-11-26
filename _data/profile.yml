@@ -14,7 +14,7 @@ role_since: "2026-10"             # YYYY-MM; {since} in copy (pages/fill.html)
 role_line: "Postdoctoral Researcher at KU Leuven and Etch by EnergyVille"
 
 phd:
-  degree: "Ph.D. in Electrical Engineering"   # as on the CV
+  degree: "Doctor of Engineering Science (Ph.D.), Electrical Engineering"   # as on the CV
   institution: "KU Leuven"
   period: "2022–2026"
   defended: "2026-10-15"

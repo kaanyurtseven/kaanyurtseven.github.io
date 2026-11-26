@@ -20,6 +20,7 @@ nowrap:
   - { from: "3 September 2026", to: "<span class=\"nw\">3 September 2026</span>" }
   - { from: "risk-constrained", to: "<span class=\"nw\">risk-constrained</span>" }
   - { from: "state-of-the-art", to: "<span class=\"nw\">state-of-the-art</span>" }
+  - { from: "decision-support", to: "<span class=\"nw\">decision-support</span>" }
   - { from: "13 October 2026", to: "<span class=\"nw\">13 October 2026</span>" }
   - { from: "15 October 2026", to: "<span class=\"nw\">15 October 2026</span>" }
   - { from: "25 October 2026", to: "<span class=\"nw\">25 October 2026</span>" }
@@ -40,6 +41,7 @@ nowrap:
   - { from: "co-supervisor", to: "<span class=\"nw\">co-supervisor</span>" }
   - { from: "power-voltage", to: "<span class=\"nw\">power-voltage</span>" }
   - { from: "voltage-power", to: "<span class=\"nw\">voltage-power</span>" }
+  - { from: "multi-partner", to: "<span class=\"nw\">multi-partner</span>" }
   - { from: "Non-Gaussian", to: "<span class=\"nw\">Non-Gaussian</span>" }
   - { from: "bi-objective", to: "<span class=\"nw\">bi-objective</span>" }
   - { from: "co-existence", to: "<span class=\"nw\">co-existence</span>" }
@@ -51,6 +53,7 @@ nowrap:
   - { from: "quarter-hour", to: "<span class=\"nw\">quarter-hour</span>" }
   - { from: "risk-neutral", to: "<span class=\"nw\">risk-neutral</span>" }
   - { from: "wait-and-see", to: "<span class=\"nw\">wait-and-see</span>" }
+  - { from: "Co-developed", to: "<span class=\"nw\">Co-developed</span>" }
   - { from: "Data-Driven", to: "<span class=\"nw\">Data-Driven</span>" }
   - { from: "Data-driven", to: "<span class=\"nw\">Data-driven</span>" }
   - { from: "ESAT-ELECTA", to: "<span class=\"nw\">ESAT-ELECTA</span>" }
@@ -88,9 +91,11 @@ nowrap:
   - { from: "real-time", to: "<span class=\"nw\">real-time</span>" }
   - { from: "three-day", to: "<span class=\"nw\">three-day</span>" }
   - { from: "trade-off", to: "<span class=\"nw\">trade-off</span>" }
+  - { from: "full-time", to: "<span class=\"nw\">full-time</span>" }
   - { from: "ky-theme", to: "<span class=\"nw\">ky-theme</span>" }
   - { from: "no-fault", to: "<span class=\"nw\">no-fault</span>" }
   - { from: "start-up", to: "<span class=\"nw\">start-up</span>" }
+  - { from: "multi-MW", to: "<span class=\"nw\">multi-MW</span>" }
   - { from: "EUR-ACE", to: "<span class=\"nw\">EUR-\u2060ACE</span>" }
   - { from: "on-land", to: "<span class=\"nw\">on-land</span>" }
   - { from: "N-SIDE", to: "<span class=\"nw\">N-\u2060SIDE</span>" }
